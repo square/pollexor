@@ -94,6 +94,10 @@ final class Utilities {
     if (param != -1) {
       end = param;
     }
+    param = url.indexOf("#");
+    if (param != -1 && param < end) {
+      end = param;
+    }
 
     if (start > 0 || end < length) {
       return url.substring(start, end);

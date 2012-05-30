@@ -19,6 +19,9 @@ public class UtilitiesTest {
     assertEquals("hi.com", stripProtocolAndParams("http://hi.com"));
     assertEquals("hi.com", stripProtocolAndParams("https://hi.com"));
     assertEquals("hi.com", stripProtocolAndParams("hi.com?whatup"));
+    assertEquals("hi.com", stripProtocolAndParams("hi.com#whatup"));
+    assertEquals("hi.com", stripProtocolAndParams("hi.com?what#up"));
+    assertEquals("hi.com", stripProtocolAndParams("hi.com#what?up"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("hi.com/hi.html?whatup"));
