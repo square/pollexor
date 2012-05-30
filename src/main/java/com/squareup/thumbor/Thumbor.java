@@ -15,8 +15,8 @@ import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
  * @see #image
  */
 public final class Thumbor {
-  private static final String PREFIX_UNSAFE = "unsafe";
-  private static final String PREFIX_META = "meta";
+  private static final String PREFIX_UNSAFE = "unsafe/";
+  private static final String PREFIX_META = "meta/";
   private static final String PART_SMART = "smart";
   private static final String PART_FIT_IN = "fit-in";
   private static final String PART_FILTERS = "filters";
@@ -68,7 +68,7 @@ public final class Thumbor {
   }
 
   final String target;
-  String host = "";
+  String host = "/";
   String key;
   boolean hasCrop = false;
   boolean hasResize = false;
@@ -131,6 +131,9 @@ public final class Thumbor {
   public Thumbor host(String host) {
     if (host == null || host.length() == 0) {
       throw new IllegalArgumentException("Host must not be blank.");
+    }
+    if (!host.endsWith("/")) {
+      host += "/";
     }
     this.host = host;
     return this;
@@ -324,9 +327,7 @@ public final class Thumbor {
    */
   public String buildUnsafe() {
     return new StringBuilder(host) //
-        .append("/") //
         .append(PREFIX_UNSAFE) //
-        .append("/") //
         .append(assembleConfig()) //
         .append(target) //
         .toString();
@@ -350,7 +351,6 @@ public final class Thumbor {
     final String encoded = Utilities.base64Encode(encrypted);
 
     return new StringBuilder(host) //
-        .append("/") //
         .append(encoded) //
         .append("/") //
         .append(target) //
@@ -364,9 +364,7 @@ public final class Thumbor {
    */
   public String buildMeta() {
     return new StringBuilder(host) //
-        .append("/") //
         .append(PREFIX_META) //
-        .append("/") //
         .append(assembleConfig()) //
         .append(target) //
         .toString();

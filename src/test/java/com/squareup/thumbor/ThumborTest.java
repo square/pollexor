@@ -79,6 +79,19 @@ public class ThumborTest {
     assertEquals(expected, actual);
   }
 
+  @Test public void testHostAlwaysEndsWithSlash() {
+    Thumbor url1 = new Thumbor("");
+    assertEquals("/", url1.host);
+
+    Thumbor url2 = new Thumbor("");
+    url2.host("http://me.com");
+    assertEquals("http://me.com/", url2.host);
+
+    Thumbor url3 = new Thumbor("");
+    url3.host("http://me.com/");
+    assertEquals("http://me.com/", url3.host);
+  }
+
   @Test public void testResize() {
     Thumbor url = new Thumbor("a.com/b.png");
     assertFalse(url.hasResize);
