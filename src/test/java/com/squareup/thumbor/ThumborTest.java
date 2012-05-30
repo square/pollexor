@@ -23,6 +23,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ThumborTest {
+  @Test public void testNoConfig() {
+    assertEquals("/unsafe/a.com/b.png", image("http://a.com/b.png").buildUnsafe());
+  }
+
   @Test public void testComplexUnsafeBuild() {
     String expected = "/unsafe/10x10:90x90/40x40/filters:watermark(/unsafe/20x20/b.com/c.jpg,10,10,0):round_corner(5,255,255,255)/a.com/b.png";
     String actual = image("a.com/b.png")
