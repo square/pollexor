@@ -128,7 +128,7 @@ final class Utilities {
   }
 
   /**
-   * Normalize a string to a desired length by truncation or repeatedly appending itself.
+   * Normalize a string to a desired length by repeatedly appending itself and/or truncating.
    *
    * @param string Input string.
    * @param desiredLength Desired length of string.
@@ -168,9 +168,9 @@ final class Utilities {
       algorithm.update(input.getBytes());
       byte[] messageDigest = algorithm.digest();
 
-      StringBuffer hexString = new StringBuffer();
+      StringBuilder hexString = new StringBuilder();
       for (int i = 0; i < messageDigest.length; i++) {
-        hexString.append(Integer.toHexString(0xFF & messageDigest[i] | 0x100).substring(1, 3));
+        hexString.append(Integer.toHexString((messageDigest[i] & 0xFF) | 0x100).substring(1, 3));
       }
       return hexString.toString();
     } catch (Exception e) {
@@ -179,7 +179,7 @@ final class Utilities {
   }
 
   /**
-   * Encrypy a string using the specified key.
+   * Encrypt a string using the specified key.
    *
    * @param message Input string.
    * @param key Encryption key.
