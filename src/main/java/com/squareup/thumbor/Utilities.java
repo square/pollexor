@@ -17,16 +17,21 @@ final class Utilities {
 
   private final static String BASE64_CHARS =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  private final static int BASE64_UPPER_BOUND = Integer.MAX_VALUE / 4 * 3;
 
   /**
    * Base64 encodes a byte array.
    *
    * @param bytes Bytes to encode.
    * @return Encoded string.
+   * @throws IllegalArgumentException if {@code bytes} is null or exceeds 3/4ths of {@code Integer.MAX_VALUE}.
    */
   public static String base64Encode(byte[] bytes) {
     if (bytes == null) {
       throw new IllegalArgumentException("Input bytes must not be null.");
+    }
+    if (bytes.length >= BASE64_UPPER_BOUND) {
+      throw new IllegalArgumentException("Input bytes length must not exceed " + BASE64_UPPER_BOUND);
     }
 
     // Every three bytes is encoded into four characters.
@@ -44,7 +49,7 @@ final class Utilities {
     }
 
     // The encoded string will have four characters for every three bytes.
-    char[] encoding = new char[triples * 4];
+    char[] encoding = new char[triples << 2];
 
     for (int in = 0, out = 0; in < bytes.length; in += 3, out += 4) {
       int triple = (bytes[in] & 0xff) << 16;
@@ -111,6 +116,7 @@ final class Utilities {
    * @param builder Builder to pad.
    * @param padding Padding character.
    * @param multipleOf Number which the length must be a multiple of.
+   * @throws IllegalArgumentException if {@code builder} is null or {@code multipleOf} is less than 2.
    */
   static void rightPadString(StringBuilder builder, char padding, int multipleOf) {
     if (builder == null) {
@@ -133,6 +139,7 @@ final class Utilities {
    * @param string Input string.
    * @param desiredLength Desired length of string.
    * @return Output string which is guaranteed to have a length equal to the desired length argument.
+   * @throws IllegalArgumentException if {@code string} is blank or {@code desiredLength} is not greater than 0.
    */
   static String normalizeString(String string, int desiredLength) {
     if (string == null || string.length() == 0) {
@@ -157,6 +164,7 @@ final class Utilities {
    *
    * @param input Input string.
    * @return Hash of input.
+   * @throws IllegalArgumentException if {@code input} is blank.
    */
   static String md5(String input) {
     if (input == null || input.length() == 0) {
