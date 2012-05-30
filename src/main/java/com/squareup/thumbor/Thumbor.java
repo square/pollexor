@@ -12,9 +12,9 @@ import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
 /**
  * Fluent interface to create a URL appropriate for passing to Thumbor.
  *
- * @see #build(String)
+ * @see #image
  */
-public final class ThumborUrl {
+public final class Thumbor {
   private static final String PREFIX_UNSAFE = "unsafe";
   private static final String PREFIX_META = "meta";
   private static final String PART_SMART = "smart";
@@ -91,7 +91,7 @@ public final class ThumborUrl {
    *
    * @param target Target image URL.
    */
-  ThumborUrl(String target) {
+  Thumbor(String target) {
     this.target = stripProtocolAndParams(target);
   }
 
@@ -101,11 +101,11 @@ public final class ThumborUrl {
    * @param target Target image to manipulate.
    * @return New instance for configuration.
    */
-  public static ThumborUrl build(String target) {
+  public static Thumbor image(String target) {
     if (target == null || target.length() == 0) {
       throw new IllegalArgumentException("Target image URL must not be blank.");
     }
-    return new ThumborUrl(target);
+    return new Thumbor(target);
   }
 
   /**
@@ -114,7 +114,7 @@ public final class ThumborUrl {
    * @param key Security key for remote server.
    * @return Current instance.
    */
-  public ThumborUrl key(String key) {
+  public Thumbor key(String key) {
     if (key == null || key.length() == 0) {
       throw new IllegalArgumentException("Key must not be blank.");
     }
@@ -128,7 +128,7 @@ public final class ThumborUrl {
    * @param host Host name.
    * @return Current instance.
    */
-  public ThumborUrl host(String host) {
+  public Thumbor host(String host) {
     if (host == null || host.length() == 0) {
       throw new IllegalArgumentException("Host must not be blank.");
     }
@@ -143,7 +143,7 @@ public final class ThumborUrl {
    * @param height Desired height.
    * @return Current instance.
    */
-  public ThumborUrl resize(int width, int height) {
+  public Thumbor resize(int width, int height) {
     if (width < 1) {
       throw new IllegalArgumentException("Width must be greater than zero.");
     }
@@ -161,7 +161,7 @@ public final class ThumborUrl {
    *
    * @return Current instance.
    */
-  public ThumborUrl flipHorizontally() {
+  public Thumbor flipHorizontally() {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to flip.");
     }
@@ -174,7 +174,7 @@ public final class ThumborUrl {
    *
    * @return Current instance.
    */
-  public ThumborUrl flipVertically() {
+  public Thumbor flipVertically() {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to flip.");
     }
@@ -187,7 +187,7 @@ public final class ThumborUrl {
    *
    * @return Current instance.
    */
-  public ThumborUrl fitIn() {
+  public Thumbor fitIn() {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to apply 'fit-in'.");
     }
@@ -204,7 +204,7 @@ public final class ThumborUrl {
    * @param right Right bound.
    * @return Current instance.
    */
-  public ThumborUrl crop(int top, int left, int bottom, int right) {
+  public Thumbor crop(int top, int left, int bottom, int right) {
     if (top < 0) {
       throw new IllegalArgumentException("Top must be greater or equal to zero.");
     }
@@ -231,7 +231,7 @@ public final class ThumborUrl {
    * @param align Horizontal alignment.
    * @return Current instance.
    */
-  public ThumborUrl align(HorizontalAlign align) {
+  public Thumbor align(HorizontalAlign align) {
     if (!hasCrop) {
       throw new IllegalStateException("Image must be cropped first in order to align.");
     }
@@ -245,7 +245,7 @@ public final class ThumborUrl {
    * @param align Vertical alignment.
    * @return Current instance.
    */
-  public ThumborUrl align(VerticalAlign align) {
+  public Thumbor align(VerticalAlign align) {
     if (!hasCrop) {
       throw new IllegalStateException("Image must be cropped first in order to align.");
     }
@@ -260,7 +260,7 @@ public final class ThumborUrl {
    * @param halign Horizontal alignment.
    * @return Current instance.
    */
-  public ThumborUrl align(VerticalAlign valign, HorizontalAlign halign) {
+  public Thumbor align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
   }
 
@@ -269,7 +269,7 @@ public final class ThumborUrl {
    *
    * @return Current instance.
    */
-  public ThumborUrl smart() {
+  public Thumbor smart() {
     if (!hasCrop) {
       throw new IllegalStateException("Image must be cropped first in order to smart align.");
     }
@@ -293,11 +293,11 @@ public final class ThumborUrl {
    * @see #roundCorner(int, int, int)
    * @see #sharpen(float, float, boolean)
    * @see #watermark(String, int, int)
-   * @see #watermark(ThumborUrl, int, int)
+   * @see #watermark(Thumbor, int, int)
    * @see #watermark(String, int, int, int)
-   * @see #watermark(ThumborUrl, int, int, int)
+   * @see #watermark(Thumbor, int, int, int)
    */
-  public ThumborUrl filter(String... filters) {
+  public Thumbor filter(String... filters) {
     if (filters.length == 0) {
       throw new IllegalArgumentException("You must provide at least one filter.");
     }
@@ -569,7 +569,7 @@ public final class ThumborUrl {
    *              loader that Thumbor uses will be used here.
    * @return String representation of this filter.
    */
-  public static String watermark(ThumborUrl image) {
+  public static String watermark(Thumbor image) {
     return watermark(image, 0, 0);
   }
 
@@ -599,9 +599,9 @@ public final class ThumborUrl {
    *              from the top and negative numbers indicate position from the bottom.
    * @return String representation of this filter.
    */
-  public static String watermark(ThumborUrl image, int x, int y) {
+  public static String watermark(Thumbor image, int x, int y) {
     if (image == null) {
-      throw new IllegalArgumentException("ThumborUrl must not be null.");
+      throw new IllegalArgumentException("Thumbor image must not be null.");
     }
     return watermark(image.toString(), x, y, 0);
   }
@@ -647,7 +647,7 @@ public final class ThumborUrl {
    *                     and 100 (fully transparent).
    * @return String representation of this filter.
    */
-  public static String watermark(ThumborUrl image, int x, int y, int transparency) {
+  public static String watermark(Thumbor image, int x, int y, int transparency) {
     return watermark(image.toString(), x, y, transparency);
   }
 

@@ -3,18 +3,18 @@ package com.squareup.thumbor;
 
 import org.junit.Test;
 
-import static com.squareup.thumbor.ThumborUrl.HorizontalAlign.CENTER;
-import static com.squareup.thumbor.ThumborUrl.VerticalAlign.MIDDLE;
-import static com.squareup.thumbor.ThumborUrl.brightness;
-import static com.squareup.thumbor.ThumborUrl.build;
-import static com.squareup.thumbor.ThumborUrl.contrast;
-import static com.squareup.thumbor.ThumborUrl.fill;
-import static com.squareup.thumbor.ThumborUrl.noise;
-import static com.squareup.thumbor.ThumborUrl.quality;
-import static com.squareup.thumbor.ThumborUrl.rgb;
-import static com.squareup.thumbor.ThumborUrl.roundCorner;
-import static com.squareup.thumbor.ThumborUrl.sharpen;
-import static com.squareup.thumbor.ThumborUrl.watermark;
+import static com.squareup.thumbor.Thumbor.HorizontalAlign.CENTER;
+import static com.squareup.thumbor.Thumbor.VerticalAlign.MIDDLE;
+import static com.squareup.thumbor.Thumbor.brightness;
+import static com.squareup.thumbor.Thumbor.image;
+import static com.squareup.thumbor.Thumbor.contrast;
+import static com.squareup.thumbor.Thumbor.fill;
+import static com.squareup.thumbor.Thumbor.noise;
+import static com.squareup.thumbor.Thumbor.quality;
+import static com.squareup.thumbor.Thumbor.rgb;
+import static com.squareup.thumbor.Thumbor.roundCorner;
+import static com.squareup.thumbor.Thumbor.sharpen;
+import static com.squareup.thumbor.Thumbor.watermark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,14 +22,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ThumborUrlTest {
+public class ThumborTest {
   @Test public void testComplexUnsafeBuild() {
     String expected = "/unsafe/10x10:90x90/40x40/filters:watermark(/unsafe/20x20/b.com/c.jpg,10,10,0):round_corner(5,255,255,255)/a.com/b.png";
-    String actual = build("a.com/b.png")
+    String actual = image("a.com/b.png")
         .crop(10, 10, 90, 90)
         .resize(40, 40)
         .filter(
-            watermark(build("b.com/c.jpg").resize(20, 20), 10, 10),
+            watermark(image("b.com/c.jpg").resize(20, 20), 10, 10),
             roundCorner(5))
         .buildUnsafe();
     assertEquals(expected, actual);
@@ -37,11 +37,11 @@ public class ThumborUrlTest {
 
   @Test public void testComplexSafeBuild() {
     String expected = "/xrUrWUD_ZhogPh-rvPF5VhgWENCgh-mzknoAEZ7dcX_xa7sjqP1ff9hQQq_ORAKmuCr5pyyU3srXG7BUdWUzBqp3AIucz8KiGsmHw1eFe4SBWhp1wSQNG49jSbbuHaFF_4jy5oV4Nh821F4yqNZfe6CIvjbrr1Vw2aMPL4bE7VCHBYE9ukKjVjLRiW3nLfih/a.com/b.png";
-    String actual = build("a.com/b.png")
+    String actual = image("a.com/b.png")
         .crop(10, 10, 90, 90)
         .resize(40, 40)
         .filter(
-            watermark(build("b.com/c.jpg").resize(20, 20), 10, 10),
+            watermark(image("b.com/c.jpg").resize(20, 20), 10, 10),
             roundCorner(5))
         .key("test")
         .buildSafe();
@@ -49,7 +49,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testKeyChangesToStringToSafeBuild() {
-    ThumborUrl url = build("a.com/b.png");
+    Thumbor url = image("a.com/b.png");
     assertNull(url.key);
     assertTrue(url.toString().startsWith("/unsafe/"));
     url.key("test");
@@ -58,29 +58,29 @@ public class ThumborUrlTest {
   }
 
   @Test public void testBuildMeta() {
-    assertTrue(build("a.com/b.png").buildMeta().startsWith("/meta/"));
+    assertTrue(image("a.com/b.png").buildMeta().startsWith("/meta/"));
   }
 
   @Test public void testUnsafePrependHost() {
     String expected = "http://me.com/unsafe/a.com/b.png";
-    String actual = build("a.com/b.png").host("http://me.com").buildUnsafe();
+    String actual = image("a.com/b.png").host("http://me.com").buildUnsafe();
     assertEquals(expected, actual);
   }
 
   @Test public void testSafePrependHost() {
     String expected = "http://me.com/oNchWAmpD6SoDZXBkUpAYU3p6ZnHQY1_mYdnfTkm36g=/a.com/b.png";
-    String actual = build("a.com/b.png").key("test").host("http://me.com").buildSafe();
+    String actual = image("a.com/b.png").key("test").host("http://me.com").buildSafe();
     assertEquals(expected, actual);
   }
 
   @Test public void testMetaPrependHost() {
     String expected = "http://me.com/meta/a.com/b.png";
-    String actual = build("a.com/b.png").host("http://me.com").buildMeta();
+    String actual = image("a.com/b.png").host("http://me.com").buildMeta();
     assertEquals(expected, actual);
   }
 
   @Test public void testResize() {
-    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    Thumbor url = new Thumbor("a.com/b.png");
     assertFalse(url.hasResize);
 
     url.resize(10, 5);
@@ -91,7 +91,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testResizeAndFitIn() {
-    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    Thumbor url = new Thumbor("a.com/b.png");
     url.resize(10, 5);
     assertFalse(url.fitIn);
     url.fitIn();
@@ -100,22 +100,22 @@ public class ThumborUrlTest {
   }
 
   @Test public void testResizeAndFlip() {
-    ThumborUrl url1 = new ThumborUrl("a.com/b.png").resize(10, 5).flipHorizontally();
+    Thumbor url1 = new Thumbor("a.com/b.png").resize(10, 5).flipHorizontally();
     assertTrue(url1.flipHorizontally);
     assertEquals("/unsafe/-10x5/a.com/b.png", url1.buildUnsafe());
 
-    ThumborUrl url2 = new ThumborUrl("a.com/b.png").resize(10, 5).flipVertically();
+    Thumbor url2 = new Thumbor("a.com/b.png").resize(10, 5).flipVertically();
     assertTrue(url2.flipVertically);
     assertEquals("/unsafe/10x-5/a.com/b.png", url2.buildUnsafe());
 
-    ThumborUrl url3 = new ThumborUrl("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
+    Thumbor url3 = new Thumbor("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
     assertTrue(url3.flipHorizontally);
     assertTrue(url3.flipVertically);
     assertEquals("/unsafe/-10x-5/a.com/b.png", url3.buildUnsafe());
   }
 
   @Test public void testCrop() {
-    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    Thumbor url = new Thumbor("a.com/b.png");
     assertFalse(url.hasCrop);
 
     url.crop(1, 2, 3, 4);
@@ -128,7 +128,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCropAndSmart() {
-    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    Thumbor url = new Thumbor("a.com/b.png");
     url.crop(1, 2, 3, 4);
 
     assertFalse(url.isSmart);
@@ -138,7 +138,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotFlipHorizontalWithoutResize() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     assertFalse(url.hasResize);
     assertFalse(url.flipHorizontally);
     try {
@@ -151,7 +151,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotFlipVerticalWithoutResize() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     assertFalse(url.hasResize);
     assertFalse(url.flipVertically);
     try {
@@ -164,7 +164,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotFitInWithoutCrop() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     assertFalse(url.hasCrop);
     assertFalse(url.fitIn);
     try {
@@ -177,7 +177,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotSmartWithoutCrop() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     assertFalse(url.hasCrop);
     assertFalse(url.isSmart);
     try {
@@ -190,7 +190,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testDoubleAlignmentMethodSetsBoth() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     url.crop(0, 0, 1, 1);
     assertNull(url.cropHorizontalAlign);
     assertNull(url.cropVerticalAlign);
@@ -200,7 +200,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotAlignWithoutCrop() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     assertFalse(url.hasCrop);
     assertNull(url.cropHorizontalAlign);
 
@@ -220,7 +220,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotIssueBadCrop() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
 
     try {
       url.crop(-1, 0, 1, 1);
@@ -266,7 +266,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotIssueBadResize() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
 
     try {
       url.resize(0, 5);
@@ -285,14 +285,14 @@ public class ThumborUrlTest {
 
   @Test public void testCannotBuildWithInvalidTarget() {
     try {
-      build(null);
+      image(null);
       fail("Bad target image URL allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      build("");
+      image("");
       fail("Bad target image URL allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
@@ -300,7 +300,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotAddInvalidKey() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
 
     try {
       url.key(null);
@@ -318,7 +318,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotAddInvalidHost() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
 
     try {
       url.host(null);
@@ -336,7 +336,7 @@ public class ThumborUrlTest {
   }
 
   @Test public void testCannotBuildSafeWithoutKey() {
-    ThumborUrl url = new ThumborUrl("");
+    Thumbor url = new Thumbor("");
     try {
       url.buildSafe();
       fail(".buildSafe() succeeds without key.");
@@ -499,7 +499,7 @@ public class ThumborUrlTest {
       // Pass.
     }
     try {
-      watermark((ThumborUrl) null);
+      watermark((Thumbor) null);
       fail("Watermark allowed invalid value.");
     } catch (IllegalArgumentException e) {
       // Pass.
@@ -526,11 +526,11 @@ public class ThumborUrlTest {
 
   @Test public void testFilterWatermarkFormat() {
     assertEquals("watermark(a.png,0,0,0)", watermark("a.png"));
-    assertEquals("watermark(/unsafe/10x10/a.png,0,0,0)", watermark(build("a.png").resize(10, 10)));
+    assertEquals("watermark(/unsafe/10x10/a.png,0,0,0)", watermark(image("a.png").resize(10, 10)));
     assertEquals("watermark(a.png,20,20,0)", watermark("a.png", 20, 20));
-    assertEquals("watermark(/unsafe/10x10/a.png,20,20,0)", watermark(build("a.png").resize(10, 10), 20, 20));
+    assertEquals("watermark(/unsafe/10x10/a.png,20,20,0)", watermark(image("a.png").resize(10, 10), 20, 20));
     assertEquals("watermark(a.png,20,20,50)", watermark("a.png", 20, 20, 50));
-    assertEquals("watermark(/unsafe/10x10/a.png,20,20,50)", watermark(build("a.png").resize(10, 10), 20, 20, 50));
+    assertEquals("watermark(/unsafe/10x10/a.png,20,20,50)", watermark(image("a.png").resize(10, 10), 20, 20, 50));
   }
 
   @Test public void testFilterSharpenFormat() {
