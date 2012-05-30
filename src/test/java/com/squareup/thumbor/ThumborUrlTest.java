@@ -3,18 +3,18 @@ package com.squareup.thumbor;
 
 import org.junit.Test;
 
-import static com.squareup.thumbor.ThumborUri.HorizontalAlign.CENTER;
-import static com.squareup.thumbor.ThumborUri.VerticalAlign.MIDDLE;
-import static com.squareup.thumbor.ThumborUri.brightness;
-import static com.squareup.thumbor.ThumborUri.build;
-import static com.squareup.thumbor.ThumborUri.contrast;
-import static com.squareup.thumbor.ThumborUri.fill;
-import static com.squareup.thumbor.ThumborUri.noise;
-import static com.squareup.thumbor.ThumborUri.quality;
-import static com.squareup.thumbor.ThumborUri.rgb;
-import static com.squareup.thumbor.ThumborUri.roundCorner;
-import static com.squareup.thumbor.ThumborUri.sharpen;
-import static com.squareup.thumbor.ThumborUri.watermark;
+import static com.squareup.thumbor.ThumborUrl.HorizontalAlign.CENTER;
+import static com.squareup.thumbor.ThumborUrl.VerticalAlign.MIDDLE;
+import static com.squareup.thumbor.ThumborUrl.brightness;
+import static com.squareup.thumbor.ThumborUrl.build;
+import static com.squareup.thumbor.ThumborUrl.contrast;
+import static com.squareup.thumbor.ThumborUrl.fill;
+import static com.squareup.thumbor.ThumborUrl.noise;
+import static com.squareup.thumbor.ThumborUrl.quality;
+import static com.squareup.thumbor.ThumborUrl.rgb;
+import static com.squareup.thumbor.ThumborUrl.roundCorner;
+import static com.squareup.thumbor.ThumborUrl.sharpen;
+import static com.squareup.thumbor.ThumborUrl.watermark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ThumborUriTest {
+public class ThumborUrlTest {
   @Test public void testComplexUnsafeBuild() {
     String expected = "/unsafe/10x10:90x90/40x40/filters:watermark(/unsafe/20x20/b.com/c.jpg,10,10,0):round_corner(5,255,255,255)/a.com/b.png";
     String actual = build("a.com/b.png")
@@ -49,152 +49,170 @@ public class ThumborUriTest {
   }
 
   @Test public void testKeyChangesToStringToSafeBuild() {
-    ThumborUri uri = build("a.com/b.png");
-    assertNull(uri.key);
-    assertTrue(uri.toString().startsWith("/unsafe/"));
-    uri.key("test");
-    assertNotNull(uri.key);
-    assertFalse(uri.toString().startsWith("/unsafe/"));
+    ThumborUrl url = build("a.com/b.png");
+    assertNull(url.key);
+    assertTrue(url.toString().startsWith("/unsafe/"));
+    url.key("test");
+    assertNotNull(url.key);
+    assertFalse(url.toString().startsWith("/unsafe/"));
   }
 
   @Test public void testBuildMeta() {
     assertTrue(build("a.com/b.png").buildMeta().startsWith("/meta/"));
   }
 
-  @Test public void testResize() {
-    ThumborUri uri = new ThumborUri("a.com/b.png");
-    assertFalse(uri.hasResize);
+  @Test public void testUnsafePrependHost() {
+    String expected = "http://me.com/unsafe/a.com/b.png";
+    String actual = build("a.com/b.png").host("http://me.com").buildUnsafe();
+    assertEquals(expected, actual);
+  }
 
-    uri.resize(10, 5);
-    assertTrue(uri.hasResize);
-    assertEquals(10, uri.resizeWidth);
-    assertEquals(5, uri.resizeHeight);
-    assertEquals("/unsafe/10x5/a.com/b.png", uri.buildUnsafe());
+  @Test public void testSafePrependHost() {
+    String expected = "http://me.com/oNchWAmpD6SoDZXBkUpAYU3p6ZnHQY1_mYdnfTkm36g=/a.com/b.png";
+    String actual = build("a.com/b.png").key("test").host("http://me.com").buildSafe();
+    assertEquals(expected, actual);
+  }
+
+  @Test public void testMetaPrependHost() {
+    String expected = "http://me.com/meta/a.com/b.png";
+    String actual = build("a.com/b.png").host("http://me.com").buildMeta();
+    assertEquals(expected, actual);
+  }
+
+  @Test public void testResize() {
+    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    assertFalse(url.hasResize);
+
+    url.resize(10, 5);
+    assertTrue(url.hasResize);
+    assertEquals(10, url.resizeWidth);
+    assertEquals(5, url.resizeHeight);
+    assertEquals("/unsafe/10x5/a.com/b.png", url.buildUnsafe());
   }
 
   @Test public void testResizeAndFitIn() {
-    ThumborUri uri = new ThumborUri("a.com/b.png");
-    uri.resize(10, 5);
-    assertFalse(uri.fitIn);
-    uri.fitIn();
-    assertTrue(uri.fitIn);
-    assertEquals("/unsafe/10x5/fit-in/a.com/b.png", uri.buildUnsafe());
+    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    url.resize(10, 5);
+    assertFalse(url.fitIn);
+    url.fitIn();
+    assertTrue(url.fitIn);
+    assertEquals("/unsafe/10x5/fit-in/a.com/b.png", url.buildUnsafe());
   }
 
   @Test public void testResizeAndFlip() {
-    ThumborUri uri1 = new ThumborUri("a.com/b.png").resize(10, 5).flipHorizontally();
-    assertTrue(uri1.flipHorizontally);
-    assertEquals("/unsafe/-10x5/a.com/b.png", uri1.buildUnsafe());
+    ThumborUrl url1 = new ThumborUrl("a.com/b.png").resize(10, 5).flipHorizontally();
+    assertTrue(url1.flipHorizontally);
+    assertEquals("/unsafe/-10x5/a.com/b.png", url1.buildUnsafe());
 
-    ThumborUri uri2 = new ThumborUri("a.com/b.png").resize(10, 5).flipVertically();
-    assertTrue(uri2.flipVertically);
-    assertEquals("/unsafe/10x-5/a.com/b.png", uri2.buildUnsafe());
+    ThumborUrl url2 = new ThumborUrl("a.com/b.png").resize(10, 5).flipVertically();
+    assertTrue(url2.flipVertically);
+    assertEquals("/unsafe/10x-5/a.com/b.png", url2.buildUnsafe());
 
-    ThumborUri uri3 = new ThumborUri("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
-    assertTrue(uri3.flipHorizontally);
-    assertTrue(uri3.flipVertically);
-    assertEquals("/unsafe/-10x-5/a.com/b.png", uri3.buildUnsafe());
+    ThumborUrl url3 = new ThumborUrl("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
+    assertTrue(url3.flipHorizontally);
+    assertTrue(url3.flipVertically);
+    assertEquals("/unsafe/-10x-5/a.com/b.png", url3.buildUnsafe());
   }
 
   @Test public void testCrop() {
-    ThumborUri uri = new ThumborUri("a.com/b.png");
-    assertFalse(uri.hasCrop);
+    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    assertFalse(url.hasCrop);
 
-    uri.crop(1, 2, 3, 4);
-    assertTrue(uri.hasCrop);
-    assertEquals(1, uri.cropTop);
-    assertEquals(2, uri.cropLeft);
-    assertEquals(3, uri.cropBottom);
-    assertEquals(4, uri.cropRight);
-    assertEquals("/unsafe/2x1:4x3/a.com/b.png", uri.buildUnsafe());
+    url.crop(1, 2, 3, 4);
+    assertTrue(url.hasCrop);
+    assertEquals(1, url.cropTop);
+    assertEquals(2, url.cropLeft);
+    assertEquals(3, url.cropBottom);
+    assertEquals(4, url.cropRight);
+    assertEquals("/unsafe/2x1:4x3/a.com/b.png", url.buildUnsafe());
   }
 
   @Test public void testCropAndSmart() {
-    ThumborUri uri = new ThumborUri("a.com/b.png");
-    uri.crop(1, 2, 3, 4);
+    ThumborUrl url = new ThumborUrl("a.com/b.png");
+    url.crop(1, 2, 3, 4);
 
-    assertFalse(uri.isSmart);
-    uri.smart();
-    assertTrue(uri.isSmart);
-    assertEquals("/unsafe/2x1:4x3/smart/a.com/b.png", uri.buildUnsafe());
+    assertFalse(url.isSmart);
+    url.smart();
+    assertTrue(url.isSmart);
+    assertEquals("/unsafe/2x1:4x3/smart/a.com/b.png", url.buildUnsafe());
   }
 
   @Test public void testCannotFlipHorizontalWithoutResize() {
-    ThumborUri uri = new ThumborUri("");
-    assertFalse(uri.hasResize);
-    assertFalse(uri.flipHorizontally);
+    ThumborUrl url = new ThumborUrl("");
+    assertFalse(url.hasResize);
+    assertFalse(url.flipHorizontally);
     try {
-      uri.flipHorizontally();
+      url.flipHorizontally();
       fail("Allowed horizontal flip without resize.");
     } catch (IllegalStateException e) {
       // Pass.
     }
-    assertFalse(uri.flipHorizontally);
+    assertFalse(url.flipHorizontally);
   }
 
   @Test public void testCannotFlipVerticalWithoutResize() {
-    ThumborUri uri = new ThumborUri("");
-    assertFalse(uri.hasResize);
-    assertFalse(uri.flipVertically);
+    ThumborUrl url = new ThumborUrl("");
+    assertFalse(url.hasResize);
+    assertFalse(url.flipVertically);
     try {
-      uri.flipVertically();
+      url.flipVertically();
       fail("Allowed vertical flip without resize.");
     } catch (IllegalStateException e) {
       // Pass.
     }
-    assertFalse(uri.flipVertically);
+    assertFalse(url.flipVertically);
   }
 
   @Test public void testCannotFitInWithoutCrop() {
-    ThumborUri uri = new ThumborUri("");
-    assertFalse(uri.hasCrop);
-    assertFalse(uri.fitIn);
+    ThumborUrl url = new ThumborUrl("");
+    assertFalse(url.hasCrop);
+    assertFalse(url.fitIn);
     try {
-      uri.fitIn();
+      url.fitIn();
       fail("Allowed fit-in resize without resize.");
     } catch (IllegalStateException e) {
       // Pass.
     }
-    assertFalse(uri.fitIn);
+    assertFalse(url.fitIn);
   }
 
   @Test public void testCannotSmartWithoutCrop() {
-    ThumborUri uri = new ThumborUri("");
-    assertFalse(uri.hasCrop);
-    assertFalse(uri.isSmart);
+    ThumborUrl url = new ThumborUrl("");
+    assertFalse(url.hasCrop);
+    assertFalse(url.isSmart);
     try {
-      uri.smart();
+      url.smart();
       fail("Allowed smart crop without crop.");
     } catch (IllegalStateException e) {
       // Pass.
     }
-    assertFalse(uri.isSmart);
+    assertFalse(url.isSmart);
   }
 
   @Test public void testDoubleAlignmentMethodSetsBoth() {
-    ThumborUri uri = new ThumborUri("");
-    uri.crop(0, 0, 1, 1);
-    assertNull(uri.cropHorizontalAlign);
-    assertNull(uri.cropVerticalAlign);
-    uri.align(MIDDLE, CENTER);
-    assertEquals(CENTER, uri.cropHorizontalAlign);
-    assertEquals(MIDDLE, uri.cropVerticalAlign);
+    ThumborUrl url = new ThumborUrl("");
+    url.crop(0, 0, 1, 1);
+    assertNull(url.cropHorizontalAlign);
+    assertNull(url.cropVerticalAlign);
+    url.align(MIDDLE, CENTER);
+    assertEquals(CENTER, url.cropHorizontalAlign);
+    assertEquals(MIDDLE, url.cropVerticalAlign);
   }
 
   @Test public void testCannotAlignWithoutCrop() {
-    ThumborUri uri = new ThumborUri("");
-    assertFalse(uri.hasCrop);
-    assertNull(uri.cropHorizontalAlign);
+    ThumborUrl url = new ThumborUrl("");
+    assertFalse(url.hasCrop);
+    assertNull(url.cropHorizontalAlign);
 
     try {
-      uri.align(CENTER);
+      url.align(CENTER);
       fail("Allowed horizontal crop align without crop.");
     } catch (IllegalStateException e) {
       // Pass.
     }
 
     try {
-      uri.align(MIDDLE);
+      url.align(MIDDLE);
       fail("Allowed vertical crop align without crop.");
     } catch (IllegalStateException e) {
       // Pass.
@@ -202,45 +220,45 @@ public class ThumborUriTest {
   }
 
   @Test public void testCannotIssueBadCrop() {
-    ThumborUri uri = new ThumborUri("");
+    ThumborUrl url = new ThumborUrl("");
 
     try {
-      uri.crop(-1, 0, 1, 1);
+      url.crop(-1, 0, 1, 1);
       fail("Bad top value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.crop(0, -1, 1, 1);
+      url.crop(0, -1, 1, 1);
       fail("Bad left value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.crop(0, 0, -1, 1);
+      url.crop(0, 0, -1, 1);
       fail("Bad bottom value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.crop(0, 0, 1, -1);
+      url.crop(0, 0, 1, -1);
       fail("Bad right value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.crop(0, 1, 1, 0);
+      url.crop(0, 1, 1, 0);
       fail("Right value less than left value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.crop(1, 0, 0, 1);
+      url.crop(1, 0, 0, 1);
       fail("Bottom value less than top value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
@@ -248,17 +266,17 @@ public class ThumborUriTest {
   }
 
   @Test public void testCannotIssueBadResize() {
-    ThumborUri uri = new ThumborUri("");
+    ThumborUrl url = new ThumborUrl("");
 
     try {
-      uri.resize(0, 5);
+      url.resize(0, 5);
       fail("Bad width value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.resize(10, 0);
+      url.resize(10, 0);
       fail("Bad height value allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
@@ -282,19 +300,47 @@ public class ThumborUriTest {
   }
 
   @Test public void testCannotAddInvalidKey() {
-    ThumborUri uri = new ThumborUri("");
+    ThumborUrl url = new ThumborUrl("");
 
     try {
-      uri.key(null);
+      url.key(null);
       fail("Bad key string allowed.");
     } catch (IllegalArgumentException e) {
       // Pass.
     }
 
     try {
-      uri.key("");
+      url.key("");
       fail("Bad key string allowed.");
     } catch (IllegalArgumentException e) {
+      // Pass.
+    }
+  }
+
+  @Test public void testCannotAddInvalidHost() {
+    ThumborUrl url = new ThumborUrl("");
+
+    try {
+      url.host(null);
+      fail("Bad host string allowed.");
+    } catch (IllegalArgumentException e) {
+      // Pass.
+    }
+
+    try {
+      url.host("");
+      fail("Bad host string allowed.");
+    } catch (IllegalArgumentException e) {
+      // Pass.
+    }
+  }
+
+  @Test public void testCannotBuildSafeWithoutKey() {
+    ThumborUrl url = new ThumborUrl("");
+    try {
+      url.buildSafe();
+      fail(".buildSafe() succeeds without key.");
+    } catch (IllegalStateException e) {
       // Pass.
     }
   }
@@ -453,7 +499,7 @@ public class ThumborUriTest {
       // Pass.
     }
     try {
-      watermark((ThumborUri) null);
+      watermark((ThumborUrl) null);
       fail("Watermark allowed invalid value.");
     } catch (IllegalArgumentException e) {
       // Pass.

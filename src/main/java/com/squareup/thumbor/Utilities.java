@@ -1,14 +1,14 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.thumbor;
 
-import com.squareup.thumbor.ThumborUri.UnableToBuildException;
+import com.squareup.thumbor.ThumborUrl.UnableToBuildException;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 
 /**
- * Utility methods for {@link ThumborUri}.
+ * Utility methods for {@link ThumborUrl}.
  */
 final class Utilities {
   private Utilities() {

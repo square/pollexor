@@ -2,7 +2,7 @@ Thumbor Java Client by Square
 =============================
 
 Standalone Java client for the [Thumbor image service][1] which allows you to
-build URIs in an expressive fashion using the fluent pattern.
+build URLs in an expressive fashion using the fluent pattern.
 
 This library is also fully compatible with the Android platform.
 
@@ -41,6 +41,11 @@ build("http://example.com/image.png")
     .resize(48, 48)
     .key("super secret key")
 // Outputs: /ttdl3uu1vOdz7mxsjegdi6Q4iUuYq7IWPziAiW53Cff683quusS17Q-piahoiqd1/example.com/image.png
+
+build("http://example.com/image.png")
+    .resize(48, 48)
+    .host("http://me.com")
+// Outputs: http://me.com/unsafe/48x48/example.com/image.png
 ```
 
 

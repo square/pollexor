@@ -10,11 +10,11 @@ import static com.squareup.thumbor.Utilities.normalizeString;
 import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
 
 /**
- * Fluent interface to create a URI appropriate for passing to Thumbor.
+ * Fluent interface to create a URL appropriate for passing to Thumbor.
  *
  * @see #build(String)
  */
-public final class ThumborUri {
+public final class ThumborUrl {
   private static final String PREFIX_UNSAFE = "unsafe";
   private static final String PREFIX_META = "meta";
   private static final String PART_SMART = "smart";
@@ -57,7 +57,7 @@ public final class ThumborUri {
   }
 
   /**
-   * Exception denoting that a fatal error occurred while assembling the URI for the current configuration.
+   * Exception denoting that a fatal error occurred while assembling the URL for the current configuration.
    *
    * @see #getCause()
    */
@@ -68,6 +68,7 @@ public final class ThumborUri {
   }
 
   final String target;
+  String host = "";
   String key;
   boolean hasCrop = false;
   boolean hasResize = false;
@@ -86,38 +87,52 @@ public final class ThumborUri {
   List<String> filters;
 
   /**
-   * Start a new Thumbor URI configuration for the specified target image URL.
+   * Start a new Thumbor URL configuration for the specified target image URL.
    *
    * @param target Target image URL.
    */
-  ThumborUri(String target) {
+  ThumborUrl(String target) {
     this.target = stripProtocolAndParams(target);
   }
 
   /**
-   * Start building an image URI for Thumbor.
+   * Start building an image URL for Thumbor.
    *
    * @param target Target image to manipulate.
    * @return New instance for configuration.
    */
-  public static ThumborUri build(String target) {
+  public static ThumborUrl build(String target) {
     if (target == null || target.length() == 0) {
-      throw new IllegalArgumentException("Target image URI must not be blank.");
+      throw new IllegalArgumentException("Target image URL must not be blank.");
     }
-    return new ThumborUri(target);
+    return new ThumborUrl(target);
   }
 
   /**
-   * Set a key for secure URI generation. This will default the {@link #toString()} to call {@link #buildSafe()}.
+   * Set a key for secure URL generation. This will default the {@link #toString()} to call {@link #buildSafe()}.
    *
    * @param key Security key for remote server.
    * @return Current instance.
    */
-  public ThumborUri key(String key) {
+  public ThumborUrl key(String key) {
     if (key == null || key.length() == 0) {
       throw new IllegalArgumentException("Key must not be blank.");
     }
     this.key = key;
+    return this;
+  }
+
+  /**
+   * Set a host to prepend to URL for a full URL output.
+   *
+   * @param host Host name.
+   * @return Current instance.
+   */
+  public ThumborUrl host(String host) {
+    if (host == null || host.length() == 0) {
+      throw new IllegalArgumentException("Host must not be blank.");
+    }
+    this.host = host;
     return this;
   }
 
@@ -128,7 +143,7 @@ public final class ThumborUri {
    * @param height Desired height.
    * @return Current instance.
    */
-  public ThumborUri resize(int width, int height) {
+  public ThumborUrl resize(int width, int height) {
     if (width < 1) {
       throw new IllegalArgumentException("Width must be greater than zero.");
     }
@@ -146,7 +161,7 @@ public final class ThumborUri {
    *
    * @return Current instance.
    */
-  public ThumborUri flipHorizontally() {
+  public ThumborUrl flipHorizontally() {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to flip.");
     }
@@ -159,7 +174,7 @@ public final class ThumborUri {
    *
    * @return Current instance.
    */
-  public ThumborUri flipVertically() {
+  public ThumborUrl flipVertically() {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to flip.");
     }
@@ -172,7 +187,7 @@ public final class ThumborUri {
    *
    * @return Current instance.
    */
-  public ThumborUri fitIn() {
+  public ThumborUrl fitIn() {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to apply 'fit-in'.");
     }
@@ -189,7 +204,7 @@ public final class ThumborUri {
    * @param right Right bound.
    * @return Current instance.
    */
-  public ThumborUri crop(int top, int left, int bottom, int right) {
+  public ThumborUrl crop(int top, int left, int bottom, int right) {
     if (top < 0) {
       throw new IllegalArgumentException("Top must be greater or equal to zero.");
     }
@@ -216,7 +231,7 @@ public final class ThumborUri {
    * @param align Horizontal alignment.
    * @return Current instance.
    */
-  public ThumborUri align(HorizontalAlign align) {
+  public ThumborUrl align(HorizontalAlign align) {
     if (!hasCrop) {
       throw new IllegalStateException("Image must be cropped first in order to align.");
     }
@@ -230,7 +245,7 @@ public final class ThumborUri {
    * @param align Vertical alignment.
    * @return Current instance.
    */
-  public ThumborUri align(VerticalAlign align) {
+  public ThumborUrl align(VerticalAlign align) {
     if (!hasCrop) {
       throw new IllegalStateException("Image must be cropped first in order to align.");
     }
@@ -245,7 +260,7 @@ public final class ThumborUri {
    * @param halign Horizontal alignment.
    * @return Current instance.
    */
-  public ThumborUri align(VerticalAlign valign, HorizontalAlign halign) {
+  public ThumborUrl align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
   }
 
@@ -254,7 +269,7 @@ public final class ThumborUri {
    *
    * @return Current instance.
    */
-  public ThumborUri smart() {
+  public ThumborUrl smart() {
     if (!hasCrop) {
       throw new IllegalStateException("Image must be cropped first in order to smart align.");
     }
@@ -278,11 +293,11 @@ public final class ThumborUri {
    * @see #roundCorner(int, int, int)
    * @see #sharpen(float, float, boolean)
    * @see #watermark(String, int, int)
-   * @see #watermark(ThumborUri, int, int)
+   * @see #watermark(ThumborUrl, int, int)
    * @see #watermark(String, int, int, int)
-   * @see #watermark(ThumborUri, int, int, int)
+   * @see #watermark(ThumborUrl, int, int, int)
    */
-  public ThumborUri filter(String... filters) {
+  public ThumborUrl filter(String... filters) {
     if (filters.length == 0) {
       throw new IllegalArgumentException("You must provide at least one filter.");
     }
@@ -299,51 +314,51 @@ public final class ThumborUri {
   }
 
   /**
-   * Build an unsafe version of the URI.
+   * Build an unsafe version of the URL.
    *
-   * @return Unsafe URI for the current configuration.
+   * @return Unsafe URL for the current configuration.
    */
   public String buildUnsafe() {
-    return new StringBuilder("/") //
+    return new StringBuilder(host) //
+        .append("/") //
         .append(PREFIX_UNSAFE) //
         .append("/") //
         .append(assembleConfig()) //
-        .append("/") //
         .append(target) //
         .toString();
   }
 
   /**
-   * Build a safe version of the URI. Requires a prior call to {@link #key(String)}.
+   * Build a safe version of the URL. Requires a prior call to {@link #key(String)}.
    *
-   * @return Safe URI for the current configuration.
+   * @return Safe URL for the current configuration.
    */
   public String buildSafe() {
     if (key == null) {
-      throw new IllegalStateException("Cannot build safe URI without a key.");
+      throw new IllegalStateException("Cannot build safe URL without a key.");
     }
 
     // Assemble config and an MD5 of the target image.
-    StringBuilder config = assembleConfig().append("/").append(md5(target));
+    StringBuilder config = assembleConfig().append(md5(target));
     final byte[] encrypted = aes128Encrypt(config, normalizeString(key, 16));
 
-    // URI-safe Base64 encode.
+    // URL-safe Base64 encode.
     final String encoded = Utilities.base64Encode(encrypted);
 
-    return new StringBuilder("/").append(encoded).append("/").append(target).toString();
+    return new StringBuilder(host).append("/").append(encoded).append("/").append(target).toString();
   }
 
   /**
-   * Build a URI for fetching Thumbor metadata.
+   * Build a URL for fetching Thumbor metadata.
    *
-   * @return Meta URI for the current configuration.
+   * @return Meta URL for the current configuration.
    */
   public String buildMeta() {
-    return new StringBuilder("/") //
+    return new StringBuilder(host) //
+        .append("/") //
         .append(PREFIX_META) //
         .append("/") //
         .append(assembleConfig()) //
-        .append("/") //
         .append(target) //
         .toString();
   }
@@ -353,7 +368,7 @@ public final class ThumborUri {
   }
 
   /**
-   * Assembly the configuration section of the URI.
+   * Assembly the configuration section of the URL.
    *
    * @return Configuration assembled in a {@link StringBuilder}.
    */
@@ -361,7 +376,7 @@ public final class ThumborUri {
     StringBuilder builder = new StringBuilder();
 
     if (hasCrop) {
-      builder.append("/").append(cropLeft).append("x").append(cropTop) //
+      builder.append(cropLeft).append("x").append(cropTop) //
           .append(":").append(cropRight).append("x").append(cropBottom);
 
       if (isSmart) {
@@ -374,10 +389,10 @@ public final class ThumborUri {
           builder.append("/").append(cropVerticalAlign.value);
         }
       }
+      builder.append("/");
     }
 
     if (hasResize) {
-      builder.append("/");
       if (flipHorizontally) {
         builder.append("-");
       }
@@ -390,18 +405,17 @@ public final class ThumborUri {
       if (fitIn) {
         builder.append("/").append(PART_FIT_IN);
       }
+      builder.append("/");
     }
 
     if (filters != null) {
-      builder.append("/").append(PART_FILTERS);
+      builder.append(PART_FILTERS);
       for (String filter : filters) {
         builder.append(":").append(filter);
       }
+      builder.append("/");
     }
 
-    if (builder.length() > 0) {
-      builder.deleteCharAt(0);
-    }
     return builder;
   }
 
@@ -550,7 +564,7 @@ public final class ThumborUri {
    *              loader that Thumbor uses will be used here.
    * @return String representation of this filter.
    */
-  public static String watermark(ThumborUri image) {
+  public static String watermark(ThumborUrl image) {
     return watermark(image, 0, 0);
   }
 
@@ -580,9 +594,9 @@ public final class ThumborUri {
    *              from the top and negative numbers indicate position from the bottom.
    * @return String representation of this filter.
    */
-  public static String watermark(ThumborUri image, int x, int y) {
+  public static String watermark(ThumborUrl image, int x, int y) {
     if (image == null) {
-      throw new IllegalArgumentException("ThumborUri must not be null.");
+      throw new IllegalArgumentException("ThumborUrl must not be null.");
     }
     return watermark(image.toString(), x, y, 0);
   }
@@ -628,7 +642,7 @@ public final class ThumborUri {
    *                     and 100 (fully transparent).
    * @return String representation of this filter.
    */
-  public static String watermark(ThumborUri image, int x, int y, int transparency) {
+  public static String watermark(ThumborUrl image, int x, int y, int transparency) {
     return watermark(image.toString(), x, y, transparency);
   }
 
