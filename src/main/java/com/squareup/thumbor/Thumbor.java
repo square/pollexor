@@ -100,6 +100,7 @@ public final class Thumbor {
    *
    * @param target Target image to manipulate.
    * @return New instance for configuration.
+   * @throws IllegalArgumentException is {@code target} is blank.
    */
   public static Thumbor image(String target) {
     if (target == null || target.length() == 0) {
@@ -113,6 +114,7 @@ public final class Thumbor {
    *
    * @param key Security key for remote server.
    * @return Current instance.
+   * @throws IllegalArgumentException if {@code key} is blank.
    */
   public Thumbor key(String key) {
     if (key == null || key.length() == 0) {
@@ -127,6 +129,7 @@ public final class Thumbor {
    *
    * @param host Host name.
    * @return Current instance.
+   * @throws IllegalArgumentException if {@code host} is blank.
    */
   public Thumbor host(String host) {
     if (host == null || host.length() == 0) {
@@ -145,6 +148,7 @@ public final class Thumbor {
    * @param width  Desired width.
    * @param height Desired height.
    * @return Current instance.
+   * @throws IllegalArgumentException if {@code width} or {@code height} is less than 1.
    */
   public Thumbor resize(int width, int height) {
     if (width < 1) {
@@ -163,6 +167,7 @@ public final class Thumbor {
    * Flip the image horizontally.
    *
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public Thumbor flipHorizontally() {
     if (!hasResize) {
@@ -176,6 +181,7 @@ public final class Thumbor {
    * Flip the image vertically.
    *
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public Thumbor flipVertically() {
     if (!hasResize) {
@@ -189,6 +195,7 @@ public final class Thumbor {
    * Contrain the image size inside the resized box, scaling as needed.
    *
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public Thumbor fitIn() {
     if (!hasResize) {
@@ -201,11 +208,14 @@ public final class Thumbor {
   /**
    * Crop the image between two points.
    *
-   * @param top Top bound.
-   * @param left Left bound.
+   * @param top    Top bound.
+   * @param left   Left bound.
    * @param bottom Bottom bound.
-   * @param right Right bound.
+   * @param right  Right bound.
    * @return Current instance.
+   * @throws IllegalArgumentException if {@code top} or {@code left} are less than zero or {@code bottom} or
+   *                                  {@code right} are less than one or less than {@code top} or {@code left},
+   *                                  respectively.
    */
   public Thumbor crop(int top, int left, int bottom, int right) {
     if (top < 0) {
@@ -233,6 +243,7 @@ public final class Thumbor {
    *
    * @param align Horizontal alignment.
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public Thumbor align(HorizontalAlign align) {
     if (!hasCrop) {
@@ -247,6 +258,7 @@ public final class Thumbor {
    *
    * @param align Vertical alignment.
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public Thumbor align(VerticalAlign align) {
     if (!hasCrop) {
@@ -262,6 +274,7 @@ public final class Thumbor {
    * @param valign Vertical alignment.
    * @param halign Horizontal alignment.
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public Thumbor align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
@@ -271,6 +284,7 @@ public final class Thumbor {
    * Use smart cropping for determining the imortant portion of an image.
    *
    * @return Current instance.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public Thumbor smart() {
     if (!hasCrop) {
@@ -282,11 +296,12 @@ public final class Thumbor {
 
   /**
    * <p>Add one or more filters to the image.</p>
-   *
+   * <p/>
    * <p>If you have custom filters you can supply them as a string. (e.g. <code>"my_filter(1,2,3)</code>").</p>
    *
    * @param filters Filter strings.
    * @return Current instance.
+   * @throws IllegalArgumentException if no arguments supplied or an argument is {@code null}.
    * @see #brightness(int)
    * @see #contrast(int)
    * @see #fill(int)
@@ -337,6 +352,7 @@ public final class Thumbor {
    * Build a safe version of the URL. Requires a prior call to {@link #key(String)}.
    *
    * @return Safe URL for the current configuration.
+   * @throws IllegalStateException if key has not been set.
    */
   public String buildSafe() {
     if (key == null) {
@@ -432,6 +448,7 @@ public final class Thumbor {
    * @param amount -100 to 100 - The amount (in %) to change the image brightness. Positive numbers
    *               make the image brighter and negative numbers make the image darker.
    * @return String representation of this filter.
+   * @throws IllegalStateException if {@code amount} outside bounds.
    */
   public static String brightness(int amount) {
     if (amount < -100 || amount > 100) {
@@ -446,6 +463,7 @@ public final class Thumbor {
    * @param amount -100 to 100 - The amount (in %) to change the image contrast. Positive numbers
    *               increase contrast and negative numbers decrease contrast.
    * @return String representation of this filter.
+   * @throws IllegalStateException if {@code amount} outside bounds.
    */
   public static String contrast(int amount) {
     if (amount < -100 || amount > 100) {
@@ -459,6 +477,7 @@ public final class Thumbor {
    *
    * @param amount 0 to 100 - The amount (in %) of noise to add to the image.
    * @return String representation of this filter.
+   * @throws IllegalStateException if {@code amount} outside bounds.
    */
   public static String noise(int amount) {
     if (amount < 0 || amount > 100) {
@@ -472,6 +491,7 @@ public final class Thumbor {
    *
    * @param amount 0 to 100 - The quality level (in %) that the end image will feature.
    * @return String representation of this filter.
+   * @throws IllegalStateException if {@code amount} outside bounds.
    */
   public static String quality(int amount) {
     if (amount < 0 || amount > 100) {
@@ -487,6 +507,7 @@ public final class Thumbor {
    * @param g The amount of greenness in the picture. Can range from -100 to 100 in percentage.
    * @param b The amount of blueness in the picture. Can range from -100 to 100 in percentage.
    * @return String representation of this filter.
+   * @throws IllegalStateException if {@code r}, {@code g}, or {@code b} are outside of bounds.
    */
   public static String rgb(int r, int g, int b) {
     if (r < -100 || r > 100) {
@@ -506,7 +527,7 @@ public final class Thumbor {
   }
 
   /**
-   * This filter adds rounded corners to the image using the specified color as background.
+   * This filter adds rounded corners to the image using the white as the background.
    *
    * @param radius amount of pixels to use as radius.
    * @return String representation of this filter.
@@ -516,7 +537,7 @@ public final class Thumbor {
   }
 
   /**
-   * This filter adds rounded corners to the image using the specified color as background.
+   * This filter adds rounded corners to the image using the specified color as the background.
    *
    * @param radius amount of pixels to use as radius.
    * @param color  fill color for clipped region.
@@ -527,7 +548,7 @@ public final class Thumbor {
   }
 
   /**
-   * This filter adds rounded corners to the image using the specified color as background.
+   * This filter adds rounded corners to the image using the specified color as the background.
    *
    * @param radiusInner amount of pixels to use as radius.
    * @param radiusOuter specifies the second value for the ellipse used for the radius. Use 0 for
@@ -554,22 +575,24 @@ public final class Thumbor {
   }
 
   /**
-   * This filter adds a watermark to the image.
+   * This filter adds a watermark to the image at (0, 0).
    *
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
    *                 loader that Thumbor uses will be used here.
    * @return String representation of this filter.
+   * @throws IllegalArgumentException if {@code image} is blank.
    */
   public static String watermark(String imageUrl) {
     return watermark(imageUrl, 0, 0);
   }
 
   /**
-   * This filter adds a watermark to the image.
+   * This filter adds a watermark to the image at (0, 0).
    *
    * @param image Watermark image URL. It is very important to understand that the same image
    *              loader that Thumbor uses will be used here.
    * @return String representation of this filter.
+   * @throws IllegalArgumentException if {@code image} is null.
    */
   public static String watermark(Thumbor image) {
     return watermark(image, 0, 0);
@@ -585,6 +608,7 @@ public final class Thumbor {
    * @param y        Vertical position that the watermark will be in. Positive numbers indicate position
    *                 from the top and negative numbers indicate position from the bottom.
    * @return String representation of this filter.
+   * @throws IllegalArgumentException if {@code image} is blank.
    */
   public static String watermark(String imageUrl, int x, int y) {
     return watermark(imageUrl, x, y, 0);
@@ -600,6 +624,7 @@ public final class Thumbor {
    * @param y     Vertical position that the watermark will be in. Positive numbers indicate position
    *              from the top and negative numbers indicate position from the bottom.
    * @return String representation of this filter.
+   * @throws IllegalArgumentException if {@code image} is null.
    */
   public static String watermark(Thumbor image, int x, int y) {
     if (image == null) {
@@ -620,6 +645,7 @@ public final class Thumbor {
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    *                     and 100 (fully transparent).
    * @return String representation of this filter.
+   * @throws IllegalArgumentException if {@code image} is blank or {@code transparency} is outside bounds.
    */
   public static String watermark(String imageUrl, int x, int y, int transparency) {
     if (imageUrl == null || imageUrl.length() == 0) {
@@ -648,8 +674,12 @@ public final class Thumbor {
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    *                     and 100 (fully transparent).
    * @return String representation of this filter.
+   * @throws IllegalArgumentException if {@code image} is null.
    */
   public static String watermark(Thumbor image, int x, int y, int transparency) {
+    if (image == null) {
+      throw new IllegalArgumentException("Thumbor image must not be null.");
+    }
     return watermark(image.toString(), x, y, transparency);
   }
 
