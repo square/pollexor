@@ -28,9 +28,9 @@ public class ThumborUriTest {
     String actual = build("a.com/b.png")
         .crop(10, 10, 90, 90)
         .resize(40, 40)
-        .filter(watermark(
-            build("b.com/c.jpg").resize(20, 20), 10, 10))
-        .filter(roundCorner(5))
+        .filter(
+            watermark(build("b.com/c.jpg").resize(20, 20), 10, 10),
+            roundCorner(5))
         .buildUnsafe();
     assertEquals(expected, actual);
   }
@@ -40,9 +40,9 @@ public class ThumborUriTest {
     String actual = build("a.com/b.png")
         .crop(10, 10, 90, 90)
         .resize(40, 40)
-        .filter(watermark(
-            build("b.com/c.jpg").resize(20, 20), 10, 10))
-        .filter(roundCorner(5))
+        .filter(
+            watermark(build("b.com/c.jpg").resize(20, 20), 10, 10),
+            roundCorner(5))
         .key("test")
         .buildSafe();
     assertEquals(expected, actual);
