@@ -345,7 +345,12 @@ public final class ThumborUrl {
     // URL-safe Base64 encode.
     final String encoded = Utilities.base64Encode(encrypted);
 
-    return new StringBuilder(host).append("/").append(encoded).append("/").append(target).toString();
+    return new StringBuilder(host) //
+        .append("/") //
+        .append(encoded) //
+        .append("/") //
+        .append(target) //
+        .toString();
   }
 
   /**
