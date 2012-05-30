@@ -278,13 +278,15 @@ public final class Thumbor {
   }
 
   /**
-   * Add one or more filters to the image.
+   * <p>Add one or more filters to the image.</p>
+   *
+   * <p>If you have custom filters you can supply them as a string. (e.g. <code>"my_filter(1,2,3)</code>").</p>
    *
    * @param filters Filter strings.
    * @return Current instance.
    * @see #brightness(int)
    * @see #contrast(int)
-   * @see #fill
+   * @see #fill(int)
    * @see #noise(int)
    * @see #quality(int)
    * @see #rgb(int, int, int)
@@ -292,6 +294,8 @@ public final class Thumbor {
    * @see #roundCorner(int, int)
    * @see #roundCorner(int, int, int)
    * @see #sharpen(float, float, boolean)
+   * @see #watermark(String)
+   * @see #watermark(Thumbor)
    * @see #watermark(String, int, int)
    * @see #watermark(Thumbor, int, int)
    * @see #watermark(String, int, int, int)
