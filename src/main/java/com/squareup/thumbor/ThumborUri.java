@@ -15,6 +15,21 @@ import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
  * @see #build(String)
  */
 public final class ThumborUri {
+  private static final String PREFIX_UNSAFE = "unsafe";
+  private static final String PREFIX_META = "meta";
+  private static final String PART_SMART = "smart";
+  private static final String PART_FIT_IN = "fit-in";
+  private static final String PART_FILTERS = "filters";
+  private static final String FILTER_BRIGHTNESS = "brightness";
+  private static final String FILTER_CONTRAST = "contrast";
+  private static final String FILTER_NOISE = "noise";
+  private static final String FILTER_QUALITY = "quality";
+  private static final String FILTER_RGB = "rgb";
+  private static final String FILTER_ROUND_CORNER = "round_corner";
+  private static final String FILTER_WATERMARK = "watermark";
+  private static final String FILTER_SHARPEN = "sharpen";
+  private static final String FILTER_FILL = "fill";
+
   /**
    * Horizontal alignment for crop positioning.
    */
@@ -289,7 +304,13 @@ public final class ThumborUri {
    * @return Unsafe URI for the current configuration.
    */
   public String buildUnsafe() {
-    return new StringBuilder("/unsafe/").append(assembleConfig()).append("/").append(target).toString();
+    return new StringBuilder("/") //
+        .append(PREFIX_UNSAFE) //
+        .append("/") //
+        .append(assembleConfig()) //
+        .append("/") //
+        .append(target) //
+        .toString();
   }
 
   /**
@@ -318,7 +339,13 @@ public final class ThumborUri {
    * @return Meta URI for the current configuration.
    */
   public String buildMeta() {
-    return new StringBuilder("/meta/").append(assembleConfig()).append("/").append(target).toString();
+    return new StringBuilder("/") //
+        .append(PREFIX_META) //
+        .append("/") //
+        .append(assembleConfig()) //
+        .append("/") //
+        .append(target) //
+        .toString();
   }
 
   @Override public String toString() {
@@ -338,7 +365,7 @@ public final class ThumborUri {
           .append(":").append(cropRight).append("x").append(cropBottom);
 
       if (isSmart) {
-        builder.append("/smart");
+        builder.append("/").append(PART_SMART);
       } else {
         if (cropHorizontalAlign != null) {
           builder.append("/").append(cropHorizontalAlign.value);
@@ -361,12 +388,12 @@ public final class ThumborUri {
       builder.append(resizeHeight);
 
       if (fitIn) {
-        builder.append("/fit-in");
+        builder.append("/").append(PART_FIT_IN);
       }
     }
 
     if (filters != null) {
-      builder.append("/filters");
+      builder.append("/").append(PART_FILTERS);
       for (String filter : filters) {
         builder.append(":").append(filter);
       }
@@ -389,7 +416,7 @@ public final class ThumborUri {
     if (amount < -100 || amount > 100) {
       throw new IllegalArgumentException("Amount must be between -100 and 100, inclusive.");
     }
-    return new StringBuilder("brightness(").append(amount).append(")").toString();
+    return new StringBuilder(FILTER_BRIGHTNESS).append("(").append(amount).append(")").toString();
   }
 
   /**
@@ -403,7 +430,7 @@ public final class ThumborUri {
     if (amount < -100 || amount > 100) {
       throw new IllegalArgumentException("Amount must be between -100 and 100, inclusive.");
     }
-    return new StringBuilder("contrast(").append(amount).append(")").toString();
+    return new StringBuilder(FILTER_CONTRAST).append("(").append(amount).append(")").toString();
   }
 
   /**
@@ -416,7 +443,7 @@ public final class ThumborUri {
     if (amount < 0 || amount > 100) {
       throw new IllegalArgumentException("Amount must be between 0 and 100, inclusive");
     }
-    return new StringBuilder("noise(").append(amount).append(")").toString();
+    return new StringBuilder(FILTER_NOISE).append("(").append(amount).append(")").toString();
   }
 
   /**
@@ -429,7 +456,7 @@ public final class ThumborUri {
     if (amount < 0 || amount > 100) {
       throw new IllegalArgumentException("Amount must be between 0 and 100, inclusive.");
     }
-    return new StringBuilder("quality(").append(amount).append(")").toString();
+    return new StringBuilder(FILTER_QUALITY).append("(").append(amount).append(")").toString();
   }
 
   /**
@@ -450,7 +477,7 @@ public final class ThumborUri {
     if (b < -100 || b > 100) {
       throw new IllegalArgumentException("Blueness value must be between -100 and 100, inclusive.");
     }
-    return new StringBuilder("rgb(") //
+    return new StringBuilder(FILTER_RGB).append("(") //
         .append(r).append(",") //
         .append(g).append(",") //
         .append(b).append(")") //
@@ -494,7 +521,7 @@ public final class ThumborUri {
     if (radiusOuter < 0) {
       throw new IllegalArgumentException("Outer radius must be greater than or equal to zero.");
     }
-    StringBuilder builder = new StringBuilder("round_corner(").append(radiusInner);
+    StringBuilder builder = new StringBuilder(FILTER_ROUND_CORNER).append("(").append(radiusInner);
     if (radiusOuter > 0) {
       builder.append("|").append(radiusOuter);
     }
@@ -580,7 +607,7 @@ public final class ThumborUri {
     if (transparency < 0 || transparency > 100) {
       throw new IllegalArgumentException("Transparency must be between 0 and 100, inclusive.");
     }
-    return new StringBuilder("watermark(") //
+    return new StringBuilder(FILTER_WATERMARK).append("(") //
         .append(stripProtocolAndParams(imageUrl)).append(",") //
         .append(x).append(",") //
         .append(y).append(",") //
@@ -616,7 +643,7 @@ public final class ThumborUri {
    * @return String representation of this filter.
    */
   public static String sharpen(float amount, float radius, boolean luminanceOnly) {
-    return new StringBuilder("sharpen(") //
+    return new StringBuilder(FILTER_SHARPEN).append("(") //
         .append(amount).append(",") //
         .append(radius).append(",") //
         .append(luminanceOnly).append(")") //
@@ -632,6 +659,6 @@ public final class ThumborUri {
    */
   public static String fill(int color) {
     final String colorCode = Integer.toHexString(color & 0xFFFFFF); // Strip alpha
-    return new StringBuilder("fill(").append(colorCode).append(")").toString();
+    return new StringBuilder(FILTER_FILL).append("(").append(colorCode).append(")").toString();
   }
 }
