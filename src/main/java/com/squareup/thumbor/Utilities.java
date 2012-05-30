@@ -25,6 +25,9 @@ final class Utilities {
    * @return Encoded string.
    */
   public static String base64Encode(byte[] bytes) {
+    if (bytes == null) {
+      throw new IllegalArgumentException("Input bytes must not be null.");
+    }
 
     // Every three bytes is encoded into four characters.
     //
@@ -72,6 +75,10 @@ final class Utilities {
    * @return Stripped URL.
    */
   static String stripProtocolAndParams(String url) {
+    if (url == null) {
+      return null;
+    }
+
     final int length = url.length();
 
     int start = 0;
@@ -102,7 +109,7 @@ final class Utilities {
    * @param multipleOf Number which the length must be a multiple of.
    */
   static void rightPadString(StringBuilder builder, char padding, int multipleOf) {
-    if (builder == null || builder.length() == 0) {
+    if (builder == null) {
       throw new IllegalArgumentException("Builder input must not be empty.");
     }
     if (multipleOf < 2) {
@@ -127,7 +134,7 @@ final class Utilities {
     if (string == null || string.length() == 0) {
       throw new IllegalArgumentException("Must supply a non-null, non-empty string.");
     }
-    if (desiredLength < 0) {
+    if (desiredLength <= 0) {
       throw new IllegalArgumentException("Desired length must be greater than zero.");
     }
     if (string.length() >= desiredLength) {
@@ -148,6 +155,9 @@ final class Utilities {
    * @return Hash of input.
    */
   static String md5(String input) {
+    if (input == null || input.length() == 0) {
+      throw new IllegalArgumentException("Input string must not be blank.");
+    }
     try {
       MessageDigest algorithm = MessageDigest.getInstance("MD5");
       algorithm.reset();
