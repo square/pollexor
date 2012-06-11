@@ -13,19 +13,19 @@ Examples
 ```java
 image("http://example.com/image.png")
     .resize(48, 48)
-// Outputs: /unsafe/48x48/example.com/image.png
+// Produces: /unsafe/48x48/example.com/image.png
 
 image("http://example.com/image.png")
     .crop(10, 10, 90, 90)
     .resize(40, 40)
     .smart()
-// Outputs: /unsafe/10x10:90x90/smart/40x40/example.com/image.png
+// Produces: /unsafe/10x10:90x90/smart/40x40/example.com/image.png
 
 image("http://example.com/image.png")
     .crop(5, 5, 195, 195)
     .resize(95, 95)
     .align(BOTTOM, RIGHT)
-// Outputs: /unsafe/5x5:195x195/right/bottom/95x95/example.com/image.png
+// Produces: /unsafe/5x5:195x195/right/bottom/95x95/example.com/image.png
 
 image("http://example.com/background.png")
     .resize(200, 100)
@@ -35,17 +35,17 @@ image("http://example.com/background.png")
         watermark(image("http://example.com/overlay2.png").resize(50, 50), 75, 25),
         quality(85)
     )
-// Outputs: /unsafe/200x100/filters:round_corner(10,255,255,255):watermark(/unsafe/200x100/example.com/overlay1.png,0,0,0):watermark(/unsafe/50x50/example.com/overlay2.png,75,25,0):quality(85)/example.com/background.png
+// Produces: /unsafe/200x100/filters:round_corner(10,255,255,255):watermark(/unsafe/200x100/example.com/overlay1.png,0,0,0):watermark(/unsafe/50x50/example.com/overlay2.png,75,25,0):quality(85)/example.com/background.png
 
 image("http://example.com/image.png")
     .resize(48, 48)
     .key("super secret key")
-// Outputs: /ttdl3uu1vOdz7mxsjegdi6Q4iUuYq7IWPziAiW53Cff683quusS17Q-piahoiqd1/example.com/image.png
+// Produces: /ttdl3uu1vOdz7mxsjegdi6Q4iUuYq7IWPziAiW53Cff683quusS17Q-piahoiqd1/example.com/image.png
 
 image("http://example.com/image.png")
     .resize(48, 48)
     .host("http://me.com")
-// Outputs: http://me.com/unsafe/48x48/example.com/image.png
+// Produces: http://me.com/unsafe/48x48/example.com/image.png
 ```
 
 
