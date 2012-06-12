@@ -4,11 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+    <!-- Disabled during internal distribution phase. -->
+    <!--<parent>-->
+        <!--<groupId>org.sonatype.oss</groupId>-->
+        <!--<artifactId>oss-parent</artifactId>-->
+        <!--<version>7</version>-->
+    <!--</parent>-->
 
     <groupId>com.squareup</groupId>
     <artifactId>thumbor-client</artifactId>
@@ -20,10 +21,23 @@
     <inceptionYear>2012</inceptionYear>
 
     <scm>
-        <url>http://github.com/square/thumbor-java</url>
-        <connection>scm:git:git://github.com/square/thumbor-java.git</connection>
-        <developerConnection>scg:git:git@github.com:square/thumbor-java.git</developerConnection>
+        <url>http://git.squareup.com/jw/thumbor-java</url>
+        <connection>scm:git:git://git.squareup.com/jw/thumbor-java.git</connection>
+        <developerConnection>scg:git:git@git.squareup.com:jw/thumbor-java.git</developerConnection>
     </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>square-nexus-staging</id>
+            <name>Square Staging Repository</name>
+            <url>http://mirrors.squareup.com/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>square-nexus</id>
+            <name>Square Release Repository</name>
+            <url>http://mirrors.squareup.com/nexus/content/repositories/releases</url>
+        </repository>
+    </distributionManagement>
 
     <organization>
         <name>Square, Inc.</name>
