@@ -13,7 +13,7 @@
     <groupId>com.squareup</groupId>
     <artifactId>thumbor-client</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.1</version>
 
     <name>Thumbor Client</name>
     <description>Pure Java client for the Thumbor image service which allows you to build URIs in an expressive fashion using the fluent pattern.</description>
