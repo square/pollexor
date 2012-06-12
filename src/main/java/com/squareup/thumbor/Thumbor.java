@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.squareup.thumbor.Utilities.aes128Encrypt;
+import static com.squareup.thumbor.Utilities.base64Encode;
 import static com.squareup.thumbor.Utilities.md5;
 import static com.squareup.thumbor.Utilities.normalizeString;
 import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
@@ -62,6 +63,10 @@ public final class Thumbor {
    * @see #getCause()
    */
   public static class UnableToBuildException extends RuntimeException {
+    public UnableToBuildException(String reason) {
+      super(reason);
+    }
+
     public UnableToBuildException(Throwable e) {
       super(e);
     }
@@ -100,11 +105,11 @@ public final class Thumbor {
    *
    * @param target Target image to manipulate.
    * @return New instance for configuration.
-   * @throws IllegalArgumentException is {@code target} is blank.
+   * @throws UnableToBuildException is {@code target} is blank.
    */
   public static Thumbor image(String target) {
     if (target == null || target.length() == 0) {
-      throw new IllegalArgumentException("Target image URL must not be blank.");
+      throw new UnableToBuildException("Target image URL must not be blank.");
     }
     return new Thumbor(target);
   }
@@ -114,11 +119,11 @@ public final class Thumbor {
    *
    * @param key Security key for remote server.
    * @return Current instance.
-   * @throws IllegalArgumentException if {@code key} is blank.
+   * @throws UnableToBuildException if {@code key} is blank.
    */
   public Thumbor key(String key) {
     if (key == null || key.length() == 0) {
-      throw new IllegalArgumentException("Key must not be blank.");
+      throw new UnableToBuildException("Key must not be blank.");
     }
     this.key = key;
     return this;
@@ -129,11 +134,11 @@ public final class Thumbor {
    *
    * @param host Host name.
    * @return Current instance.
-   * @throws IllegalArgumentException if {@code host} is blank.
+   * @throws UnableToBuildException if {@code host} is blank.
    */
   public Thumbor host(String host) {
     if (host == null || host.length() == 0) {
-      throw new IllegalArgumentException("Host must not be blank.");
+      throw new UnableToBuildException("Host must not be blank.");
     }
     if (!host.endsWith("/")) {
       host += "/";
@@ -148,14 +153,14 @@ public final class Thumbor {
    * @param width  Desired width.
    * @param height Desired height.
    * @return Current instance.
-   * @throws IllegalArgumentException if {@code width} or {@code height} is less than 1.
+   * @throws UnableToBuildException if {@code width} or {@code height} is less than 1.
    */
   public Thumbor resize(int width, int height) {
     if (width < 1) {
-      throw new IllegalArgumentException("Width must be greater than zero.");
+      throw new UnableToBuildException("Width must be greater than zero.");
     }
     if (height < 1) {
-      throw new IllegalArgumentException("Height must be greater than zero.");
+      throw new UnableToBuildException("Height must be greater than zero.");
     }
     hasResize = true;
     resizeWidth = width;
@@ -167,11 +172,11 @@ public final class Thumbor {
    * Flip the image horizontally.
    *
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for resize.
+   * @throws UnableToBuildException if image has not been marked for resize.
    */
   public Thumbor flipHorizontally() {
     if (!hasResize) {
-      throw new IllegalStateException("Image must be resized first in order to flip.");
+      throw new UnableToBuildException("Image must be resized first in order to flip.");
     }
     flipHorizontally = true;
     return this;
@@ -181,11 +186,11 @@ public final class Thumbor {
    * Flip the image vertically.
    *
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for resize.
+   * @throws UnableToBuildException if image has not been marked for resize.
    */
   public Thumbor flipVertically() {
     if (!hasResize) {
-      throw new IllegalStateException("Image must be resized first in order to flip.");
+      throw new UnableToBuildException("Image must be resized first in order to flip.");
     }
     flipVertically = true;
     return this;
@@ -195,11 +200,11 @@ public final class Thumbor {
    * Contrain the image size inside the resized box, scaling as needed.
    *
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for resize.
+   * @throws UnableToBuildException if image has not been marked for resize.
    */
   public Thumbor fitIn() {
     if (!hasResize) {
-      throw new IllegalStateException("Image must be resized first in order to apply 'fit-in'.");
+      throw new UnableToBuildException("Image must be resized first in order to apply 'fit-in'.");
     }
     fitIn = true;
     return this;
@@ -213,22 +218,22 @@ public final class Thumbor {
    * @param bottom Bottom bound.
    * @param right  Right bound.
    * @return Current instance.
-   * @throws IllegalArgumentException if {@code top} or {@code left} are less than zero or {@code bottom} or
-   *                                  {@code right} are less than one or less than {@code top} or {@code left},
-   *                                  respectively.
+   * @throws UnableToBuildException if {@code top} or {@code left} are less than zero or {@code bottom} or
+   *                                {@code right} are less than one or less than {@code top} or {@code left},
+   *                                respectively.
    */
   public Thumbor crop(int top, int left, int bottom, int right) {
     if (top < 0) {
-      throw new IllegalArgumentException("Top must be greater or equal to zero.");
+      throw new UnableToBuildException("Top must be greater or equal to zero.");
     }
     if (left < 0) {
-      throw new IllegalArgumentException("Left must be greater or equal to zero.");
+      throw new UnableToBuildException("Left must be greater or equal to zero.");
     }
     if (bottom < 1 || bottom <= top) {
-      throw new IllegalArgumentException("Bottom must be greater than zero and top.");
+      throw new UnableToBuildException("Bottom must be greater than zero and top.");
     }
     if (right < 1 || right <= left) {
-      throw new IllegalArgumentException("Right must be greater than zero and left.");
+      throw new UnableToBuildException("Right must be greater than zero and left.");
     }
     hasCrop = true;
     cropTop = top;
@@ -243,11 +248,11 @@ public final class Thumbor {
    *
    * @param align Horizontal alignment.
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor align(HorizontalAlign align) {
     if (!hasCrop) {
-      throw new IllegalStateException("Image must be cropped first in order to align.");
+      throw new UnableToBuildException("Image must be cropped first in order to align.");
     }
     cropHorizontalAlign = align;
     return this;
@@ -258,11 +263,11 @@ public final class Thumbor {
    *
    * @param align Vertical alignment.
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor align(VerticalAlign align) {
     if (!hasCrop) {
-      throw new IllegalStateException("Image must be cropped first in order to align.");
+      throw new UnableToBuildException("Image must be cropped first in order to align.");
     }
     cropVerticalAlign = align;
     return this;
@@ -274,7 +279,7 @@ public final class Thumbor {
    * @param valign Vertical alignment.
    * @param halign Horizontal alignment.
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
@@ -284,11 +289,11 @@ public final class Thumbor {
    * Use smart cropping for determining the imortant portion of an image.
    *
    * @return Current instance.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor smart() {
     if (!hasCrop) {
-      throw new IllegalStateException("Image must be cropped first in order to smart align.");
+      throw new UnableToBuildException("Image must be cropped first in order to smart align.");
     }
     isSmart = true;
     return this;
@@ -301,7 +306,7 @@ public final class Thumbor {
    *
    * @param filters Filter strings.
    * @return Current instance.
-   * @throws IllegalArgumentException if no arguments supplied or an argument is {@code null}.
+   * @throws UnableToBuildException if no arguments supplied or an argument is {@code null}.
    * @see #brightness(int)
    * @see #contrast(int)
    * @see #fill(int)
@@ -321,14 +326,14 @@ public final class Thumbor {
    */
   public Thumbor filter(String... filters) {
     if (filters.length == 0) {
-      throw new IllegalArgumentException("You must provide at least one filter.");
+      throw new UnableToBuildException("You must provide at least one filter.");
     }
     if (this.filters == null) {
       this.filters = new ArrayList<String>(1);
     }
     for (String filter : filters) {
       if (filter == null || filter.length() == 0) {
-        throw new IllegalArgumentException("Filter must not be blank.");
+        throw new UnableToBuildException("Filter must not be blank.");
       }
       this.filters.add(filter);
     }
@@ -352,25 +357,29 @@ public final class Thumbor {
    * Build a safe version of the URL. Requires a prior call to {@link #key(String)}.
    *
    * @return Safe URL for the current configuration.
-   * @throws IllegalStateException if key has not been set.
+   * @throws UnableToBuildException if key has not been set.
    */
   public String buildSafe() {
     if (key == null) {
-      throw new IllegalStateException("Cannot build safe URL without a key.");
+      throw new UnableToBuildException("Cannot build safe URL without a key.");
     }
 
-    // Assemble config and an MD5 of the target image.
-    StringBuilder config = assembleConfig().append(md5(target));
-    final byte[] encrypted = aes128Encrypt(config, normalizeString(key, 16));
+    try {
+      // Assemble config and an MD5 of the target image.
+      StringBuilder config = assembleConfig().append(md5(target));
+      final byte[] encrypted = aes128Encrypt(config, normalizeString(key, 16));
 
-    // URL-safe Base64 encode.
-    final String encoded = Utilities.base64Encode(encrypted);
+      // URL-safe Base64 encode.
+      final String encoded = base64Encode(encrypted);
 
-    return new StringBuilder(host) //
-        .append(encoded) //
-        .append("/") //
-        .append(target) //
-        .toString();
+      return new StringBuilder(host) //
+          .append(encoded) //
+          .append("/") //
+          .append(target) //
+          .toString();
+    } catch (IllegalArgumentException e) {
+      throw new UnableToBuildException(e);
+    }
   }
 
   /**
@@ -448,11 +457,11 @@ public final class Thumbor {
    * @param amount -100 to 100 - The amount (in %) to change the image brightness. Positive numbers
    *               make the image brighter and negative numbers make the image darker.
    * @return String representation of this filter.
-   * @throws IllegalStateException if {@code amount} outside bounds.
+   * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String brightness(int amount) {
     if (amount < -100 || amount > 100) {
-      throw new IllegalArgumentException("Amount must be between -100 and 100, inclusive.");
+      throw new UnableToBuildException("Amount must be between -100 and 100, inclusive.");
     }
     return new StringBuilder(FILTER_BRIGHTNESS).append("(").append(amount).append(")").toString();
   }
@@ -463,11 +472,11 @@ public final class Thumbor {
    * @param amount -100 to 100 - The amount (in %) to change the image contrast. Positive numbers
    *               increase contrast and negative numbers decrease contrast.
    * @return String representation of this filter.
-   * @throws IllegalStateException if {@code amount} outside bounds.
+   * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String contrast(int amount) {
     if (amount < -100 || amount > 100) {
-      throw new IllegalArgumentException("Amount must be between -100 and 100, inclusive.");
+      throw new UnableToBuildException("Amount must be between -100 and 100, inclusive.");
     }
     return new StringBuilder(FILTER_CONTRAST).append("(").append(amount).append(")").toString();
   }
@@ -477,11 +486,11 @@ public final class Thumbor {
    *
    * @param amount 0 to 100 - The amount (in %) of noise to add to the image.
    * @return String representation of this filter.
-   * @throws IllegalStateException if {@code amount} outside bounds.
+   * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String noise(int amount) {
     if (amount < 0 || amount > 100) {
-      throw new IllegalArgumentException("Amount must be between 0 and 100, inclusive");
+      throw new UnableToBuildException("Amount must be between 0 and 100, inclusive");
     }
     return new StringBuilder(FILTER_NOISE).append("(").append(amount).append(")").toString();
   }
@@ -491,11 +500,11 @@ public final class Thumbor {
    *
    * @param amount 0 to 100 - The quality level (in %) that the end image will feature.
    * @return String representation of this filter.
-   * @throws IllegalStateException if {@code amount} outside bounds.
+   * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String quality(int amount) {
     if (amount < 0 || amount > 100) {
-      throw new IllegalArgumentException("Amount must be between 0 and 100, inclusive.");
+      throw new UnableToBuildException("Amount must be between 0 and 100, inclusive.");
     }
     return new StringBuilder(FILTER_QUALITY).append("(").append(amount).append(")").toString();
   }
@@ -507,17 +516,17 @@ public final class Thumbor {
    * @param g The amount of greenness in the picture. Can range from -100 to 100 in percentage.
    * @param b The amount of blueness in the picture. Can range from -100 to 100 in percentage.
    * @return String representation of this filter.
-   * @throws IllegalStateException if {@code r}, {@code g}, or {@code b} are outside of bounds.
+   * @throws UnableToBuildException if {@code r}, {@code g}, or {@code b} are outside of bounds.
    */
   public static String rgb(int r, int g, int b) {
     if (r < -100 || r > 100) {
-      throw new IllegalArgumentException("Redness value must be between -100 and 100, inclusive.");
+      throw new UnableToBuildException("Redness value must be between -100 and 100, inclusive.");
     }
     if (g < -100 || g > 100) {
-      throw new IllegalArgumentException("Greenness value must be between -100 and 100, inclusive.");
+      throw new UnableToBuildException("Greenness value must be between -100 and 100, inclusive.");
     }
     if (b < -100 || b > 100) {
-      throw new IllegalArgumentException("Blueness value must be between -100 and 100, inclusive.");
+      throw new UnableToBuildException("Blueness value must be between -100 and 100, inclusive.");
     }
     return new StringBuilder(FILTER_RGB).append("(") //
         .append(r).append(",") //
@@ -558,10 +567,10 @@ public final class Thumbor {
    */
   public static String roundCorner(int radiusInner, int radiusOuter, int color) {
     if (radiusInner < 1) {
-      throw new IllegalArgumentException("Radius must be greater than zero.");
+      throw new UnableToBuildException("Radius must be greater than zero.");
     }
     if (radiusOuter < 0) {
-      throw new IllegalArgumentException("Outer radius must be greater than or equal to zero.");
+      throw new UnableToBuildException("Outer radius must be greater than or equal to zero.");
     }
     StringBuilder builder = new StringBuilder(FILTER_ROUND_CORNER).append("(").append(radiusInner);
     if (radiusOuter > 0) {
@@ -580,7 +589,7 @@ public final class Thumbor {
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
    *                 loader that Thumbor uses will be used here.
    * @return String representation of this filter.
-   * @throws IllegalArgumentException if {@code image} is blank.
+   * @throws UnableToBuildException if {@code image} is blank.
    */
   public static String watermark(String imageUrl) {
     return watermark(imageUrl, 0, 0);
@@ -592,7 +601,7 @@ public final class Thumbor {
    * @param image Watermark image URL. It is very important to understand that the same image
    *              loader that Thumbor uses will be used here.
    * @return String representation of this filter.
-   * @throws IllegalArgumentException if {@code image} is null.
+   * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Thumbor image) {
     return watermark(image, 0, 0);
@@ -608,7 +617,7 @@ public final class Thumbor {
    * @param y        Vertical position that the watermark will be in. Positive numbers indicate position
    *                 from the top and negative numbers indicate position from the bottom.
    * @return String representation of this filter.
-   * @throws IllegalArgumentException if {@code image} is blank.
+   * @throws UnableToBuildException if {@code image} is blank.
    */
   public static String watermark(String imageUrl, int x, int y) {
     return watermark(imageUrl, x, y, 0);
@@ -624,11 +633,11 @@ public final class Thumbor {
    * @param y     Vertical position that the watermark will be in. Positive numbers indicate position
    *              from the top and negative numbers indicate position from the bottom.
    * @return String representation of this filter.
-   * @throws IllegalArgumentException if {@code image} is null.
+   * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Thumbor image, int x, int y) {
     if (image == null) {
-      throw new IllegalArgumentException("Thumbor image must not be null.");
+      throw new UnableToBuildException("Thumbor image must not be null.");
     }
     return watermark(image.toString(), x, y, 0);
   }
@@ -645,14 +654,14 @@ public final class Thumbor {
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    *                     and 100 (fully transparent).
    * @return String representation of this filter.
-   * @throws IllegalArgumentException if {@code image} is blank or {@code transparency} is outside bounds.
+   * @throws UnableToBuildException if {@code image} is blank or {@code transparency} is outside bounds.
    */
   public static String watermark(String imageUrl, int x, int y, int transparency) {
     if (imageUrl == null || imageUrl.length() == 0) {
-      throw new IllegalArgumentException("Image URL must not be blank.");
+      throw new UnableToBuildException("Image URL must not be blank.");
     }
     if (transparency < 0 || transparency > 100) {
-      throw new IllegalArgumentException("Transparency must be between 0 and 100, inclusive.");
+      throw new UnableToBuildException("Transparency must be between 0 and 100, inclusive.");
     }
     return new StringBuilder(FILTER_WATERMARK).append("(") //
         .append(stripProtocolAndParams(imageUrl)).append(",") //
@@ -674,11 +683,11 @@ public final class Thumbor {
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    *                     and 100 (fully transparent).
    * @return String representation of this filter.
-   * @throws IllegalArgumentException if {@code image} is null.
+   * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Thumbor image, int x, int y, int transparency) {
     if (image == null) {
-      throw new IllegalArgumentException("Thumbor image must not be null.");
+      throw new UnableToBuildException("Thumbor image must not be null.");
     }
     return watermark(image.toString(), x, y, transparency);
   }
