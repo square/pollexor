@@ -105,8 +105,7 @@ public final class Thumbor {
    * Start building an image URL for Thumbor.
    *
    * @param target Target image to manipulate.
-   * @return New instance for configuration.
-   * @throws UnableToBuildException is {@code target} is blank.
+   * @throws UnableToBuildException if {@code target} is blank.
    */
   public static Thumbor image(String target) {
     if (target == null || target.length() == 0) {
@@ -120,7 +119,6 @@ public final class Thumbor {
    * URLs.
    *
    * @param key Security key for remote server.
-   * @return Current instance.
    * @throws UnableToBuildException if {@code key} is blank.
    */
   public Thumbor key(String key) {
@@ -135,7 +133,6 @@ public final class Thumbor {
    * Set a host to prepend to URL for a full URL output.
    *
    * @param host Host name.
-   * @return Current instance.
    * @throws UnableToBuildException if {@code host} is blank.
    */
   public Thumbor host(String host) {
@@ -154,7 +151,6 @@ public final class Thumbor {
    *
    * @param width  Desired width.
    * @param height Desired height.
-   * @return Current instance.
    * @throws UnableToBuildException if {@code width} or {@code height} is less than 1.
    */
   public Thumbor resize(int width, int height) {
@@ -173,7 +169,6 @@ public final class Thumbor {
   /**
    * Flip the image horizontally.
    *
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for resize.
    */
   public Thumbor flipHorizontally() {
@@ -187,7 +182,6 @@ public final class Thumbor {
   /**
    * Flip the image vertically.
    *
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for resize.
    */
   public Thumbor flipVertically() {
@@ -201,7 +195,6 @@ public final class Thumbor {
   /**
    * Contrain the image size inside the resized box, scaling as needed.
    *
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for resize.
    */
   public Thumbor fitIn() {
@@ -219,7 +212,6 @@ public final class Thumbor {
    * @param left   Left bound.
    * @param bottom Bottom bound.
    * @param right  Right bound.
-   * @return Current instance.
    * @throws UnableToBuildException if {@code top} or {@code left} are less than zero or {@code bottom} or
    *                                {@code right} are less than one or less than {@code top} or {@code left},
    *                                respectively.
@@ -249,7 +241,6 @@ public final class Thumbor {
    * Set the horizontal alignment for the image when cropping.
    *
    * @param align Horizontal alignment.
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor align(HorizontalAlign align) {
@@ -264,7 +255,6 @@ public final class Thumbor {
    * Set the vertical alignment for the image when cropping.
    *
    * @param align Vertical alignment.
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor align(VerticalAlign align) {
@@ -280,7 +270,6 @@ public final class Thumbor {
    *
    * @param valign Vertical alignment.
    * @param halign Horizontal alignment.
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor align(VerticalAlign valign, HorizontalAlign halign) {
@@ -290,7 +279,6 @@ public final class Thumbor {
   /**
    * Use smart cropping for determining the important portion of an image.
    *
-   * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
   public Thumbor smart() {
@@ -303,8 +291,6 @@ public final class Thumbor {
 
   /**
    * Use legacy encryption when constructing a safe URL.
-   *
-   * @return Current instance.
    */
   public Thumbor legacy() {
     isLegacy = true;
@@ -317,7 +303,6 @@ public final class Thumbor {
    * <p>If you have custom filters you can supply them as a string. (e.g. <code>"my_filter(1,2,3)</code>").</p>
    *
    * @param filters Filter strings.
-   * @return Current instance.
    * @throws UnableToBuildException if no arguments supplied or an argument is {@code null}.
    * @see #brightness(int)
    * @see #contrast(int)
@@ -403,7 +388,7 @@ public final class Thumbor {
    * Build the metadata URL. This will either call {@link #toMetaSafe()} or {@link #toMetaUnsafe()} depending on whether
    * {@link #key(String)} was set.
    *
-   * @return Meta URL for the current configuration.
+   * @throws UnableToBuildException
    */
   public String toMeta() {
     return (key == null) ? toMetaUnsafe() : toMetaSafe();
@@ -442,9 +427,7 @@ public final class Thumbor {
   }
 
   /**
-   * Assembly the configuration section of the URL.
-   *
-   * @return Configuration assembled in a {@link StringBuilder}.
+   * Assemble the configuration section of the URL.
    */
   StringBuilder assembleConfig(boolean meta) {
     StringBuilder builder = new StringBuilder();
@@ -504,7 +487,6 @@ public final class Thumbor {
    *
    * @param amount -100 to 100 - The amount (in %) to change the image brightness. Positive numbers
    *               make the image brighter and negative numbers make the image darker.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String brightness(int amount) {
@@ -519,7 +501,6 @@ public final class Thumbor {
    *
    * @param amount -100 to 100 - The amount (in %) to change the image contrast. Positive numbers
    *               increase contrast and negative numbers decrease contrast.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String contrast(int amount) {
@@ -533,7 +514,6 @@ public final class Thumbor {
    * This filter adds noise to the image.
    *
    * @param amount 0 to 100 - The amount (in %) of noise to add to the image.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String noise(int amount) {
@@ -547,7 +527,6 @@ public final class Thumbor {
    * This filter changes the overall quality of the JPEG image (does nothing for PNGs or GIFs).
    *
    * @param amount 0 to 100 - The quality level (in %) that the end image will feature.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String quality(int amount) {
@@ -563,7 +542,6 @@ public final class Thumbor {
    * @param r The amount of redness in the picture. Can range from -100 to 100 in percentage.
    * @param g The amount of greenness in the picture. Can range from -100 to 100 in percentage.
    * @param b The amount of blueness in the picture. Can range from -100 to 100 in percentage.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code r}, {@code g}, or {@code b} are outside of bounds.
    */
   public static String rgb(int r, int g, int b) {
@@ -587,7 +565,6 @@ public final class Thumbor {
    * This filter adds rounded corners to the image using the white as the background.
    *
    * @param radius amount of pixels to use as radius.
-   * @return String representation of this filter.
    */
   public static String roundCorner(int radius) {
     return roundCorner(radius, 0xFFFFFF);
@@ -598,7 +575,6 @@ public final class Thumbor {
    *
    * @param radius amount of pixels to use as radius.
    * @param color  fill color for clipped region.
-   * @return String representation of this filter.
    */
   public static String roundCorner(int radius, int color) {
     return roundCorner(radius, 0, color);
@@ -611,7 +587,6 @@ public final class Thumbor {
    * @param radiusOuter specifies the second value for the ellipse used for the radius. Use 0 for
    *                    no value.
    * @param color       fill color for clipped region.
-   * @return String representation of this filter.
    */
   public static String roundCorner(int radiusInner, int radiusOuter, int color) {
     if (radiusInner < 1) {
@@ -636,7 +611,6 @@ public final class Thumbor {
    *
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
    *                 loader that Thumbor uses will be used here.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code image} is blank.
    */
   public static String watermark(String imageUrl) {
@@ -648,7 +622,6 @@ public final class Thumbor {
    *
    * @param image Watermark image URL. It is very important to understand that the same image
    *              loader that Thumbor uses will be used here.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Thumbor image) {
@@ -664,7 +637,6 @@ public final class Thumbor {
    *                 from the left and negative numbers indicate position from the right.
    * @param y        Vertical position that the watermark will be in. Positive numbers indicate position
    *                 from the top and negative numbers indicate position from the bottom.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code image} is blank.
    */
   public static String watermark(String imageUrl, int x, int y) {
@@ -680,7 +652,6 @@ public final class Thumbor {
    *              from the left and negative numbers indicate position from the right.
    * @param y     Vertical position that the watermark will be in. Positive numbers indicate position
    *              from the top and negative numbers indicate position from the bottom.
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Thumbor image, int x, int y) {
@@ -701,7 +672,6 @@ public final class Thumbor {
    *                     from the top and negative numbers indicate position from the bottom.
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    *                     and 100 (fully transparent).
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code image} is blank or {@code transparency} is outside bounds.
    */
   public static String watermark(String imageUrl, int x, int y, int transparency) {
@@ -730,7 +700,6 @@ public final class Thumbor {
    *                     from the top and negative numbers indicate position from the bottom.
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    *                     and 100 (fully transparent).
-   * @return String representation of this filter.
    * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Thumbor image, int x, int y, int transparency) {
@@ -748,7 +717,6 @@ public final class Thumbor {
    * @param amount        Sharpen amount. Typical values are between 0.0 and 10.0.
    * @param radius        Sharpen radius. Typical values are between 0.0 and 2.0.
    * @param luminanceOnly Sharpen only luminance channel.
-   * @return String representation of this filter.
    */
   public static String sharpen(float amount, float radius, boolean luminanceOnly) {
     return new StringBuilder(FILTER_SHARPEN).append("(") //
@@ -763,7 +731,6 @@ public final class Thumbor {
    * filling with chosen color the missing parts. Usually used with "fit-in" or "adaptive-fit-in"
    *
    * @param color integer representation of color.
-   * @return String representation of this filter.
    */
   public static String fill(int color) {
     final String colorCode = Integer.toHexString(color & 0xFFFFFF); // Strip alpha
