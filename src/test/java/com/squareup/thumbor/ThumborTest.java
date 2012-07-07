@@ -25,7 +25,7 @@ import static org.junit.Assert.fail;
 
 public class ThumborTest {
   @Test public void testNoConfig() {
-    assertEquals("/unsafe/a.com/b.png", image("http://a.com/b.png").buildUnsafe());
+    assertEquals("/unsafe/a.com/b.png", image("http://a.com/b.png").toUrl());
   }
 
   @Test public void testComplexUnsafeBuild() {
@@ -36,11 +36,24 @@ public class ThumborTest {
         .filter(
             watermark(image("b.com/c.jpg").resize(20, 20), 10, 10),
             roundCorner(5))
-        .buildUnsafe();
+        .toUrl();
     assertEquals(expected, actual);
   }
 
   @Test public void testComplexSafeBuild() {
+    String expected = "/X_5ze5WdyTObULp4Toj6mHX-R1U=/10x10:90x90/40x40/filters:watermark(/unsafe/20x20/b.com/c.jpg,10,10,0):round_corner(5,255,255,255)/a.com/b.png";
+    String actual = image("a.com/b.png")
+        .crop(10, 10, 90, 90)
+        .resize(40, 40)
+        .filter(
+            watermark(image("b.com/c.jpg").resize(20, 20), 10, 10),
+            roundCorner(5))
+        .key("test")
+        .toUrl();
+    assertEquals(expected, actual);
+  }
+
+  @Test public void testComplexLegacySafeBuild() {
     String expected = "/xrUrWUD_ZhogPh-rvPF5VhgWENCgh-mzknoAEZ7dcX_xa7sjqP1ff9hQQq_ORAKmuCr5pyyU3srXG7BUdWUzBqp3AIucz8KiGsmHw1eFe4SBWhp1wSQNG49jSbbuHaFF_4jy5oV4Nh821F4yqNZfe6CIvjbrr1Vw2aMPL4bE7VCHBYE9ukKjVjLRiW3nLfih/a.com/b.png";
     String actual = image("a.com/b.png")
         .crop(10, 10, 90, 90)
@@ -49,38 +62,45 @@ public class ThumborTest {
             watermark(image("b.com/c.jpg").resize(20, 20), 10, 10),
             roundCorner(5))
         .key("test")
-        .buildSafe();
+        .legacy()
+        .toUrl();
     assertEquals(expected, actual);
   }
 
   @Test public void testKeyChangesToStringToSafeBuild() {
     Thumbor url = image("a.com/b.png");
     assertNull(url.key);
-    assertTrue(url.toString().startsWith("/unsafe/"));
+    assertTrue(url.toUrl().startsWith("/unsafe/"));
     url.key("test");
     assertNotNull(url.key);
-    assertFalse(url.toString().startsWith("/unsafe/"));
+    assertFalse(url.toUrl().startsWith("/unsafe/"));
   }
 
   @Test public void testBuildMeta() {
-    assertTrue(image("a.com/b.png").buildMeta().startsWith("/meta/"));
+    assertTrue(image("a.com/b.png").toMeta().startsWith("/meta/"));
   }
 
   @Test public void testUnsafePrependHost() {
     String expected = "http://me.com/unsafe/a.com/b.png";
-    String actual = image("a.com/b.png").host("http://me.com").buildUnsafe();
+    String actual = image("a.com/b.png").host("http://me.com").toUrl();
     assertEquals(expected, actual);
   }
 
   @Test public void testSafePrependHost() {
+    String expected = "http://me.com/aH-fFf9RJ3Z30FchMNIwY8nsT-w=/a.com/b.png";
+    String actual = image("a.com/b.png").key("test").host("http://me.com").toUrl();
+    assertEquals(expected, actual);
+  }
+
+  @Test public void testLegacySafePrependHost() {
     String expected = "http://me.com/oNchWAmpD6SoDZXBkUpAYU3p6ZnHQY1_mYdnfTkm36g=/a.com/b.png";
-    String actual = image("a.com/b.png").key("test").host("http://me.com").buildSafe();
+    String actual = image("a.com/b.png").key("test").host("http://me.com").legacy().toUrl();
     assertEquals(expected, actual);
   }
 
   @Test public void testMetaPrependHost() {
     String expected = "http://me.com/meta/a.com/b.png";
-    String actual = image("a.com/b.png").host("http://me.com").buildMeta();
+    String actual = image("a.com/b.png").host("http://me.com").toMeta();
     assertEquals(expected, actual);
   }
 
@@ -97,6 +117,18 @@ public class ThumborTest {
     assertEquals("http://me.com/", url3.host);
   }
 
+  @Test public void testSafeUrlCanStillBuildUnsafe() {
+    String expected = "/unsafe/a.com/b.png";
+    String actual = image("a.com/b.png").key("test").toUrlUnsafe();
+    assertEquals(expected, actual);
+  }
+
+  @Test public void testSafeMetaUrlCanStillBuildUnsafe() {
+    String expected = "/meta/a.com/b.png";
+    String actual = image("a.com/b.png").key("test").toMetaUnsafe();
+    assertEquals(expected, actual);
+  }
+
   @Test public void testResize() {
     Thumbor url = new Thumbor("a.com/b.png");
     assertFalse(url.hasResize);
@@ -105,7 +137,7 @@ public class ThumborTest {
     assertTrue(url.hasResize);
     assertEquals(10, url.resizeWidth);
     assertEquals(5, url.resizeHeight);
-    assertEquals("/unsafe/10x5/a.com/b.png", url.buildUnsafe());
+    assertEquals("/unsafe/10x5/a.com/b.png", url.toUrl());
   }
 
   @Test public void testResizeAndFitIn() {
@@ -114,22 +146,22 @@ public class ThumborTest {
     assertFalse(url.fitIn);
     url.fitIn();
     assertTrue(url.fitIn);
-    assertEquals("/unsafe/10x5/fit-in/a.com/b.png", url.buildUnsafe());
+    assertEquals("/unsafe/10x5/fit-in/a.com/b.png", url.toUrl());
   }
 
   @Test public void testResizeAndFlip() {
     Thumbor url1 = new Thumbor("a.com/b.png").resize(10, 5).flipHorizontally();
     assertTrue(url1.flipHorizontally);
-    assertEquals("/unsafe/-10x5/a.com/b.png", url1.buildUnsafe());
+    assertEquals("/unsafe/-10x5/a.com/b.png", url1.toUrl());
 
     Thumbor url2 = new Thumbor("a.com/b.png").resize(10, 5).flipVertically();
     assertTrue(url2.flipVertically);
-    assertEquals("/unsafe/10x-5/a.com/b.png", url2.buildUnsafe());
+    assertEquals("/unsafe/10x-5/a.com/b.png", url2.toUrl());
 
     Thumbor url3 = new Thumbor("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
     assertTrue(url3.flipHorizontally);
     assertTrue(url3.flipVertically);
-    assertEquals("/unsafe/-10x-5/a.com/b.png", url3.buildUnsafe());
+    assertEquals("/unsafe/-10x-5/a.com/b.png", url3.toUrl());
   }
 
   @Test public void testCrop() {
@@ -142,7 +174,7 @@ public class ThumborTest {
     assertEquals(2, url.cropLeft);
     assertEquals(3, url.cropBottom);
     assertEquals(4, url.cropRight);
-    assertEquals("/unsafe/2x1:4x3/a.com/b.png", url.buildUnsafe());
+    assertEquals("/unsafe/2x1:4x3/a.com/b.png", url.toUrl());
   }
 
   @Test public void testCropAndSmart() {
@@ -152,7 +184,7 @@ public class ThumborTest {
     assertFalse(url.isSmart);
     url.smart();
     assertTrue(url.isSmart);
-    assertEquals("/unsafe/2x1:4x3/smart/a.com/b.png", url.buildUnsafe());
+    assertEquals("/unsafe/2x1:4x3/smart/a.com/b.png", url.toUrl());
   }
 
   @Test public void testCannotFlipHorizontalWithoutResize() {
@@ -356,8 +388,8 @@ public class ThumborTest {
   @Test public void testCannotBuildSafeWithoutKey() {
     Thumbor url = new Thumbor("");
     try {
-      url.buildSafe();
-      fail(".buildSafe() succeeds without key.");
+      url.toUrlSafe();
+      fail(".toUrlSafe() succeeds without key.");
     } catch (UnableToBuildException e) {
       // Pass.
     }

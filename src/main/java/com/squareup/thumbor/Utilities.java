@@ -4,6 +4,7 @@ package com.squareup.thumbor;
 import com.squareup.thumbor.Thumbor.UnableToBuildException;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 
@@ -187,7 +188,24 @@ final class Utilities {
   }
 
   /**
-   * Encrypt a string using the specified key.
+   * Encrypt a string with HMAC-SHA1 using the specified key.
+   *
+   * @param message Input string.
+   * @param key Encryption key.
+   * @return Encrypted output.
+   */
+  static byte[] hmacSha1(StringBuilder message, String key) {
+    try {
+      Mac mac = Mac.getInstance("HmacSHA1");
+      mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA1"));
+      return mac.doFinal(message.toString().getBytes());
+    } catch (Exception e) {
+      throw new UnableToBuildException(e);
+    }
+  }
+
+  /**
+   * Encrypt a string with AES-128 using the specified key.
    *
    * @param message Input string.
    * @param key Encryption key.
@@ -195,16 +213,11 @@ final class Utilities {
    */
   static byte[] aes128Encrypt(StringBuilder message, String key) {
     try {
+      key = normalizeString(key, 16);
       rightPadString(message, '{', 16);
-      byte[] messageBytes = message.toString().getBytes();
-      SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
       Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
-      cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-
-      byte[] cipherText = new byte[cipher.getOutputSize(messageBytes.length)];
-      int ctLength = cipher.update(messageBytes, 0, messageBytes.length, cipherText, 0);
-      ctLength += cipher.doFinal(cipherText, ctLength);
-      return cipherText;
+      cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(), "AES"));
+      return cipher.doFinal(message.toString().getBytes());
     } catch (Exception e) {
       throw new UnableToBuildException(e);
     }

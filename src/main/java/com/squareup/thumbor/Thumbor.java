@@ -6,8 +6,8 @@ import java.util.List;
 
 import static com.squareup.thumbor.Utilities.aes128Encrypt;
 import static com.squareup.thumbor.Utilities.base64Encode;
+import static com.squareup.thumbor.Utilities.hmacSha1;
 import static com.squareup.thumbor.Utilities.md5;
-import static com.squareup.thumbor.Utilities.normalizeString;
 import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
 
 /**
@@ -75,12 +75,13 @@ public final class Thumbor {
   final String target;
   String host = "/";
   String key;
-  boolean hasCrop = false;
-  boolean hasResize = false;
-  boolean isSmart = false;
-  boolean flipHorizontally = false;
-  boolean flipVertically = false;
-  boolean fitIn = false;
+  boolean hasCrop;
+  boolean hasResize;
+  boolean isSmart;
+  boolean isLegacy;
+  boolean flipHorizontally;
+  boolean flipVertically;
+  boolean fitIn;
   int resizeWidth;
   int resizeHeight;
   int cropTop;
@@ -115,7 +116,8 @@ public final class Thumbor {
   }
 
   /**
-   * Set a key for secure URL generation. This will default the {@link #toString()} to call {@link #buildSafe()}.
+   * Set a key for secure URL generation. This will default the {@link #toUrl()} and {@link #toMeta()} to build safe
+   * URLs.
    *
    * @param key Security key for remote server.
    * @return Current instance.
@@ -286,7 +288,7 @@ public final class Thumbor {
   }
 
   /**
-   * Use smart cropping for determining the imortant portion of an image.
+   * Use smart cropping for determining the important portion of an image.
    *
    * @return Current instance.
    * @throws UnableToBuildException if image has not been marked for crop.
@@ -296,6 +298,16 @@ public final class Thumbor {
       throw new UnableToBuildException("Image must be cropped first in order to smart align.");
     }
     isSmart = true;
+    return this;
+  }
+
+  /**
+   * Use legacy encryption when constructing a safe URL.
+   *
+   * @return Current instance.
+   */
+  public Thumbor legacy() {
+    isLegacy = true;
     return this;
   }
 
@@ -329,7 +341,7 @@ public final class Thumbor {
       throw new UnableToBuildException("You must provide at least one filter.");
     }
     if (this.filters == null) {
-      this.filters = new ArrayList<String>(1);
+      this.filters = new ArrayList<String>(filters.length);
     }
     for (String filter : filters) {
       if (filter == null || filter.length() == 0) {
@@ -341,41 +353,46 @@ public final class Thumbor {
   }
 
   /**
-   * Build an unsafe version of the URL.
+   * Build the URL. This will either call {@link #toUrlSafe()} or {@link #toUrlUnsafe()} depending on whether
+   * {@link #key(String)} was set.
    *
-   * @return Unsafe URL for the current configuration.
+   * @throws UnableToBuildException
    */
-  public String buildUnsafe() {
-    return new StringBuilder(host) //
-        .append(PREFIX_UNSAFE) //
-        .append(assembleConfig()) //
-        .append(target) //
+  public String toUrl() {
+    return (key == null) ? toUrlUnsafe() : toUrlSafe();
+  }
+
+  /**
+   * Build an unsafe version of the URL.
+   */
+  public String toUrlUnsafe() {
+    return new StringBuilder(host)
+        .append(PREFIX_UNSAFE)
+        .append(assembleConfig(false))
         .toString();
   }
 
   /**
    * Build a safe version of the URL. Requires a prior call to {@link #key(String)}.
    *
-   * @return Safe URL for the current configuration.
-   * @throws UnableToBuildException if key has not been set.
+   * @throws UnableToBuildException
    */
-  public String buildSafe() {
+  public String toUrlSafe() {
     if (key == null) {
       throw new UnableToBuildException("Cannot build safe URL without a key.");
     }
 
     try {
-      // Assemble config and an MD5 of the target image.
-      StringBuilder config = assembleConfig().append(md5(target));
-      final byte[] encrypted = aes128Encrypt(config, normalizeString(key, 16));
+      boolean legacy = isLegacy;
 
-      // URL-safe Base64 encode.
-      final String encoded = base64Encode(encrypted);
+      StringBuilder config = assembleConfig(false);
+      byte[] encrypted = legacy ? aes128Encrypt(config, key) : hmacSha1(config, key);
+      String encoded = base64Encode(encrypted);
 
-      return new StringBuilder(host) //
-          .append(encoded) //
-          .append("/") //
-          .append(target) //
+      return new StringBuilder(host)
+          .append(encoded)
+          .append("/")
+          .append(legacy ? target : config)
           .toString();
     } catch (IllegalArgumentException e) {
       throw new UnableToBuildException(e);
@@ -383,20 +400,45 @@ public final class Thumbor {
   }
 
   /**
-   * Build a URL for fetching Thumbor metadata.
+   * Build the metadata URL. This will either call {@link #toMetaSafe()} or {@link #toMetaUnsafe()} depending on whether
+   * {@link #key(String)} was set.
    *
    * @return Meta URL for the current configuration.
    */
-  public String buildMeta() {
-    return new StringBuilder(host) //
-        .append(PREFIX_META) //
-        .append(assembleConfig()) //
-        .append(target) //
-        .toString();
+  public String toMeta() {
+    return (key == null) ? toMetaUnsafe() : toMetaSafe();
+  }
+
+  /**
+   * Build an unsafe version of the metadata URL.
+   */
+  public String toMetaUnsafe() {
+    return host + assembleConfig(true);
+  }
+
+  /**
+   * Build a safe version of the metadata URL. Requires a prior call to {@link #key(String)}.
+   *
+   * @throws UnableToBuildException
+   */
+  public String toMetaSafe() {
+    try {
+      StringBuilder config = assembleConfig(true);
+      byte[] encrypted = hmacSha1(config, key);
+      String encoded = base64Encode(encrypted);
+
+      return new StringBuilder(host)
+          .append(encoded)
+          .append("/")
+          .append(config)
+          .toString();
+    } catch (Exception e) {
+      throw new UnableToBuildException(e);
+    }
   }
 
   @Override public String toString() {
-    return (key == null) ? buildUnsafe() : buildSafe();
+    return toUrl();
   }
 
   /**
@@ -404,8 +446,12 @@ public final class Thumbor {
    *
    * @return Configuration assembled in a {@link StringBuilder}.
    */
-  StringBuilder assembleConfig() {
+  StringBuilder assembleConfig(boolean meta) {
     StringBuilder builder = new StringBuilder();
+
+    if (meta) {
+      builder.append(PREFIX_META);
+    }
 
     if (hasCrop) {
       builder.append(cropLeft).append("x").append(cropTop) //
@@ -447,6 +493,8 @@ public final class Thumbor {
       }
       builder.append("/");
     }
+
+    builder.append(isLegacy ? md5(target) : target);
 
     return builder;
   }
