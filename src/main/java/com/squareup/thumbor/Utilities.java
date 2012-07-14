@@ -16,9 +16,9 @@ final class Utilities {
     // No instances.
   }
 
-  private final static String BASE64_CHARS =
+  private static final String BASE64_CHARS =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-  private final static int BASE64_UPPER_BOUND = Integer.MAX_VALUE / 4 * 3;
+  private static final int BASE64_UPPER_BOUND = Integer.MAX_VALUE / 4 * 3;
 
   /**
    * Base64 encodes a byte array.
