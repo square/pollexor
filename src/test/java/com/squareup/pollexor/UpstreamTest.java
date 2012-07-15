@@ -1,10 +1,10 @@
-package com.squareup.thumbor;
+package com.squareup.pollexor;
 
 import org.junit.Test;
 
-import static com.squareup.thumbor.Thumbor.brightness;
-import static com.squareup.thumbor.Thumbor.contrast;
-import static com.squareup.thumbor.Thumbor.image;
+import static com.squareup.pollexor.Pollexor.brightness;
+import static com.squareup.pollexor.Pollexor.contrast;
+import static com.squareup.pollexor.Pollexor.image;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class UpstreamTest {
 
-  private Thumbor url() {
+  private Pollexor url() {
     return image("my.server.com/some/path/to/image.jpg").key("my-security-key");
   }
 

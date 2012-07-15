@@ -1,21 +1,21 @@
 // Copyright 2012 Square, Inc.
-package com.squareup.thumbor;
+package com.squareup.pollexor;
 
 import org.junit.Test;
 
-import static com.squareup.thumbor.Thumbor.HorizontalAlign.CENTER;
-import static com.squareup.thumbor.Thumbor.UnableToBuildException;
-import static com.squareup.thumbor.Thumbor.VerticalAlign.MIDDLE;
-import static com.squareup.thumbor.Thumbor.brightness;
-import static com.squareup.thumbor.Thumbor.image;
-import static com.squareup.thumbor.Thumbor.contrast;
-import static com.squareup.thumbor.Thumbor.fill;
-import static com.squareup.thumbor.Thumbor.noise;
-import static com.squareup.thumbor.Thumbor.quality;
-import static com.squareup.thumbor.Thumbor.rgb;
-import static com.squareup.thumbor.Thumbor.roundCorner;
-import static com.squareup.thumbor.Thumbor.sharpen;
-import static com.squareup.thumbor.Thumbor.watermark;
+import static com.squareup.pollexor.Pollexor.HorizontalAlign.CENTER;
+import static com.squareup.pollexor.Pollexor.UnableToBuildException;
+import static com.squareup.pollexor.Pollexor.VerticalAlign.MIDDLE;
+import static com.squareup.pollexor.Pollexor.brightness;
+import static com.squareup.pollexor.Pollexor.image;
+import static com.squareup.pollexor.Pollexor.contrast;
+import static com.squareup.pollexor.Pollexor.fill;
+import static com.squareup.pollexor.Pollexor.noise;
+import static com.squareup.pollexor.Pollexor.quality;
+import static com.squareup.pollexor.Pollexor.rgb;
+import static com.squareup.pollexor.Pollexor.roundCorner;
+import static com.squareup.pollexor.Pollexor.sharpen;
+import static com.squareup.pollexor.Pollexor.watermark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ThumborTest {
+public class PollexorTest {
   @Test public void testNoConfig() {
     assertEquals("/unsafe/a.com/b.png", image("http://a.com/b.png").toUrl());
   }
@@ -68,7 +68,7 @@ public class ThumborTest {
   }
 
   @Test public void testKeyChangesToStringToSafeBuild() {
-    Thumbor url = image("a.com/b.png");
+    Pollexor url = image("a.com/b.png");
     assertNull(url.key);
     assertTrue(url.toUrl().startsWith("/unsafe/"));
     url.key("test");
@@ -105,14 +105,14 @@ public class ThumborTest {
   }
 
   @Test public void testHostAlwaysEndsWithSlash() {
-    Thumbor url1 = new Thumbor("");
+    Pollexor url1 = new Pollexor("");
     assertEquals("/", url1.host);
 
-    Thumbor url2 = new Thumbor("");
+    Pollexor url2 = new Pollexor("");
     url2.host("http://me.com");
     assertEquals("http://me.com/", url2.host);
 
-    Thumbor url3 = new Thumbor("");
+    Pollexor url3 = new Pollexor("");
     url3.host("http://me.com/");
     assertEquals("http://me.com/", url3.host);
   }
@@ -130,7 +130,7 @@ public class ThumborTest {
   }
 
   @Test public void testResize() {
-    Thumbor url = new Thumbor("a.com/b.png");
+    Pollexor url = new Pollexor("a.com/b.png");
     assertFalse(url.hasResize);
 
     url.resize(10, 5);
@@ -141,7 +141,7 @@ public class ThumborTest {
   }
 
   @Test public void testResizeAndFitIn() {
-    Thumbor url = new Thumbor("a.com/b.png");
+    Pollexor url = new Pollexor("a.com/b.png");
     url.resize(10, 5);
     assertFalse(url.fitIn);
     url.fitIn();
@@ -150,22 +150,22 @@ public class ThumborTest {
   }
 
   @Test public void testResizeAndFlip() {
-    Thumbor url1 = new Thumbor("a.com/b.png").resize(10, 5).flipHorizontally();
+    Pollexor url1 = new Pollexor("a.com/b.png").resize(10, 5).flipHorizontally();
     assertTrue(url1.flipHorizontally);
     assertEquals("/unsafe/-10x5/a.com/b.png", url1.toUrl());
 
-    Thumbor url2 = new Thumbor("a.com/b.png").resize(10, 5).flipVertically();
+    Pollexor url2 = new Pollexor("a.com/b.png").resize(10, 5).flipVertically();
     assertTrue(url2.flipVertically);
     assertEquals("/unsafe/10x-5/a.com/b.png", url2.toUrl());
 
-    Thumbor url3 = new Thumbor("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
+    Pollexor url3 = new Pollexor("a.com/b.png").resize(10, 5).flipHorizontally().flipVertically();
     assertTrue(url3.flipHorizontally);
     assertTrue(url3.flipVertically);
     assertEquals("/unsafe/-10x-5/a.com/b.png", url3.toUrl());
   }
 
   @Test public void testCrop() {
-    Thumbor url = new Thumbor("a.com/b.png");
+    Pollexor url = new Pollexor("a.com/b.png");
     assertFalse(url.hasCrop);
 
     url.crop(1, 2, 3, 4);
@@ -178,7 +178,7 @@ public class ThumborTest {
   }
 
   @Test public void testCropAndSmart() {
-    Thumbor url = new Thumbor("a.com/b.png");
+    Pollexor url = new Pollexor("a.com/b.png");
     url.crop(1, 2, 3, 4);
 
     assertFalse(url.isSmart);
@@ -188,7 +188,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotFlipHorizontalWithoutResize() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     assertFalse(url.hasResize);
     assertFalse(url.flipHorizontally);
     try {
@@ -201,7 +201,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotFlipVerticalWithoutResize() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     assertFalse(url.hasResize);
     assertFalse(url.flipVertically);
     try {
@@ -214,7 +214,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotFitInWithoutCrop() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     assertFalse(url.hasCrop);
     assertFalse(url.fitIn);
     try {
@@ -227,7 +227,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotSmartWithoutCrop() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     assertFalse(url.hasCrop);
     assertFalse(url.isSmart);
     try {
@@ -240,7 +240,7 @@ public class ThumborTest {
   }
 
   @Test public void testDoubleAlignmentMethodSetsBoth() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     url.crop(0, 0, 1, 1);
     assertNull(url.cropHorizontalAlign);
     assertNull(url.cropVerticalAlign);
@@ -250,7 +250,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotAlignWithoutCrop() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     assertFalse(url.hasCrop);
     assertNull(url.cropHorizontalAlign);
 
@@ -270,7 +270,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotIssueBadCrop() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
 
     try {
       url.crop(-1, 0, 1, 1);
@@ -316,7 +316,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotIssueBadResize() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
 
     try {
       url.resize(0, 5);
@@ -350,7 +350,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotAddInvalidKey() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
 
     try {
       url.key(null);
@@ -368,7 +368,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotAddInvalidHost() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
 
     try {
       url.host(null);
@@ -386,7 +386,7 @@ public class ThumborTest {
   }
 
   @Test public void testCannotBuildSafeWithoutKey() {
-    Thumbor url = new Thumbor("");
+    Pollexor url = new Pollexor("");
     try {
       url.toUrlSafe();
       fail(".toUrlSafe() succeeds without key.");
@@ -549,7 +549,7 @@ public class ThumborTest {
       // Pass.
     }
     try {
-      watermark((Thumbor) null);
+      watermark((Pollexor) null);
       fail("Watermark allowed invalid value.");
     } catch (UnableToBuildException e) {
       // Pass.

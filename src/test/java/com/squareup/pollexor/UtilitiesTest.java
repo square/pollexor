@@ -1,13 +1,13 @@
 // Copyright 2012 Square, Inc.
-package com.squareup.thumbor;
+package com.squareup.pollexor;
 
 import org.junit.Test;
 
-import static com.squareup.thumbor.Utilities.base64Encode;
-import static com.squareup.thumbor.Utilities.md5;
-import static com.squareup.thumbor.Utilities.normalizeString;
-import static com.squareup.thumbor.Utilities.rightPadString;
-import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
+import static com.squareup.pollexor.Utilities.base64Encode;
+import static com.squareup.pollexor.Utilities.md5;
+import static com.squareup.pollexor.Utilities.normalizeString;
+import static com.squareup.pollexor.Utilities.rightPadString;
+import static com.squareup.pollexor.Utilities.stripProtocolAndParams;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;

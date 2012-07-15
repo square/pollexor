@@ -10,32 +10,19 @@
     </parent>
 
     <groupId>com.squareup</groupId>
-    <artifactId>thumbor-client</artifactId>
+    <artifactId>pollexor</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>Thumbor Client</name>
+    <name>Pollexor</name>
     <description>Pure Java client for the Thumbor image service which allows you to build URIs in an expressive fashion using the fluent pattern.</description>
     <inceptionYear>2012</inceptionYear>
 
     <scm>
-        <url>http://git.squareup.com/jw/thumbor-java</url>
-        <connection>scm:git:git://git.squareup.com/jw/thumbor-java.git</connection>
-        <developerConnection>scg:git:git@git.squareup.com:jw/thumbor-java.git</developerConnection>
+        <url>http://github.com/square/pollexor</url>
+        <connection>scm:git:git://git.squareup.com/square/pollexor.git</connection>
+        <developerConnection>scg:git:git@git.squareup.com:square/pollexor.git</developerConnection>
     </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>square-nexus-staging</id>
-            <name>Square Staging Repository</name>
-            <url>http://mirrors.squareup.com/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>square-nexus</id>
-            <name>Square Release Repository</name>
-            <url>http://mirrors.squareup.com/nexus/content/repositories/releases</url>
-        </repository>
-    </distributionManagement>
 
     <organization>
         <name>Square, Inc.</name>
@@ -44,7 +31,7 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>http://github.com/square/thumbor-java/issues</url>
+        <url>http://github.com/square/pollexor/issues</url>
     </issueManagement>
 
     <licenses>

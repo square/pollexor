@@ -1,7 +1,7 @@
 // Copyright 2012 Square, Inc.
-package com.squareup.thumbor;
+package com.squareup.pollexor;
 
-import com.squareup.thumbor.Thumbor.UnableToBuildException;
+import com.squareup.pollexor.Pollexor.UnableToBuildException;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -9,7 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 
 /**
- * Utility methods for {@link Thumbor}.
+ * Utility methods for {@link Pollexor}.
  */
 final class Utilities {
   private Utilities() {

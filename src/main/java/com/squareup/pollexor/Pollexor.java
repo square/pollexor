@@ -1,21 +1,21 @@
 // Copyright 2012 Square, Inc.
-package com.squareup.thumbor;
+package com.squareup.pollexor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.squareup.thumbor.Utilities.aes128Encrypt;
-import static com.squareup.thumbor.Utilities.base64Encode;
-import static com.squareup.thumbor.Utilities.hmacSha1;
-import static com.squareup.thumbor.Utilities.md5;
-import static com.squareup.thumbor.Utilities.stripProtocolAndParams;
+import static com.squareup.pollexor.Utilities.aes128Encrypt;
+import static com.squareup.pollexor.Utilities.base64Encode;
+import static com.squareup.pollexor.Utilities.hmacSha1;
+import static com.squareup.pollexor.Utilities.md5;
+import static com.squareup.pollexor.Utilities.stripProtocolAndParams;
 
 /**
  * Fluent interface to create a URL appropriate for passing to Thumbor.
  *
  * @see #image
  */
-public final class Thumbor {
+public final class Pollexor {
   private static final String PREFIX_UNSAFE = "unsafe/";
   private static final String PREFIX_META = "meta/";
   private static final String PART_SMART = "smart";
@@ -97,7 +97,7 @@ public final class Thumbor {
    *
    * @param target Target image URL.
    */
-  Thumbor(String target) {
+  Pollexor(String target) {
     this.target = stripProtocolAndParams(target);
   }
 
@@ -107,11 +107,11 @@ public final class Thumbor {
    * @param target Target image to manipulate.
    * @throws UnableToBuildException if {@code target} is blank.
    */
-  public static Thumbor image(String target) {
+  public static Pollexor image(String target) {
     if (target == null || target.length() == 0) {
       throw new UnableToBuildException("Target image URL must not be blank.");
     }
-    return new Thumbor(target);
+    return new Pollexor(target);
   }
 
   /**
@@ -121,7 +121,7 @@ public final class Thumbor {
    * @param key Security key for remote server.
    * @throws UnableToBuildException if {@code key} is blank.
    */
-  public Thumbor key(String key) {
+  public Pollexor key(String key) {
     if (key == null || key.length() == 0) {
       throw new UnableToBuildException("Key must not be blank.");
     }
@@ -135,7 +135,7 @@ public final class Thumbor {
    * @param host Host name.
    * @throws UnableToBuildException if {@code host} is blank.
    */
-  public Thumbor host(String host) {
+  public Pollexor host(String host) {
     if (host == null || host.length() == 0) {
       throw new UnableToBuildException("Host must not be blank.");
     }
@@ -153,7 +153,7 @@ public final class Thumbor {
    * @param height Desired height.
    * @throws UnableToBuildException if {@code width} or {@code height} is less than 1.
    */
-  public Thumbor resize(int width, int height) {
+  public Pollexor resize(int width, int height) {
     if (width < 1) {
       throw new UnableToBuildException("Width must be greater than zero.");
     }
@@ -171,7 +171,7 @@ public final class Thumbor {
    *
    * @throws UnableToBuildException if image has not been marked for resize.
    */
-  public Thumbor flipHorizontally() {
+  public Pollexor flipHorizontally() {
     if (!hasResize) {
       throw new UnableToBuildException("Image must be resized first in order to flip.");
     }
@@ -184,7 +184,7 @@ public final class Thumbor {
    *
    * @throws UnableToBuildException if image has not been marked for resize.
    */
-  public Thumbor flipVertically() {
+  public Pollexor flipVertically() {
     if (!hasResize) {
       throw new UnableToBuildException("Image must be resized first in order to flip.");
     }
@@ -197,7 +197,7 @@ public final class Thumbor {
    *
    * @throws UnableToBuildException if image has not been marked for resize.
    */
-  public Thumbor fitIn() {
+  public Pollexor fitIn() {
     if (!hasResize) {
       throw new UnableToBuildException("Image must be resized first in order to apply 'fit-in'.");
     }
@@ -216,7 +216,7 @@ public final class Thumbor {
    *                                {@code right} are less than one or less than {@code top} or {@code left},
    *                                respectively.
    */
-  public Thumbor crop(int top, int left, int bottom, int right) {
+  public Pollexor crop(int top, int left, int bottom, int right) {
     if (top < 0) {
       throw new UnableToBuildException("Top must be greater or equal to zero.");
     }
@@ -243,7 +243,7 @@ public final class Thumbor {
    * @param align Horizontal alignment.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Thumbor align(HorizontalAlign align) {
+  public Pollexor align(HorizontalAlign align) {
     if (!hasCrop) {
       throw new UnableToBuildException("Image must be cropped first in order to align.");
     }
@@ -257,7 +257,7 @@ public final class Thumbor {
    * @param align Vertical alignment.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Thumbor align(VerticalAlign align) {
+  public Pollexor align(VerticalAlign align) {
     if (!hasCrop) {
       throw new UnableToBuildException("Image must be cropped first in order to align.");
     }
@@ -272,7 +272,7 @@ public final class Thumbor {
    * @param halign Horizontal alignment.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Thumbor align(VerticalAlign valign, HorizontalAlign halign) {
+  public Pollexor align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
   }
 
@@ -281,7 +281,7 @@ public final class Thumbor {
    *
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Thumbor smart() {
+  public Pollexor smart() {
     if (!hasCrop) {
       throw new UnableToBuildException("Image must be cropped first in order to smart align.");
     }
@@ -292,7 +292,7 @@ public final class Thumbor {
   /**
    * Use legacy encryption when constructing a safe URL.
    */
-  public Thumbor legacy() {
+  public Pollexor legacy() {
     isLegacy = true;
     return this;
   }
@@ -315,13 +315,13 @@ public final class Thumbor {
    * @see #roundCorner(int, int, int)
    * @see #sharpen(float, float, boolean)
    * @see #watermark(String)
-   * @see #watermark(Thumbor)
+   * @see #watermark(Pollexor)
    * @see #watermark(String, int, int)
-   * @see #watermark(Thumbor, int, int)
+   * @see #watermark(Pollexor, int, int)
    * @see #watermark(String, int, int, int)
-   * @see #watermark(Thumbor, int, int, int)
+   * @see #watermark(Pollexor, int, int, int)
    */
-  public Thumbor filter(String... filters) {
+  public Pollexor filter(String... filters) {
     if (filters.length == 0) {
       throw new UnableToBuildException("You must provide at least one filter.");
     }
@@ -624,7 +624,7 @@ public final class Thumbor {
    *              loader that Thumbor uses will be used here.
    * @throws UnableToBuildException if {@code image} is null.
    */
-  public static String watermark(Thumbor image) {
+  public static String watermark(Pollexor image) {
     return watermark(image, 0, 0);
   }
 
@@ -654,9 +654,9 @@ public final class Thumbor {
    *              from the top and negative numbers indicate position from the bottom.
    * @throws UnableToBuildException if {@code image} is null.
    */
-  public static String watermark(Thumbor image, int x, int y) {
+  public static String watermark(Pollexor image, int x, int y) {
     if (image == null) {
-      throw new UnableToBuildException("Thumbor image must not be null.");
+      throw new UnableToBuildException("Image must not be null.");
     }
     return watermark(image.toString(), x, y, 0);
   }
@@ -702,9 +702,9 @@ public final class Thumbor {
    *                     and 100 (fully transparent).
    * @throws UnableToBuildException if {@code image} is null.
    */
-  public static String watermark(Thumbor image, int x, int y, int transparency) {
+  public static String watermark(Pollexor image, int x, int y, int transparency) {
     if (image == null) {
-      throw new UnableToBuildException("Thumbor image must not be null.");
+      throw new UnableToBuildException("Image must not be null.");
     }
     return watermark(image.toString(), x, y, transparency);
   }
