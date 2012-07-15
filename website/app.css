@@ -1,7 +1,7 @@
 body {
     /* http://www.dinpattern.com/2011/06/13/invaders/ */
     background: #6f5e78 url('invaders.png') repeat;
-    color: #000;
+    color: #333;
 }
 
 a, a:hover {
@@ -26,7 +26,7 @@ a, a:hover {
 h5 {
     font-size: 13px;
     margin-bottom: 4px;
-    color: #444;
+    color: #555;
     text-transform: uppercase;
 }
 
