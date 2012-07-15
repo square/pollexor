@@ -1,0 +1,14 @@
+.com { color: #93a1a1; }
+.lit { color: #777; }
+.pun, .opn, .clo { color: #050; }
+.fun { color: #dc322f; }
+.str, .atv { color: #285; }
+.kwd, .linenums, .tag { color: #1e347b; }
+.typ, .atn, .dec, .var { color: teal; }
+.pln { color: #404c40; }
+
+.prettyprint {
+  padding: 8px;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+}
