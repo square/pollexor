@@ -45,7 +45,7 @@ image("http://example.com/image.png")
     .resize(48, 48)
     .key("super secret key")
     .toUrl()
-// Produces: /ttdl3uu1vOdz7mxsjegdi6Q4iUuYq7IWPziAiW53Cff683quusS17Q-piahoiqd1/example.com/image.png
+// Produces: /hhxlPyQkIxjvGc_-u_JEVZI3jc8=/48x48/example.com/image.png
 
 image("http://example.com/image.png")
     .resize(48, 48)
