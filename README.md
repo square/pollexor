@@ -7,6 +7,22 @@ in an expressive fashion using the fluent pattern.
 This library is also fully compatible with the Android platform.
 
 
+
+Download
+--------
+
+Downloadable .jars can be found on the [GitHub download page][2].
+
+You can also depend on the .jar through Maven:
+
+    <dependency>
+        <groupId>com.squareup</groupId>
+        <artifactId>pollexor<artifactId>
+        <version>(insert latest version)</version>
+    </dependency>
+
+
+
 Examples
 --------
 
@@ -59,15 +75,24 @@ image("http://example.com/image.png")
 
 
 
-Building
---------
+Building & Contributing
+------------------------
 
 Compilation requires Maven 3.0 or newer. To compile a JAR run `mvn clean verify`
 in the project root folder. The assembled file will be in the `target/`
 directory.
 
-If you are modifying the source files and the build fails due to checkstyle you
-can see all of the errors in the `target/checkstyle-result.xml` file.
+If you would like to contribute code to Pollexor you can do so through GitHub
+by forking the repository and sending a pull request.
+
+When submitting code, please make every effort to follow existing conventions
+and style in order to keep the code as readable as possible. Please also make
+sure your code compiles by running `mvn clean verify`. Checkstyle failures
+during compilation indicate errors in your style and can be viewed in the
+`checkstyle-result.xml` file.
+
+Before your code can be accepted into the project you must also sign the
+[Individual Contributor License Agreement (CLA)][3].
 
 
 
@@ -90,3 +115,5 @@ License
 
 
  [1]: https://github.com/globocom/thumbor
+ [2]: http://github.com/square/pollexor/downloads
+ [3]: https://spreadsheets.google.com/spreadsheet/viewform?formkey=dDViT2xzUHAwRkI3X3k5Z0lQM091OGc6MQ&ndplr=1
