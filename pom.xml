@@ -15,7 +15,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <name>Pollexor</name>
-    <description>Java client for the Thumbor image service which allows you to build URIs in an expressive fashion using the fluent pattern.</description>
+    <description>Java client for the Thumbor image service which allows you to build URIs in an expressive fashion using a fluent API.</description>
     <inceptionYear>2012</inceptionYear>
 
     <scm>
