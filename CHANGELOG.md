@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Version 1.0.0 *(In Development)*
---------------------------------
+Version 1.0.0 *(2012-07-17)*
+----------------------------
 
  * Update to support new HMAC-SHA1 encryption present in Thumbor v3.0.
  * New `legacy()` method to revert to old encryption mechanism.

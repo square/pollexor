@@ -20,8 +20,8 @@
 
     <scm>
         <url>http://github.com/square/pollexor</url>
-        <connection>scm:git:git://git.squareup.com/square/pollexor.git</connection>
-        <developerConnection>scg:git:git@git.squareup.com:square/pollexor.git</developerConnection>
+        <connection>scm:git:git://github.com/square/pollexor.git</connection>
+        <developerConnection>scg:git:git@github.com:square/pollexor.git</developerConnection>
     </scm>
 
     <organization>
