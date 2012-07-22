@@ -353,10 +353,7 @@ public final class Pollexor {
    * Build an unsafe version of the URL.
    */
   public String toUrlUnsafe() {
-    return new StringBuilder(host)
-        .append(PREFIX_UNSAFE)
-        .append(assembleConfig(false))
-        .toString();
+    return host + PREFIX_UNSAFE + assembleConfig(false);
   }
 
   /**
@@ -376,11 +373,8 @@ public final class Pollexor {
       byte[] encrypted = legacy ? aes128Encrypt(config, key) : hmacSha1(config, key);
       String encoded = base64Encode(encrypted);
 
-      return new StringBuilder(host)
-          .append(encoded)
-          .append("/")
-          .append(legacy ? target : config)
-          .toString();
+      CharSequence suffix = legacy ? target : config;
+      return host + encoded + "/" + suffix;
     } catch (IllegalArgumentException e) {
       throw new UnableToBuildException(e);
     }
@@ -414,11 +408,7 @@ public final class Pollexor {
       byte[] encrypted = hmacSha1(config, key);
       String encoded = base64Encode(encrypted);
 
-      return new StringBuilder(host)
-          .append(encoded)
-          .append("/")
-          .append(config)
-          .toString();
+      return host + encoded + "/" + config;
     } catch (Exception e) {
       throw new UnableToBuildException(e);
     }
@@ -495,7 +485,7 @@ public final class Pollexor {
     if (amount < -100 || amount > 100) {
       throw new UnableToBuildException("Amount must be between -100 and 100, inclusive.");
     }
-    return new StringBuilder(FILTER_BRIGHTNESS).append("(").append(amount).append(")").toString();
+    return FILTER_BRIGHTNESS + "(" + amount + ")";
   }
 
   /**
@@ -509,7 +499,7 @@ public final class Pollexor {
     if (amount < -100 || amount > 100) {
       throw new UnableToBuildException("Amount must be between -100 and 100, inclusive.");
     }
-    return new StringBuilder(FILTER_CONTRAST).append("(").append(amount).append(")").toString();
+    return FILTER_CONTRAST + "(" + amount + ")";
   }
 
   /**
@@ -522,7 +512,7 @@ public final class Pollexor {
     if (amount < 0 || amount > 100) {
       throw new UnableToBuildException("Amount must be between 0 and 100, inclusive");
     }
-    return new StringBuilder(FILTER_NOISE).append("(").append(amount).append(")").toString();
+    return FILTER_NOISE + "(" + amount + ")";
   }
 
   /**
@@ -535,7 +525,7 @@ public final class Pollexor {
     if (amount < 0 || amount > 100) {
       throw new UnableToBuildException("Amount must be between 0 and 100, inclusive.");
     }
-    return new StringBuilder(FILTER_QUALITY).append("(").append(amount).append(")").toString();
+    return FILTER_QUALITY + "(" + amount + ")";
   }
 
   /**
@@ -556,11 +546,7 @@ public final class Pollexor {
     if (b < -100 || b > 100) {
       throw new UnableToBuildException("Blueness value must be between -100 and 100, inclusive.");
     }
-    return new StringBuilder(FILTER_RGB).append("(") //
-        .append(r).append(",") //
-        .append(g).append(",") //
-        .append(b).append(")") //
-        .toString();
+    return FILTER_RGB + "(" + r + "," + g + "," + b + ")";
   }
 
   /**
@@ -601,10 +587,13 @@ public final class Pollexor {
     if (radiusOuter > 0) {
       builder.append("|").append(radiusOuter);
     }
+    final int r = (color & 0xFF0000) >>> 16;
+    final int g = (color & 0xFF00) >>> 8;
+    final int b = color & 0xFF;
     return builder.append(",") //
-        .append((color & 0xFF0000) >>> 16).append(",") //
-        .append((color & 0xFF00) >>> 8).append(",") //
-        .append(color & 0xFF).append(")") //
+        .append(r).append(",") //
+        .append(g).append(",") //
+        .append(b).append(")") //
         .toString();
   }
 
@@ -683,12 +672,7 @@ public final class Pollexor {
     if (transparency < 0 || transparency > 100) {
       throw new UnableToBuildException("Transparency must be between 0 and 100, inclusive.");
     }
-    return new StringBuilder(FILTER_WATERMARK).append("(") //
-        .append(stripProtocolAndParams(imageUrl)).append(",") //
-        .append(x).append(",") //
-        .append(y).append(",") //
-        .append(transparency).append(")") //
-        .toString();
+    return FILTER_WATERMARK + "(" + stripProtocolAndParams(imageUrl) + "," + x + "," + y + "," + transparency + ")";
   }
 
   /**
@@ -721,11 +705,7 @@ public final class Pollexor {
    * @param luminanceOnly Sharpen only luminance channel.
    */
   public static String sharpen(float amount, float radius, boolean luminanceOnly) {
-    return new StringBuilder(FILTER_SHARPEN).append("(") //
-        .append(amount).append(",") //
-        .append(radius).append(",") //
-        .append(luminanceOnly).append(")") //
-        .toString();
+    return FILTER_SHARPEN + "(" + amount + "," + radius + "," + luminanceOnly + ")";
   }
 
   /**
@@ -736,7 +716,7 @@ public final class Pollexor {
    */
   public static String fill(int color) {
     final String colorCode = Integer.toHexString(color & 0xFFFFFF); // Strip alpha
-    return new StringBuilder(FILTER_FILL).append("(").append(colorCode).append(")").toString();
+    return FILTER_FILL + "(" + colorCode + ")";
   }
 
   /**
@@ -749,8 +729,6 @@ public final class Pollexor {
     if (imageUrl == null || imageUrl.length() == 0) {
       throw new UnableToBuildException("Image URL must not be blank.");
     }
-    return new StringBuilder(FILTER_FRAME).append("(") //
-        .append(stripProtocolAndParams(imageUrl)).append(")") //
-        .toString();
+    return FILTER_FRAME + "(" + stripProtocolAndParams(imageUrl) + ")";
   }
 }
