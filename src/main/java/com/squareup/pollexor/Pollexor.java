@@ -30,6 +30,7 @@ public final class Pollexor {
   private static final String FILTER_WATERMARK = "watermark";
   private static final String FILTER_SHARPEN = "sharpen";
   private static final String FILTER_FILL = "fill";
+  private static final String FILTER_FRAME = "frame";
 
   /**
    * Horizontal alignment for crop positioning.
@@ -307,6 +308,7 @@ public final class Pollexor {
    * @see #brightness(int)
    * @see #contrast(int)
    * @see #fill(int)
+   * @see #frame(String)
    * @see #noise(int)
    * @see #quality(int)
    * @see #rgb(int, int, int)
@@ -735,5 +737,20 @@ public final class Pollexor {
   public static String fill(int color) {
     final String colorCode = Integer.toHexString(color & 0xFFFFFF); // Strip alpha
     return new StringBuilder(FILTER_FILL).append("(").append(colorCode).append(")").toString();
+  }
+
+  /**
+   * This filter uses a 9-patch to overlay the image.
+   *
+   * @param imageUrl Watermark image URL. It is very important to understand that the same image
+   *                 loader that Thumbor uses will be used here.
+   */
+  public static String frame(String imageUrl) {
+    if (imageUrl == null || imageUrl.length() == 0) {
+      throw new UnableToBuildException("Image URL must not be blank.");
+    }
+    return new StringBuilder(FILTER_FRAME).append("(") //
+        .append(stripProtocolAndParams(imageUrl)).append(")") //
+        .toString();
   }
 }

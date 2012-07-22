@@ -7,6 +7,7 @@ import static com.squareup.pollexor.Pollexor.HorizontalAlign.CENTER;
 import static com.squareup.pollexor.Pollexor.UnableToBuildException;
 import static com.squareup.pollexor.Pollexor.VerticalAlign.MIDDLE;
 import static com.squareup.pollexor.Pollexor.brightness;
+import static com.squareup.pollexor.Pollexor.frame;
 import static com.squareup.pollexor.Pollexor.image;
 import static com.squareup.pollexor.Pollexor.contrast;
 import static com.squareup.pollexor.Pollexor.fill;
@@ -593,5 +594,9 @@ public class PollexorTest {
   @Test public void testFilterFillingFormat() {
     assertEquals("fill(ff2020)", fill(0xFF2020));
     assertEquals("fill(ff2020)", fill(0xABFF2020));
+  }
+
+  @Test public void testFilterFrameFormat() {
+    assertEquals("frame(a.png)", frame("a.png"));
   }
 }
