@@ -5,6 +5,7 @@ Version 1.0.1 *(In Development)*
 --------------------------------
 
  * New `frame()` filter for 9-patch images.
+ * New `stripicc()` filter to remove ICC profile information.
 
 
 Version 1.0.0 *(2012-07-17)*

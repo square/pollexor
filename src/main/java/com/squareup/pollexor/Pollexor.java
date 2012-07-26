@@ -31,6 +31,7 @@ public final class Pollexor {
   private static final String FILTER_SHARPEN = "sharpen";
   private static final String FILTER_FILL = "fill";
   private static final String FILTER_FRAME = "frame";
+  private static final String FILTER_STRIP_ICC = "strip_icc";
 
   /**
    * Horizontal alignment for crop positioning.
@@ -730,5 +731,12 @@ public final class Pollexor {
       throw new UnableToBuildException("Image URL must not be blank.");
     }
     return FILTER_FRAME + "(" + stripProtocolAndParams(imageUrl) + ")";
+  }
+
+  /**
+   * This filter strips the ICC profile from the image.
+   */
+  public static String stripicc() {
+    return FILTER_STRIP_ICC;
   }
 }
