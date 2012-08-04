@@ -737,6 +737,6 @@ public final class Pollexor {
    * This filter strips the ICC profile from the image.
    */
   public static String stripicc() {
-    return FILTER_STRIP_ICC;
+    return FILTER_STRIP_ICC + "()";
   }
 }
