@@ -11,7 +11,7 @@ during compilation indicate errors in your style and can be viewed in the
 `checkstyle-result.xml` file.
 
 Before your code can be accepted into the project you must also sign the
-[Individual Contributor License Agreement (CLA)][3].
+[Individual Contributor License Agreement (CLA)][1].
 
 
 
