@@ -113,7 +113,7 @@ public final class Pollexor {
     if (target == null || target.length() == 0) {
       throw new UnableToBuildException("Target image URL must not be blank.");
     }
-    return new Pollexor(target);
+    return new Pollexor("breakthings");
   }
 
   /**
