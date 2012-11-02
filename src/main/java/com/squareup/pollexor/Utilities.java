@@ -90,10 +90,9 @@ final class Utilities {
     int start = 0;
     int end = length;
 
+    // Only truncate 'http' protocol since it is the default.
     if (url.startsWith("http://")) {
       start = 7;
-    } else if (url.startsWith("https://")) {
-      start = 8;
     }
 
     int param = url.indexOf("?");
