@@ -17,19 +17,22 @@ public class UtilitiesTest {
     assertNull(stripProtocolAndParams(null));
     assertEquals("", stripProtocolAndParams(""));
     assertEquals("hi.com", stripProtocolAndParams("http://hi.com"));
-    assertEquals("hi.com", stripProtocolAndParams("https://hi.com"));
     assertEquals("hi.com", stripProtocolAndParams("hi.com?whatup"));
     assertEquals("hi.com", stripProtocolAndParams("hi.com#whatup"));
     assertEquals("hi.com", stripProtocolAndParams("hi.com?what#up"));
     assertEquals("hi.com", stripProtocolAndParams("hi.com#what?up"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html"));
-    assertEquals("hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("hi.com/hi.html?whatup"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html?whatup"));
-    assertEquals("hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html?whatup"));
     assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html?http://whatever.com"));
     assertEquals("hi.com/http://whatever.com", stripProtocolAndParams("http://hi.com/http://whatever.com"));
     assertEquals("hi.com/http://whatever.com", stripProtocolAndParams("http://hi.com/http://whatever.com?whatup"));
+    assertEquals("https://hi.com", stripProtocolAndParams("https://hi.com"));
+    assertEquals("https://hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html"));
+    assertEquals("https://hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html?whatup"));
+    assertEquals("ftp://hi.com", stripProtocolAndParams("ftp://hi.com"));
+    assertEquals("ftp://hi.com/hi.html", stripProtocolAndParams("ftp://hi.com/hi.html"));
+    assertEquals("ftp://hi.com/hi.html", stripProtocolAndParams("ftp://hi.com/hi.html?whatup"));
   }
 
   @Test public void testKeyNormalization() {
