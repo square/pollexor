@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Version 1.2.0 *(In Development)*
---------------------------------
+Version 1.1.1 *(2012-11-08)*
+----------------------------
 
  * Fix: Only strip 'http' protocol from image urls.
 
