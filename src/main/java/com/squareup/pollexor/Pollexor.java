@@ -447,6 +447,9 @@ public final class Pollexor {
     }
 
     if (hasResize) {
+      if (fitIn) {
+        builder.append(PART_FIT_IN).append("/");
+      }
       if (flipHorizontally) {
         builder.append("-");
       }
@@ -455,10 +458,6 @@ public final class Pollexor {
         builder.append("-");
       }
       builder.append(resizeHeight);
-
-      if (fitIn) {
-        builder.append("/").append(PART_FIT_IN);
-      }
       builder.append("/");
     }
 
