@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.1.2 *(2013-03-05)*
+----------------------------
+
+ * Fix: Properly place 'fit in' before requested size.
+
+
 Version 1.1.1 *(2012-11-08)*
 ----------------------------
 
