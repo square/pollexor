@@ -147,7 +147,7 @@ public class PollexorTest {
     assertFalse(url.fitIn);
     url.fitIn();
     assertTrue(url.fitIn);
-    assertEquals("/unsafe/10x5/fit-in/a.com/b.png", url.toUrl());
+    assertEquals("/unsafe/fit-in/10x5/a.com/b.png", url.toUrl());
   }
 
   @Test public void testResizeAndFlip() {
