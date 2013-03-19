@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.2.0 *(In Development)*
+--------------------------------
+
+ * Fix: Do not mutate input image URLs. Thumbor 3.0 now supports full URLs in
+   the request.
+
+
 Version 1.1.2 *(2013-03-05)*
 ----------------------------
 

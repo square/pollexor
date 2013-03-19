@@ -7,34 +7,10 @@ import static com.squareup.pollexor.Utilities.base64Encode;
 import static com.squareup.pollexor.Utilities.md5;
 import static com.squareup.pollexor.Utilities.normalizeString;
 import static com.squareup.pollexor.Utilities.rightPadString;
-import static com.squareup.pollexor.Utilities.stripProtocolAndParams;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class UtilitiesTest {
-  @Test public void testProtocolAndParamStrip() {
-    assertNull(stripProtocolAndParams(null));
-    assertEquals("", stripProtocolAndParams(""));
-    assertEquals("hi.com", stripProtocolAndParams("http://hi.com"));
-    assertEquals("hi.com", stripProtocolAndParams("hi.com?whatup"));
-    assertEquals("hi.com", stripProtocolAndParams("hi.com#whatup"));
-    assertEquals("hi.com", stripProtocolAndParams("hi.com?what#up"));
-    assertEquals("hi.com", stripProtocolAndParams("hi.com#what?up"));
-    assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html"));
-    assertEquals("hi.com/hi.html", stripProtocolAndParams("hi.com/hi.html?whatup"));
-    assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html?whatup"));
-    assertEquals("hi.com/hi.html", stripProtocolAndParams("http://hi.com/hi.html?http://whatever.com"));
-    assertEquals("hi.com/http://whatever.com", stripProtocolAndParams("http://hi.com/http://whatever.com"));
-    assertEquals("hi.com/http://whatever.com", stripProtocolAndParams("http://hi.com/http://whatever.com?whatup"));
-    assertEquals("https://hi.com", stripProtocolAndParams("https://hi.com"));
-    assertEquals("https://hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html"));
-    assertEquals("https://hi.com/hi.html", stripProtocolAndParams("https://hi.com/hi.html?whatup"));
-    assertEquals("ftp://hi.com", stripProtocolAndParams("ftp://hi.com"));
-    assertEquals("ftp://hi.com/hi.html", stripProtocolAndParams("ftp://hi.com/hi.html"));
-    assertEquals("ftp://hi.com/hi.html", stripProtocolAndParams("ftp://hi.com/hi.html?whatup"));
-  }
-
   @Test public void testKeyNormalization() {
     assertEquals("oneoneoneo", normalizeString("one", 10));
     assertEquals("equaltoten", normalizeString("equaltoten", 10));
@@ -86,7 +62,8 @@ public class UtilitiesTest {
   @Test public void testBase64() {
     assertEquals("", base64Encode(new byte[0]));
     assertEquals("dGVzdA==", base64Encode("test".getBytes()));
-    assertEquals("dGhpcyBpcyBhIHJlYWxseSBsb25nIHN0cmluZw==", base64Encode("this is a really long string".getBytes()));
+    assertEquals("dGhpcyBpcyBhIHJlYWxseSBsb25nIHN0cmluZw==",
+        base64Encode("this is a really long string".getBytes()));
   }
 
   @Test public void testBase64InvalidInputs() {

@@ -8,9 +8,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 
-/**
- * Utility methods for {@link Pollexor}.
- */
+/** Utility methods for {@link Pollexor}. */
 final class Utilities {
   private Utilities() {
     // No instances.
@@ -25,14 +23,16 @@ final class Utilities {
    *
    * @param bytes Bytes to encode.
    * @return Encoded string.
-   * @throws IllegalArgumentException if {@code bytes} is null or exceeds 3/4ths of {@code Integer.MAX_VALUE}.
+   * @throws IllegalArgumentException if {@code bytes} is null or exceeds 3/4ths of {@code
+   * Integer.MAX_VALUE}.
    */
   public static String base64Encode(byte[] bytes) {
     if (bytes == null) {
       throw new IllegalArgumentException("Input bytes must not be null.");
     }
     if (bytes.length >= BASE64_UPPER_BOUND) {
-      throw new IllegalArgumentException("Input bytes length must not exceed " + BASE64_UPPER_BOUND);
+      throw new IllegalArgumentException(
+          "Input bytes length must not exceed " + BASE64_UPPER_BOUND);
     }
 
     // Every three bytes is encoded into four characters.
@@ -75,48 +75,13 @@ final class Utilities {
   }
 
   /**
-   * Remove any protocol or parameters from the specified URL.
-   *
-   * @param url URL.
-   * @return Stripped URL.
-   */
-  static String stripProtocolAndParams(String url) {
-    if (url == null) {
-      return null;
-    }
-
-    final int length = url.length();
-
-    int start = 0;
-    int end = length;
-
-    // Only truncate 'http' protocol since it is the default.
-    if (url.startsWith("http://")) {
-      start = 7;
-    }
-
-    int param = url.indexOf("?");
-    if (param != -1) {
-      end = param;
-    }
-    param = url.indexOf("#");
-    if (param != -1 && param < end) {
-      end = param;
-    }
-
-    if (start > 0 || end < length) {
-      return url.substring(start, end);
-    }
-    return url;
-  }
-
-  /**
    * Pad a {@link StringBuilder} to a desired multiple on the right using a specified character.
    *
    * @param builder Builder to pad.
    * @param padding Padding character.
    * @param multipleOf Number which the length must be a multiple of.
-   * @throws IllegalArgumentException if {@code builder} is null or {@code multipleOf} is less than 2.
+   * @throws IllegalArgumentException if {@code builder} is null or {@code multipleOf} is less than
+   * 2.
    */
   static void rightPadString(StringBuilder builder, char padding, int multipleOf) {
     if (builder == null) {
@@ -138,8 +103,10 @@ final class Utilities {
    *
    * @param string Input string.
    * @param desiredLength Desired length of string.
-   * @return Output string which is guaranteed to have a length equal to the desired length argument.
-   * @throws IllegalArgumentException if {@code string} is blank or {@code desiredLength} is not greater than 0.
+   * @return Output string which is guaranteed to have a length equal to the desired length
+   *         argument.
+   * @throws IllegalArgumentException if {@code string} is blank or {@code desiredLength} is not
+   * greater than 0.
    */
   static String normalizeString(String string, int desiredLength) {
     if (string == null || string.length() == 0) {
