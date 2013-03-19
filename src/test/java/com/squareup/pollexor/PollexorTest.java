@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 
 public class PollexorTest {
   @Test public void testNoConfig() {
-    assertEquals("/unsafe/a.com/b.png", image("http://a.com/b.png").toUrl());
+    assertEquals("/unsafe/http://a.com/b.png", image("http://a.com/b.png").toUrl());
   }
 
   @Test public void testComplexUnsafeBuild() {
