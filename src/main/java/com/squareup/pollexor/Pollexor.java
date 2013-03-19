@@ -8,7 +8,6 @@ import static com.squareup.pollexor.Utilities.aes128Encrypt;
 import static com.squareup.pollexor.Utilities.base64Encode;
 import static com.squareup.pollexor.Utilities.hmacSha1;
 import static com.squareup.pollexor.Utilities.md5;
-import static com.squareup.pollexor.Utilities.stripProtocolAndParams;
 
 /**
  * Fluent interface to create a URL appropriate for passing to Thumbor.
@@ -33,9 +32,7 @@ public final class Pollexor {
   private static final String FILTER_FRAME = "frame";
   private static final String FILTER_STRIP_ICC = "strip_icc";
 
-  /**
-   * Horizontal alignment for crop positioning.
-   */
+  /** Horizontal alignment for crop positioning. */
   public enum HorizontalAlign {
     LEFT("left"), CENTER("center"), RIGHT("right");
 
@@ -46,9 +43,7 @@ public final class Pollexor {
     }
   }
 
-  /**
-   * Vertical alignment for crop positioning.
-   */
+  /** Vertical alignment for crop positioning. */
   public enum VerticalAlign {
     TOP("top"), MIDDLE("middle"), BOTTOM("bottom");
 
@@ -60,7 +55,8 @@ public final class Pollexor {
   }
 
   /**
-   * Exception denoting that a fatal error occurred while assembling the URL for the current configuration.
+   * Exception denoting that a fatal error occurred while assembling the URL for the current
+   * configuration.
    *
    * @see #getCause()
    */
@@ -100,7 +96,7 @@ public final class Pollexor {
    * @param target Target image URL.
    */
   Pollexor(String target) {
-    this.target = stripProtocolAndParams(target);
+    this.target = target;
   }
 
   /**
@@ -117,8 +113,8 @@ public final class Pollexor {
   }
 
   /**
-   * Set a key for secure URL generation. This will default the {@link #toUrl()} and {@link #toMeta()} to build safe
-   * URLs.
+   * Set a key for secure URL generation. This will default the {@link #toUrl()} and
+   * {@link #toMeta()} to build safe URLs.
    *
    * @param key Security key for remote server.
    * @throws UnableToBuildException if {@code key} is blank.
@@ -151,7 +147,7 @@ public final class Pollexor {
   /**
    * Resize picture to desired size.
    *
-   * @param width  Desired width.
+   * @param width Desired width.
    * @param height Desired height.
    * @throws UnableToBuildException if {@code width} or {@code height} is less than 1.
    */
@@ -210,13 +206,13 @@ public final class Pollexor {
   /**
    * Crop the image between two points.
    *
-   * @param top    Top bound.
-   * @param left   Left bound.
+   * @param top Top bound.
+   * @param left Left bound.
    * @param bottom Bottom bound.
-   * @param right  Right bound.
-   * @throws UnableToBuildException if {@code top} or {@code left} are less than zero or {@code bottom} or
-   *                                {@code right} are less than one or less than {@code top} or {@code left},
-   *                                respectively.
+   * @param right Right bound.
+   * @throws UnableToBuildException if {@code top} or {@code left} are less than zero or {@code
+   * bottom} or {@code right} are less than one or less than {@code top} or {@code left},
+   * respectively.
    */
   public Pollexor crop(int top, int left, int bottom, int right) {
     if (top < 0) {
@@ -291,18 +287,17 @@ public final class Pollexor {
     return this;
   }
 
-  /**
-   * Use legacy encryption when constructing a safe URL.
-   */
+  /** Use legacy encryption when constructing a safe URL. */
   public Pollexor legacy() {
     isLegacy = true;
     return this;
   }
 
   /**
-   * <p>Add one or more filters to the image.</p>
-   * <p/>
-   * <p>If you have custom filters you can supply them as a string. (e.g. <code>"my_filter(1,2,3)</code>").</p>
+   * Add one or more filters to the image.
+   * <p>
+   * If you have custom filters you can supply them as a string. (e.g.
+   * <code>"my_filter(1,2,3)</code>").
    *
    * @param filters Filter strings.
    * @throws UnableToBuildException if no arguments supplied or an argument is {@code null}.
@@ -341,8 +336,8 @@ public final class Pollexor {
   }
 
   /**
-   * Build the URL. This will either call {@link #toUrlSafe()} or {@link #toUrlUnsafe()} depending on whether
-   * {@link #key(String)} was set.
+   * Build the URL. This will either call {@link #toUrlSafe()} or {@link #toUrlUnsafe()} depending
+   * on whether {@link #key(String)} was set.
    *
    * @throws UnableToBuildException
    */
@@ -350,9 +345,7 @@ public final class Pollexor {
     return (key == null) ? toUrlUnsafe() : toUrlSafe();
   }
 
-  /**
-   * Build an unsafe version of the URL.
-   */
+  /** Build an unsafe version of the URL. */
   public String toUrlUnsafe() {
     return host + PREFIX_UNSAFE + assembleConfig(false);
   }
@@ -382,8 +375,8 @@ public final class Pollexor {
   }
 
   /**
-   * Build the metadata URL. This will either call {@link #toMetaSafe()} or {@link #toMetaUnsafe()} depending on whether
-   * {@link #key(String)} was set.
+   * Build the metadata URL. This will either call {@link #toMetaSafe()} or {@link #toMetaUnsafe()}
+   * depending on whether {@link #key(String)} was set.
    *
    * @throws UnableToBuildException
    */
@@ -391,9 +384,7 @@ public final class Pollexor {
     return (key == null) ? toMetaUnsafe() : toMetaSafe();
   }
 
-  /**
-   * Build an unsafe version of the metadata URL.
-   */
+  /** Build an unsafe version of the metadata URL. */
   public String toMetaUnsafe() {
     return host + assembleConfig(true);
   }
@@ -419,9 +410,7 @@ public final class Pollexor {
     return toUrl();
   }
 
-  /**
-   * Assemble the configuration section of the URL.
-   */
+  /** Assemble the configuration section of the URL. */
   StringBuilder assembleConfig(boolean meta) {
     StringBuilder builder = new StringBuilder();
 
@@ -478,7 +467,7 @@ public final class Pollexor {
    * This filter increases or decreases the image brightness.
    *
    * @param amount -100 to 100 - The amount (in %) to change the image brightness. Positive numbers
-   *               make the image brighter and negative numbers make the image darker.
+   * make the image brighter and negative numbers make the image darker.
    * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String brightness(int amount) {
@@ -492,7 +481,7 @@ public final class Pollexor {
    * The filter increases or decreases the image contrast.
    *
    * @param amount -100 to 100 - The amount (in %) to change the image contrast. Positive numbers
-   *               increase contrast and negative numbers decrease contrast.
+   * increase contrast and negative numbers decrease contrast.
    * @throws UnableToBuildException if {@code amount} outside bounds.
    */
   public static String contrast(int amount) {
@@ -562,7 +551,7 @@ public final class Pollexor {
    * This filter adds rounded corners to the image using the specified color as the background.
    *
    * @param radius amount of pixels to use as radius.
-   * @param color  fill color for clipped region.
+   * @param color fill color for clipped region.
    */
   public static String roundCorner(int radius, int color) {
     return roundCorner(radius, 0, color);
@@ -573,8 +562,8 @@ public final class Pollexor {
    *
    * @param radiusInner amount of pixels to use as radius.
    * @param radiusOuter specifies the second value for the ellipse used for the radius. Use 0 for
-   *                    no value.
-   * @param color       fill color for clipped region.
+   * no value.
+   * @param color fill color for clipped region.
    */
   public static String roundCorner(int radiusInner, int radiusOuter, int color) {
     if (radiusInner < 1) {
@@ -601,7 +590,7 @@ public final class Pollexor {
    * This filter adds a watermark to the image at (0, 0).
    *
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
-   *                 loader that Thumbor uses will be used here.
+   * loader that Thumbor uses will be used here.
    * @throws UnableToBuildException if {@code image} is blank.
    */
   public static String watermark(String imageUrl) {
@@ -612,7 +601,7 @@ public final class Pollexor {
    * This filter adds a watermark to the image at (0, 0).
    *
    * @param image Watermark image URL. It is very important to understand that the same image
-   *              loader that Thumbor uses will be used here.
+   * loader that Thumbor uses will be used here.
    * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Pollexor image) {
@@ -623,11 +612,11 @@ public final class Pollexor {
    * This filter adds a watermark to the image.
    *
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
-   *                 loader that Thumbor uses will be used here.
-   * @param x        Horizontal position that the watermark will be in. Positive numbers indicate position
-   *                 from the left and negative numbers indicate position from the right.
-   * @param y        Vertical position that the watermark will be in. Positive numbers indicate position
-   *                 from the top and negative numbers indicate position from the bottom.
+   * loader that Thumbor uses will be used here.
+   * @param x Horizontal position that the watermark will be in. Positive numbers indicate position
+   * from the left and negative numbers indicate position from the right.
+   * @param y Vertical position that the watermark will be in. Positive numbers indicate position
+   * from the top and negative numbers indicate position from the bottom.
    * @throws UnableToBuildException if {@code image} is blank.
    */
   public static String watermark(String imageUrl, int x, int y) {
@@ -638,11 +627,11 @@ public final class Pollexor {
    * This filter adds a watermark to the image.
    *
    * @param image Watermark image URL. It is very important to understand that the same image
-   *              loader that Thumbor uses will be used here.
-   * @param x     Horizontal position that the watermark will be in. Positive numbers indicate position
-   *              from the left and negative numbers indicate position from the right.
-   * @param y     Vertical position that the watermark will be in. Positive numbers indicate position
-   *              from the top and negative numbers indicate position from the bottom.
+   * loader that Thumbor uses will be used here.
+   * @param x Horizontal position that the watermark will be in. Positive numbers indicate position
+   * from the left and negative numbers indicate position from the right.
+   * @param y Vertical position that the watermark will be in. Positive numbers indicate position
+   * from the top and negative numbers indicate position from the bottom.
    * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Pollexor image, int x, int y) {
@@ -655,15 +644,16 @@ public final class Pollexor {
   /**
    * This filter adds a watermark to the image.
    *
-   * @param imageUrl     Watermark image URL. It is very important to understand that the same image
-   *                     loader that Thumbor uses will be used here.
-   * @param x            Horizontal position that the watermark will be in. Positive numbers indicate position
-   *                     from the left and negative numbers indicate position from the right.
-   * @param y            Vertical position that the watermark will be in. Positive numbers indicate position
-   *                     from the top and negative numbers indicate position from the bottom.
+   * @param imageUrl Watermark image URL. It is very important to understand that the same image
+   * loader that Thumbor uses will be used here.
+   * @param x Horizontal position that the watermark will be in. Positive numbers indicate position
+   * from the left and negative numbers indicate position from the right.
+   * @param y Vertical position that the watermark will be in. Positive numbers indicate position
+   * from the top and negative numbers indicate position from the bottom.
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
-   *                     and 100 (fully transparent).
-   * @throws UnableToBuildException if {@code image} is blank or {@code transparency} is outside bounds.
+   * and 100 (fully transparent).
+   * @throws UnableToBuildException if {@code image} is blank or {@code transparency} is outside
+   * bounds.
    */
   public static String watermark(String imageUrl, int x, int y, int transparency) {
     if (imageUrl == null || imageUrl.length() == 0) {
@@ -672,20 +662,20 @@ public final class Pollexor {
     if (transparency < 0 || transparency > 100) {
       throw new UnableToBuildException("Transparency must be between 0 and 100, inclusive.");
     }
-    return FILTER_WATERMARK + "(" + stripProtocolAndParams(imageUrl) + "," + x + "," + y + "," + transparency + ")";
+    return FILTER_WATERMARK + "(" + imageUrl + "," + x + "," + y + "," + transparency + ")";
   }
 
   /**
    * This filter adds a watermark to the image.
    *
-   * @param image        Watermark image URL. It is very important to understand that the same image
-   *                     loader that Thumbor uses will be used here.
-   * @param x            Horizontal position that the watermark will be in. Positive numbers indicate position
-   *                     from the left and negative numbers indicate position from the right.
-   * @param y            Vertical position that the watermark will be in. Positive numbers indicate position
-   *                     from the top and negative numbers indicate position from the bottom.
+   * @param image Watermark image URL. It is very important to understand that the same image
+   * loader that Thumbor uses will be used here.
+   * @param x Horizontal position that the watermark will be in. Positive numbers indicate position
+   * from the left and negative numbers indicate position from the right.
+   * @param y Vertical position that the watermark will be in. Positive numbers indicate position
+   * from the top and negative numbers indicate position from the bottom.
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
-   *                     and 100 (fully transparent).
+   * and 100 (fully transparent).
    * @throws UnableToBuildException if {@code image} is null.
    */
   public static String watermark(Pollexor image, int x, int y, int transparency) {
@@ -700,8 +690,8 @@ public final class Pollexor {
    * excellent Wavelet sharpen GIMP plugin. Check http://registry.gimp.org/node/9836 for details
    * about how it work.
    *
-   * @param amount        Sharpen amount. Typical values are between 0.0 and 10.0.
-   * @param radius        Sharpen radius. Typical values are between 0.0 and 2.0.
+   * @param amount Sharpen amount. Typical values are between 0.0 and 10.0.
+   * @param radius Sharpen radius. Typical values are between 0.0 and 2.0.
    * @param luminanceOnly Sharpen only luminance channel.
    */
   public static String sharpen(float amount, float radius, boolean luminanceOnly) {
@@ -723,18 +713,16 @@ public final class Pollexor {
    * This filter uses a 9-patch to overlay the image.
    *
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
-   *                 loader that Thumbor uses will be used here.
+   * loader that Thumbor uses will be used here.
    */
   public static String frame(String imageUrl) {
     if (imageUrl == null || imageUrl.length() == 0) {
       throw new UnableToBuildException("Image URL must not be blank.");
     }
-    return FILTER_FRAME + "(" + stripProtocolAndParams(imageUrl) + ")";
+    return FILTER_FRAME + "(" + imageUrl + ")";
   }
 
-  /**
-   * This filter strips the ICC profile from the image.
-   */
+  /** This filter strips the ICC profile from the image. */
   public static String stripicc() {
     return FILTER_STRIP_ICC + "()";
   }
