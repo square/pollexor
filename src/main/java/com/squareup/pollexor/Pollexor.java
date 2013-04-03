@@ -149,14 +149,17 @@ public final class Pollexor {
    *
    * @param width Desired width.
    * @param height Desired height.
-   * @throws UnableToBuildException if {@code width} or {@code height} is less than 1.
+   * @throws UnableToBuildException if {@code width} or {@code height} is less than 0 or both are 0.
    */
   public Pollexor resize(int width, int height) {
-    if (width < 1) {
-      throw new UnableToBuildException("Width must be greater than zero.");
+    if (width < 0) {
+      throw new UnableToBuildException("Width must be a positive number.");
     }
-    if (height < 1) {
-      throw new UnableToBuildException("Height must be greater than zero.");
+    if (height < 0) {
+      throw new UnableToBuildException("Height must be a positive number.");
+    }
+    if (width == 0 && height == 0) {
+      throw new UnableToBuildException("Both width and height must not be zero.");
     }
     hasResize = true;
     resizeWidth = width;
