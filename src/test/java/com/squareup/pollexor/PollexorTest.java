@@ -195,8 +195,7 @@ public class PollexorTest {
     try {
       url.flipHorizontally();
       fail("Allowed horizontal flip without resize.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     assertFalse(url.flipHorizontally);
   }
@@ -208,8 +207,7 @@ public class PollexorTest {
     try {
       url.flipVertically();
       fail("Allowed vertical flip without resize.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     assertFalse(url.flipVertically);
   }
@@ -221,8 +219,7 @@ public class PollexorTest {
     try {
       url.fitIn();
       fail("Allowed fit-in resize without resize.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     assertFalse(url.fitIn);
   }
@@ -234,8 +231,7 @@ public class PollexorTest {
     try {
       url.smart();
       fail("Allowed smart crop without crop.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     assertFalse(url.isSmart);
   }
@@ -258,15 +254,13 @@ public class PollexorTest {
     try {
       url.align(CENTER);
       fail("Allowed horizontal crop align without crop.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.align(MIDDLE);
       fail("Allowed vertical crop align without crop.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -276,43 +270,37 @@ public class PollexorTest {
     try {
       url.crop(-1, 0, 1, 1);
       fail("Bad top value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.crop(0, -1, 1, 1);
       fail("Bad left value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.crop(0, 0, -1, 1);
       fail("Bad bottom value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.crop(0, 0, 1, -1);
       fail("Bad right value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.crop(0, 1, 1, 0);
       fail("Right value less than left value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.crop(1, 0, 0, 1);
       fail("Bottom value less than top value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -320,17 +308,21 @@ public class PollexorTest {
     Pollexor url = new Pollexor("");
 
     try {
-      url.resize(0, 5);
+      url.resize(-1, 5);
       fail("Bad width value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
-      url.resize(10, 0);
+      url.resize(10, -400);
       fail("Bad height value allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
+    }
+
+    try {
+      url.resize(0, 0);
+      fail("Zero resize value allowed.");
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -338,8 +330,7 @@ public class PollexorTest {
     try {
       image(null);
       fail("Bad target image URL allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
@@ -356,15 +347,13 @@ public class PollexorTest {
     try {
       url.key(null);
       fail("Bad key string allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.key("");
       fail("Bad key string allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -374,15 +363,13 @@ public class PollexorTest {
     try {
       url.host(null);
       fail("Bad host string allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
 
     try {
       url.host("");
       fail("Bad host string allowed.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -391,8 +378,7 @@ public class PollexorTest {
     try {
       url.toUrlSafe();
       fail(".toUrlSafe() succeeds without key.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -400,14 +386,12 @@ public class PollexorTest {
     try {
       brightness(-101);
       fail("Brightness allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       brightness(101);
       fail("Brightness allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -419,14 +403,12 @@ public class PollexorTest {
     try {
       contrast(-101);
       fail("Contrast allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       contrast(101);
       fail("Contrast allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -438,14 +420,12 @@ public class PollexorTest {
     try {
       noise(-1);
       fail("Noise allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       noise(101);
       fail("Noise allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -457,14 +437,12 @@ public class PollexorTest {
     try {
       quality(-1);
       fail("Quality allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       quality(101);
       fail("Quality allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -476,38 +454,32 @@ public class PollexorTest {
     try {
       rgb(-101, 0, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       rgb(101, 0, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       rgb(0, -101, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       rgb(0, 101, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       rgb(0, 0, -101);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       rgb(0, 0, 101);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -519,20 +491,17 @@ public class PollexorTest {
     try {
       roundCorner(0);
       fail("Round corner allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       roundCorner(-50);
       fail("Round corner allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       roundCorner(1, -1, 0xFFFFFF);
       fail("Round corner allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
@@ -546,32 +515,27 @@ public class PollexorTest {
     try {
       watermark((String) null);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       watermark((Pollexor) null);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       watermark("");
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       watermark("a.png", 0, 0, -1);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
     try {
       watermark("a.png", 0, 0, 101);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException e) {
-      // Pass.
+    } catch (UnableToBuildException expected) {
     }
   }
 
