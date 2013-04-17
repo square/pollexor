@@ -13,11 +13,13 @@ Download
 
 Download [the latest JAR][2] or grab via Maven:
 
-    <dependency>
-        <groupId>com.squareup</groupId>
-        <artifactId>pollexor<artifactId>
-        <version>(insert latest version)</version>
-    </dependency>
+```xml
+<dependency>
+  <groupId>com.squareup</groupId>
+  <artifactId>pollexor<artifactId>
+  <version>(insert latest version)</version>
+</dependency>
+```xml
 
 
 
