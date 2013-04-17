@@ -18,7 +18,7 @@
             <h1>Pollexor</h1>
             <h3>Java client for the <a href="http://github.com/globocom/thumbor">Thumbor image service</a> which allows you to build URIs in an expressive fashion using a fluent API.</h3>
             <ul class="unstyled">
-                <li><a href="http://github.com/square/pollexor" class="btn btn-large btn-inverse" id="download">Download</a></li>
+                <li><a href="http://github.com/square/pollexor" class="btn btn-large btn-inverse" id="download">Download<span class="version"></span></a></li>
             </ul>
       </div>
     </div>
@@ -82,23 +82,15 @@
     </div>
 </div>
 <script src="prettify.js"></script>
-<script> prettyPrint(); </script>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="jquery-maven-artifact.min.js"></script>
 <script>
-    $.getJSON('https://api.github.com/repos/square/pollexor/tags?callback=?', function(response) {
-        var meta = response.meta
-          , data = response.data
-          ;
+  prettyPrint();
 
-        data.sort(function(o1, o2) {
-            return (o1.name > o2.name) ? -1 : 1;
-        });
-
-        // Ensure we only get the version information.
-        var last = data[0].name.match(/\d+\.\d+\.\d+/);
-
-        $('#download').text('Download v' + last);
-    });
+  $.fn.artifactVersion('com.squareup', 'pollexor', function(version, url) {
+    $('.version').text(' v' + version);
+    $('#download').attr('href', url);
+  });
 </script>
 </body>
 </html>
