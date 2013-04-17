@@ -11,9 +11,7 @@ This library is also fully compatible with the Android platform.
 Download
 --------
 
-Downloadable .jars can be found on the [GitHub download page][2].
-
-You can also depend on the .jar through Maven:
+Download [the latest JAR][2] or grab via Maven:
 
     <dependency>
         <groupId>com.squareup</groupId>
@@ -94,4 +92,4 @@ License
 
 
  [1]: https://github.com/globocom/thumbor
- [2]: http://github.com/square/pollexor/downloads
+ [2]: http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.squareup&a=pollexor&v=LATEST
