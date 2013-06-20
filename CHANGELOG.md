@@ -4,6 +4,8 @@ Change Log
 Version 1.2.0 *(In Development)*
 --------------------------------
 
+ * Allow zero for one argument to `resize()` which will scale according to
+   aspect ratio.
  * Fix: Do not mutate input image URLs. Thumbor 3.0 now supports full URLs in
    the request.
 
