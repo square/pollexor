@@ -31,6 +31,8 @@ public final class Pollexor {
   private static final String FILTER_FILL = "fill";
   private static final String FILTER_FRAME = "frame";
   private static final String FILTER_STRIP_ICC = "strip_icc";
+  private static final String FILTER_GRAYSCALE = "grayscale";
+  private static final String FILTER_EQUALIZE = "equalize";
 
   /** Horizontal alignment for crop positioning. */
   public enum HorizontalAlign {
@@ -728,5 +730,15 @@ public final class Pollexor {
   /** This filter strips the ICC profile from the image. */
   public static String stripicc() {
     return FILTER_STRIP_ICC + "()";
+  }
+
+  /** This filter changes the image to grayscale. */
+  public static String grayscale() {
+    return FILTER_GRAYSCALE + "()";
+  }
+
+  /** This filter equalizes the color distribution in the image. */
+  public static String equalize() {
+    return FILTER_EQUALIZE + "()";
   }
 }
