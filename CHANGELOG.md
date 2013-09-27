@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Version 1.2.0 *(In Development)*
---------------------------------
+Version 1.2.0 *(2013-06-19)*
+----------------------------
 
  * Allow zero for one argument to `resize()` which will scale according to
    aspect ratio.
