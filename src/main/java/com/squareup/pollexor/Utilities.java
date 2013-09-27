@@ -1,14 +1,12 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.pollexor;
 
-import com.squareup.pollexor.Pollexor.UnableToBuildException;
-
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 
-/** Utility methods for {@link Pollexor}. */
+/** Utility methods for {@link ThumborUrlBuilder}. */
 final class Utilities {
   private Utilities() {
     // No instances.

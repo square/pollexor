@@ -10,11 +10,11 @@ import static com.squareup.pollexor.Utilities.hmacSha1;
 import static com.squareup.pollexor.Utilities.md5;
 
 /**
- * Fluent interface to create a URL appropriate for passing to Thumbor.
+ * Fluent interface to build a Thumbor URL.
  *
- * @see #image
+ * @see Thumbor#buildImage(String)
  */
-public final class Pollexor {
+public final class ThumborUrlBuilder {
   private static final String PREFIX_UNSAFE = "unsafe/";
   private static final String PREFIX_META = "meta/";
   private static final String PART_SMART = "smart";
@@ -56,25 +56,9 @@ public final class Pollexor {
     }
   }
 
-  /**
-   * Exception denoting that a fatal error occurred while assembling the URL for the current
-   * configuration.
-   *
-   * @see #getCause()
-   */
-  public static class UnableToBuildException extends RuntimeException {
-    public UnableToBuildException(String reason) {
-      super(reason);
-    }
-
-    public UnableToBuildException(Throwable e) {
-      super(e);
-    }
-  }
-
-  final String target;
-  String host = "/";
-  String key;
+  final String image;
+  final String host;
+  final String key;
   boolean hasCrop;
   boolean hasResize;
   boolean isSmart;
@@ -92,58 +76,10 @@ public final class Pollexor {
   VerticalAlign cropVerticalAlign;
   List<String> filters;
 
-  /**
-   * Start a new Thumbor URL configuration for the specified target image URL.
-   *
-   * @param target Target image URL.
-   */
-  Pollexor(String target) {
-    this.target = target;
-  }
-
-  /**
-   * Start building an image URL for Thumbor.
-   *
-   * @param target Target image to manipulate.
-   * @throws UnableToBuildException if {@code target} is blank.
-   */
-  public static Pollexor image(String target) {
-    if (target == null || target.length() == 0) {
-      throw new UnableToBuildException("Target image URL must not be blank.");
-    }
-    return new Pollexor(target);
-  }
-
-  /**
-   * Set a key for secure URL generation. This will default the {@link #toUrl()} and
-   * {@link #toMeta()} to build safe URLs.
-   *
-   * @param key Security key for remote server.
-   * @throws UnableToBuildException if {@code key} is blank.
-   */
-  public Pollexor key(String key) {
-    if (key == null || key.length() == 0) {
-      throw new UnableToBuildException("Key must not be blank.");
-    }
-    this.key = key;
-    return this;
-  }
-
-  /**
-   * Set a host to prepend to URL for a full URL output.
-   *
-   * @param host Host name.
-   * @throws UnableToBuildException if {@code host} is blank.
-   */
-  public Pollexor host(String host) {
-    if (host == null || host.length() == 0) {
-      throw new UnableToBuildException("Host must not be blank.");
-    }
-    if (!host.endsWith("/")) {
-      host += "/";
-    }
+  ThumborUrlBuilder(String host, String key, String image) {
     this.host = host;
-    return this;
+    this.key = key;
+    this.image = image;
   }
 
   /**
@@ -153,7 +89,7 @@ public final class Pollexor {
    * @param height Desired height.
    * @throws UnableToBuildException if {@code width} or {@code height} is less than 0 or both are 0.
    */
-  public Pollexor resize(int width, int height) {
+  public ThumborUrlBuilder resize(int width, int height) {
     if (width < 0) {
       throw new UnableToBuildException("Width must be a positive number.");
     }
@@ -174,7 +110,7 @@ public final class Pollexor {
    *
    * @throws UnableToBuildException if image has not been marked for resize.
    */
-  public Pollexor flipHorizontally() {
+  public ThumborUrlBuilder flipHorizontally() {
     if (!hasResize) {
       throw new UnableToBuildException("Image must be resized first in order to flip.");
     }
@@ -187,7 +123,7 @@ public final class Pollexor {
    *
    * @throws UnableToBuildException if image has not been marked for resize.
    */
-  public Pollexor flipVertically() {
+  public ThumborUrlBuilder flipVertically() {
     if (!hasResize) {
       throw new UnableToBuildException("Image must be resized first in order to flip.");
     }
@@ -200,7 +136,7 @@ public final class Pollexor {
    *
    * @throws UnableToBuildException if image has not been marked for resize.
    */
-  public Pollexor fitIn() {
+  public ThumborUrlBuilder fitIn() {
     if (!hasResize) {
       throw new UnableToBuildException("Image must be resized first in order to apply 'fit-in'.");
     }
@@ -219,7 +155,7 @@ public final class Pollexor {
    * bottom} or {@code right} are less than one or less than {@code top} or {@code left},
    * respectively.
    */
-  public Pollexor crop(int top, int left, int bottom, int right) {
+  public ThumborUrlBuilder crop(int top, int left, int bottom, int right) {
     if (top < 0) {
       throw new UnableToBuildException("Top must be greater or equal to zero.");
     }
@@ -246,7 +182,7 @@ public final class Pollexor {
    * @param align Horizontal alignment.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Pollexor align(HorizontalAlign align) {
+  public ThumborUrlBuilder align(HorizontalAlign align) {
     if (!hasCrop) {
       throw new UnableToBuildException("Image must be cropped first in order to align.");
     }
@@ -260,7 +196,7 @@ public final class Pollexor {
    * @param align Vertical alignment.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Pollexor align(VerticalAlign align) {
+  public ThumborUrlBuilder align(VerticalAlign align) {
     if (!hasCrop) {
       throw new UnableToBuildException("Image must be cropped first in order to align.");
     }
@@ -275,7 +211,7 @@ public final class Pollexor {
    * @param halign Horizontal alignment.
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Pollexor align(VerticalAlign valign, HorizontalAlign halign) {
+  public ThumborUrlBuilder align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
   }
 
@@ -284,7 +220,7 @@ public final class Pollexor {
    *
    * @throws UnableToBuildException if image has not been marked for crop.
    */
-  public Pollexor smart() {
+  public ThumborUrlBuilder smart() {
     if (!hasCrop) {
       throw new UnableToBuildException("Image must be cropped first in order to smart align.");
     }
@@ -293,7 +229,7 @@ public final class Pollexor {
   }
 
   /** Use legacy encryption when constructing a safe URL. */
-  public Pollexor legacy() {
+  public ThumborUrlBuilder legacy() {
     isLegacy = true;
     return this;
   }
@@ -318,13 +254,13 @@ public final class Pollexor {
    * @see #roundCorner(int, int, int)
    * @see #sharpen(float, float, boolean)
    * @see #watermark(String)
-   * @see #watermark(Pollexor)
+   * @see #watermark(ThumborUrlBuilder)
    * @see #watermark(String, int, int)
-   * @see #watermark(Pollexor, int, int)
+   * @see #watermark(ThumborUrlBuilder, int, int)
    * @see #watermark(String, int, int, int)
-   * @see #watermark(Pollexor, int, int, int)
+   * @see #watermark(ThumborUrlBuilder, int, int, int)
    */
-  public Pollexor filter(String... filters) {
+  public ThumborUrlBuilder filter(String... filters) {
     if (filters.length == 0) {
       throw new UnableToBuildException("You must provide at least one filter.");
     }
@@ -342,7 +278,7 @@ public final class Pollexor {
 
   /**
    * Build the URL. This will either call {@link #toUrlSafe()} or {@link #toUrlUnsafe()} depending
-   * on whether {@link #key(String)} was set.
+   * on whether a key was set.
    *
    * @throws UnableToBuildException
    */
@@ -356,7 +292,7 @@ public final class Pollexor {
   }
 
   /**
-   * Build a safe version of the URL. Requires a prior call to {@link #key(String)}.
+   * Build a safe version of the URL. Requires a non-{@code null} key.
    *
    * @throws UnableToBuildException
    */
@@ -372,7 +308,7 @@ public final class Pollexor {
       byte[] encrypted = legacy ? aes128Encrypt(config, key) : hmacSha1(config, key);
       String encoded = base64Encode(encrypted);
 
-      CharSequence suffix = legacy ? target : config;
+      CharSequence suffix = legacy ? image : config;
       return host + encoded + "/" + suffix;
     } catch (IllegalArgumentException e) {
       throw new UnableToBuildException(e);
@@ -381,7 +317,7 @@ public final class Pollexor {
 
   /**
    * Build the metadata URL. This will either call {@link #toMetaSafe()} or {@link #toMetaUnsafe()}
-   * depending on whether {@link #key(String)} was set.
+   * depending on whether a key was set.
    *
    * @throws UnableToBuildException
    */
@@ -395,7 +331,7 @@ public final class Pollexor {
   }
 
   /**
-   * Build a safe version of the metadata URL. Requires a prior call to {@link #key(String)}.
+   * Build a safe version of the metadata URL. Requires a non-{@code null} key.
    *
    * @throws UnableToBuildException
    */
@@ -463,7 +399,7 @@ public final class Pollexor {
       builder.append("/");
     }
 
-    builder.append(isLegacy ? md5(target) : target);
+    builder.append(isLegacy ? md5(image) : image);
 
     return builder;
   }
@@ -609,7 +545,7 @@ public final class Pollexor {
    * loader that Thumbor uses will be used here.
    * @throws UnableToBuildException if {@code image} is null.
    */
-  public static String watermark(Pollexor image) {
+  public static String watermark(ThumborUrlBuilder image) {
     return watermark(image, 0, 0);
   }
 
@@ -639,7 +575,7 @@ public final class Pollexor {
    * from the top and negative numbers indicate position from the bottom.
    * @throws UnableToBuildException if {@code image} is null.
    */
-  public static String watermark(Pollexor image, int x, int y) {
+  public static String watermark(ThumborUrlBuilder image, int x, int y) {
     if (image == null) {
       throw new UnableToBuildException("Image must not be null.");
     }
@@ -683,7 +619,7 @@ public final class Pollexor {
    * and 100 (fully transparent).
    * @throws UnableToBuildException if {@code image} is null.
    */
-  public static String watermark(Pollexor image, int x, int y, int transparency) {
+  public static String watermark(ThumborUrlBuilder image, int x, int y, int transparency) {
     if (image == null) {
       throw new UnableToBuildException("Image must not be null.");
     }

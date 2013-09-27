@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 2.0.0 *(In Development)*
+--------------------------------
+
+ * `Thumbor` object now encapsulates a thumbor host and optional encryption key
+   and is the factory for building images.
+
+
 Version 1.2.0 *(2013-06-19)*
 ----------------------------
 
