@@ -19,7 +19,7 @@ Download [the latest JAR][2] or grab via Maven:
   <artifactId>pollexor<artifactId>
   <version>(insert latest version)</version>
 </dependency>
-```xml
+```
 
 
 
