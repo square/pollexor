@@ -1,13 +1,13 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.pollexor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.squareup.pollexor.Utilities.aes128Encrypt;
 import static com.squareup.pollexor.Utilities.base64Encode;
 import static com.squareup.pollexor.Utilities.hmacSha1;
 import static com.squareup.pollexor.Utilities.md5;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fluent interface to build a Thumbor URL.
@@ -18,6 +18,7 @@ public final class ThumborUrlBuilder {
   private static final String PREFIX_UNSAFE = "unsafe/";
   private static final String PREFIX_META = "meta/";
   private static final String PART_SMART = "smart";
+  private static final String PART_TRIM = "trim";
   private static final String PART_FIT_IN = "fit-in";
   private static final String PART_FILTERS = "filters";
   private static final String FILTER_BRIGHTNESS = "brightness";
@@ -56,12 +57,24 @@ public final class ThumborUrlBuilder {
     }
   }
 
+  /** Orientation from where to get the pixel color for trim. **/
+  public enum TrimPixelColor {
+    TOP_LEFT("top-left"), BOTTOM_RIGHT("bottom-right");
+
+    final String value;
+
+    private TrimPixelColor(String value) {
+      this.value = value;
+    }
+  }
+
   final String image;
   final String host;
   final String key;
   boolean hasCrop;
   boolean hasResize;
   boolean isSmart;
+  boolean isTrim;
   boolean isLegacy;
   boolean flipHorizontally;
   boolean flipVertically;
@@ -74,6 +87,7 @@ public final class ThumborUrlBuilder {
   int cropRight;
   HorizontalAlign cropHorizontalAlign;
   VerticalAlign cropVerticalAlign;
+  TrimPixelColor trimPixelColor;
   List<String> filters;
 
   ThumborUrlBuilder(String host, String key, String image) {
@@ -228,6 +242,23 @@ public final class ThumborUrlBuilder {
     return this;
   }
 
+  /**
+   * Removing surrounding space in image.
+   */
+  public ThumborUrlBuilder trim() {
+    return trim(null);
+  }
+
+  /**
+   * Removing surrounding space in image. Get trim color from specified pixel.
+   * @param TrimPixelColor value can be top-left or bottom-right
+   */
+  public ThumborUrlBuilder trim(TrimPixelColor value) {
+    isTrim = true;
+    trimPixelColor = value;
+    return this;
+  }
+
   /** Use legacy encryption when constructing a safe URL. */
   public ThumborUrlBuilder legacy() {
     isLegacy = true;
@@ -357,6 +388,14 @@ public final class ThumborUrlBuilder {
 
     if (meta) {
       builder.append(PREFIX_META);
+    }
+
+    if (isTrim) {
+      builder.append(PART_TRIM);
+      if (trimPixelColor != null) {
+        builder.append(":").append(trimPixelColor.value);
+      }
+      builder.append("/");
     }
 
     if (hasCrop) {
