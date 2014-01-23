@@ -702,11 +702,9 @@ public final class ThumborUrlBuilder {
   }
 
   /**
-   * This filter specifies the output format of the image.
-   * The output must be one of: "gif", "jpeg", "png" or "webp".
+   * Specify the output format of the image.
    *
-   * @param format ImageFormat possible values ImageFormat.GIF, ImageFormat.JPEG,
-   * ImageFormat.PNG, ImageFormat.WEBP
+   * @see ImageFormat
    */
   public static String format(ImageFormat format) {
     if (format == null) {
