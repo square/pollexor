@@ -59,13 +59,13 @@ public final class ThumborUrlBuilder {
 
   /** Orientation from where to get the pixel color for trim. **/
   public enum TrimPixelColor {
-      TOP_LEFT("top-left"), BOTTOM_RIGHT("bottom-right");
+    TOP_LEFT("top-left"), BOTTOM_RIGHT("bottom-right");
 
-      final String value;
+    final String value;
 
-      private TrimPixelColor(String value) {
-          this.value = value;
-      }
+    private TrimPixelColor(String value) {
+      this.value = value;
+    }
   }
 
   final String image;
@@ -246,7 +246,7 @@ public final class ThumborUrlBuilder {
    * Removing surrounding space in image.
    */
   public ThumborUrlBuilder trim() {
-      return trim(null);
+    return trim(null);
   }
 
   /**
@@ -254,9 +254,9 @@ public final class ThumborUrlBuilder {
    * @param TrimPixelColor value can be top-left or bottom-right
    */
   public ThumborUrlBuilder trim(TrimPixelColor value) {
-      isTrim = true;
-      trimPixelColor = value;
-      return this;
+    isTrim = true;
+    trimPixelColor = value;
+    return this;
   }
 
   /** Use legacy encryption when constructing a safe URL. */
@@ -391,11 +391,11 @@ public final class ThumborUrlBuilder {
     }
 
     if (isTrim) {
-        builder.append(PART_TRIM);
-        if (trimPixelColor != null) {
-            builder.append(":").append(trimPixelColor.value);
-        }
-        builder.append("/");
+      builder.append(PART_TRIM);
+      if (trimPixelColor != null) {
+        builder.append(":").append(trimPixelColor.value);
+      }
+      builder.append("/");
     }
 
     if (hasCrop) {
