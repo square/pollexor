@@ -30,6 +30,7 @@ public final class ThumborUrlBuilder {
   private static final String FILTER_WATERMARK = "watermark";
   private static final String FILTER_SHARPEN = "sharpen";
   private static final String FILTER_FILL = "fill";
+  private static final String FILTER_FORMAT = "format";
   private static final String FILTER_FRAME = "frame";
   private static final String FILTER_STRIP_ICC = "strip_icc";
   private static final String FILTER_GRAYSCALE = "grayscale";
@@ -64,6 +65,17 @@ public final class ThumborUrlBuilder {
     final String value;
 
     private TrimPixelColor(String value) {
+      this.value = value;
+    }
+  }
+
+  /** Image formats supported by Thumbor. **/
+  public enum ImageFormat {
+    GIF("gif"), JPEG("jpeg"), PNG("png"), WEBP("webp");
+
+    final String value;
+
+    private ImageFormat(String value) {
       this.value = value;
     }
   }
@@ -687,6 +699,20 @@ public final class ThumborUrlBuilder {
   public static String fill(int color) {
     final String colorCode = Integer.toHexString(color & 0xFFFFFF); // Strip alpha
     return FILTER_FILL + "(" + colorCode + ")";
+  }
+
+  /**
+   * This filter specifies the output format of the image.
+   * The output must be one of: "gif", "jpeg", "png" or "webp".
+   *
+   * @param format ImageFormat possible values ImageFormat.GIF, ImageFormat.JPEG,
+   * ImageFormat.PNG, ImageFormat.WEBP
+   */
+  public static String format(ImageFormat format) {
+    if (format == null) {
+      throw new UnableToBuildException("You must specify an image format.");
+    }
+    return FILTER_FORMAT + "(" + format.value + ")";
   }
 
   /**
