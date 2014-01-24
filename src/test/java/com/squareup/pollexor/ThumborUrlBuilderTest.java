@@ -99,6 +99,20 @@ public class ThumborUrlBuilderTest {
     assertThat(Integer.valueOf(url.resizeWidthHeight.getWidth())).isEqualTo(10);
     assertThat(Integer.valueOf(url.resizeWidthHeight.getHeight())).isEqualTo(5);
     assertThat(url.toUrl()).isEqualTo("/unsafe/10x5/a.com/b.png");
+
+    ThumborUrlBuilder url2 = unsafe.buildImage("a.com/b.png");
+    assertThat(url2.hasResize).isFalse();
+
+    ThumborImageSize imageResize = new ThumborImageSize();
+    assertThat(imageResize.getHeight()).isEqualTo("orig");
+    assertThat(imageResize.getWidth()).isEqualTo("orig");
+
+    url2.resize(imageResize);
+    assertThat(url.hasResize).isTrue();
+    assertThat(url2.resizeWidthHeight.getWidth()).isEqualTo("orig");
+    assertThat(url2.resizeWidthHeight.getHeight()).isEqualTo("orig");
+    assertThat(url2.toUrl()).isEqualTo("/unsafe/origxorig/a.com/b.png");
+
   }
 
   @Test public void testResizeAndFitIn() {

@@ -9,8 +9,6 @@ package com.squareup.pollexor;
  */
 public class ThumborImageSize {
 
-  public static final String ORIGINAL = "orig";
-
   String width = "orig";
   String height = "orig";
 
