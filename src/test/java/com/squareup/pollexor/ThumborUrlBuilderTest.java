@@ -1,10 +1,6 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.pollexor;
 
-import org.junit.Test;
-
-import static com.squareup.pollexor.ThumborUrlBuilder.HorizontalAlign.CENTER;
-import static com.squareup.pollexor.ThumborUrlBuilder.VerticalAlign.MIDDLE;
 import static com.squareup.pollexor.ThumborUrlBuilder.brightness;
 import static com.squareup.pollexor.ThumborUrlBuilder.contrast;
 import static com.squareup.pollexor.ThumborUrlBuilder.fill;
@@ -15,8 +11,12 @@ import static com.squareup.pollexor.ThumborUrlBuilder.rgb;
 import static com.squareup.pollexor.ThumborUrlBuilder.roundCorner;
 import static com.squareup.pollexor.ThumborUrlBuilder.sharpen;
 import static com.squareup.pollexor.ThumborUrlBuilder.watermark;
+import static com.squareup.pollexor.ThumborUrlBuilder.HorizontalAlign.CENTER;
+import static com.squareup.pollexor.ThumborUrlBuilder.VerticalAlign.MIDDLE;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
+
+import org.junit.Test;
 
 public class ThumborUrlBuilderTest {
 
@@ -96,8 +96,8 @@ public class ThumborUrlBuilderTest {
 
     url.resize(10, 5);
     assertThat(url.hasResize).isTrue();
-    assertThat(url.resizeWidth).isEqualTo(10);
-    assertThat(url.resizeHeight).isEqualTo(5);
+    assertThat(Integer.valueOf(url.resizeWidthHeight.getWidth())).isEqualTo(10);
+    assertThat(Integer.valueOf(url.resizeWidthHeight.getHeight())).isEqualTo(5);
     assertThat(url.toUrl()).isEqualTo("/unsafe/10x5/a.com/b.png");
   }
 
