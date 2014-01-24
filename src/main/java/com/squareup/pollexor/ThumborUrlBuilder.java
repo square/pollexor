@@ -91,8 +91,6 @@ public final class ThumborUrlBuilder {
   boolean flipHorizontally;
   boolean flipVertically;
   boolean fitIn;
-  int resizeWidth;
-  int resizeHeight;
   int cropTop;
   int cropLeft;
   int cropBottom;
@@ -101,6 +99,7 @@ public final class ThumborUrlBuilder {
   VerticalAlign cropVerticalAlign;
   TrimPixelColor trimPixelColor;
   List<String> filters;
+  ThumborImageSize resizeWidthHeight;
 
   ThumborUrlBuilder(String host, String key, String image) {
     this.host = host;
@@ -116,18 +115,13 @@ public final class ThumborUrlBuilder {
    * @throws UnableToBuildException if {@code width} or {@code height} is less than 0 or both are 0.
    */
   public ThumborUrlBuilder resize(int width, int height) {
-    if (width < 0) {
-      throw new UnableToBuildException("Width must be a positive number.");
-    }
-    if (height < 0) {
-      throw new UnableToBuildException("Height must be a positive number.");
-    }
-    if (width == 0 && height == 0) {
-      throw new UnableToBuildException("Both width and height must not be zero.");
-    }
+    resize(new ThumborImageSize(width, height));
+    return this;
+  }
+
+  public ThumborUrlBuilder resize(ThumborImageSize resizeWidthHeight) {
     hasResize = true;
-    resizeWidth = width;
-    resizeHeight = height;
+    this.resizeWidthHeight = resizeWidthHeight;
     return this;
   }
 
@@ -434,11 +428,11 @@ public final class ThumborUrlBuilder {
       if (flipHorizontally) {
         builder.append("-");
       }
-      builder.append(resizeWidth).append("x");
+      builder.append(resizeWidthHeight.getWidth()).append("x");
       if (flipVertically) {
         builder.append("-");
       }
-      builder.append(resizeHeight);
+      builder.append(resizeWidthHeight.getHeight());
       builder.append("/");
     }
 
