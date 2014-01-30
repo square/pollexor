@@ -100,6 +100,7 @@ public final class ThumborUrlBuilder {
   int cropLeft;
   int cropBottom;
   int cropRight;
+  int trimColorTolerance;
   HorizontalAlign cropHorizontalAlign;
   VerticalAlign cropVerticalAlign;
   TrimPixelColor trimPixelColor;
@@ -269,8 +270,26 @@ public final class ThumborUrlBuilder {
    * @param TrimPixelColor value can be top-left or bottom-right
    */
   public ThumborUrlBuilder trim(TrimPixelColor value) {
+    return trim(value, 0);
+  }
+
+  /**
+   * Removing surrounding space in image. Get trim color from specified pixel.
+   * @param TrimPixelColor value can be top-left or bottom-right
+   * @param int colorTolerance 0 - 442. This is the euclidian distance
+   * between the colors of the reference pixel and the surrounding pixels is used.
+   * If the distance is within the tolerance they'll get trimmed.
+   */
+  public ThumborUrlBuilder trim(TrimPixelColor value, int colorTolerance) {
+    if (colorTolerance < 0 || colorTolerance > 442) {
+      throw new UnableToBuildException("Color tolerance must be between 0 and 442.");
+    }
+    if (colorTolerance > 0 && value == null) {
+      throw new UnableToBuildException("Trim pixel color value must not be null.");
+    }
     isTrim = true;
     trimPixelColor = value;
+    trimColorTolerance = colorTolerance;
     return this;
   }
 
@@ -409,6 +428,9 @@ public final class ThumborUrlBuilder {
       builder.append(PART_TRIM);
       if (trimPixelColor != null) {
         builder.append(":").append(trimPixelColor.value);
+        if (trimColorTolerance > 0) {
+          builder.append(":").append(trimColorTolerance);
+        }
       }
       builder.append("/");
     }

@@ -3,6 +3,8 @@ package com.squareup.pollexor;
 
 import org.junit.Test;
 
+import com.squareup.pollexor.ThumborUrlBuilder.TrimPixelColor;
+
 import static com.squareup.pollexor.ThumborUrlBuilder.HorizontalAlign.CENTER;
 import static com.squareup.pollexor.ThumborUrlBuilder.VerticalAlign.MIDDLE;
 import static com.squareup.pollexor.ThumborUrlBuilder.brightness;
@@ -213,6 +215,16 @@ public class ThumborUrlBuilderTest {
     image.align(MIDDLE, CENTER);
     assertThat(image.cropHorizontalAlign).isEqualTo(CENTER);
     assertThat(image.cropVerticalAlign).isEqualTo(MIDDLE);
+  }
+  
+  @Test public void testTrim() {
+    ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
+    assertThat(image.isTrim).isFalse();
+    image.trim(TrimPixelColor.TOP_LEFT, 100);
+    assertThat(image.isTrim).isTrue();
+    assertThat(image.trimPixelColor).isEqualTo(TrimPixelColor.TOP_LEFT);
+    assertThat(image.trimColorTolerance).isEqualTo(100);
+    assertThat(image.toUrl()).isEqualTo("/unsafe/trim:top-left:100/http://a.com/b.png");
   }
 
   @Test public void testCannotAlignWithoutCrop() {
