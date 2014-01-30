@@ -282,7 +282,10 @@ public final class ThumborUrlBuilder {
    */
   public ThumborUrlBuilder trim(TrimPixelColor value, int colorTolerance) {
     if (colorTolerance < 0 || colorTolerance > 442) {
-      throw new UnableToBuildException("colorTolerance must be between 0 and 442.");
+      throw new UnableToBuildException("Color tolerance must be between 0 and 442.");
+    }
+    if (colorTolerance > 0 && value == null) {
+      throw new UnableToBuildException("Trim pixel color value must not be null.");
     }
     isTrim = true;
     trimPixelColor = value;

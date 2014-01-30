@@ -222,7 +222,7 @@ public class ThumborUrlBuilderTest {
     assertThat(image.isTrim).isFalse();
     image.trim(TrimPixelColor.TOP_LEFT, 100);
     assertThat(image.isTrim).isTrue();
-    assertThat(image.trimPixelColor).isEqualsToByComparingFields(TrimPixelColor.TOP_LEFT);
+    assertThat(image.trimPixelColor).isEqualTo(TrimPixelColor.TOP_LEFT);
     assertThat(image.trimColorTolerance).isEqualTo(100);
     assertThat(image.toUrl()).isEqualTo("/unsafe/trim:top-left:100/http://a.com/b.png");
   }
