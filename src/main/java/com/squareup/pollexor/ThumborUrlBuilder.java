@@ -36,6 +36,9 @@ public final class ThumborUrlBuilder {
   private static final String FILTER_GRAYSCALE = "grayscale";
   private static final String FILTER_EQUALIZE = "equalize";
 
+  /** Original size for image width or height. **/
+  public static final int ORIGINAL_SIZE = Integer.MIN_VALUE;
+
   /** Horizontal alignment for crop positioning. */
   public enum HorizontalAlign {
     LEFT("left"), CENTER("center"), RIGHT("right");
@@ -116,10 +119,10 @@ public final class ThumborUrlBuilder {
    * @throws UnableToBuildException if {@code width} or {@code height} is less than 0 or both are 0.
    */
   public ThumborUrlBuilder resize(int width, int height) {
-    if (width < 0) {
+    if (width < 0 && width != ORIGINAL_SIZE) {
       throw new UnableToBuildException("Width must be a positive number.");
     }
-    if (height < 0) {
+    if (height < 0 && height != ORIGINAL_SIZE) {
       throw new UnableToBuildException("Height must be a positive number.");
     }
     if (width == 0 && height == 0) {
@@ -434,11 +437,20 @@ public final class ThumborUrlBuilder {
       if (flipHorizontally) {
         builder.append("-");
       }
-      builder.append(resizeWidth).append("x");
+      if (resizeWidth == ORIGINAL_SIZE) {
+        builder.append("orig");
+      } else {
+        builder.append(resizeWidth);
+      }
+      builder.append("x");
       if (flipVertically) {
         builder.append("-");
       }
-      builder.append(resizeHeight);
+      if (resizeHeight == ORIGINAL_SIZE) {
+        builder.append("orig");
+      } else {
+        builder.append(resizeHeight);
+      }
       builder.append("/");
     }
 
