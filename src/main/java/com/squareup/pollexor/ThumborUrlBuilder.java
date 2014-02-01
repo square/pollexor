@@ -1,13 +1,13 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.pollexor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.squareup.pollexor.Utilities.aes128Encrypt;
 import static com.squareup.pollexor.Utilities.base64Encode;
 import static com.squareup.pollexor.Utilities.hmacSha1;
 import static com.squareup.pollexor.Utilities.md5;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Fluent interface to build a Thumbor URL.
@@ -61,7 +61,7 @@ public final class ThumborUrlBuilder {
     }
   }
 
-  /** Orientation from where to get the pixel color for trim. **/
+  /** Orientation from where to get the pixel color for trim. */
   public enum TrimPixelColor {
     TOP_LEFT("top-left"), BOTTOM_RIGHT("bottom-right");
 
@@ -72,7 +72,7 @@ public final class ThumborUrlBuilder {
     }
   }
 
-  /** Image formats supported by Thumbor. **/
+  /** Image formats supported by Thumbor. */
   public enum ImageFormat {
     GIF("gif"), JPEG("jpeg"), PNG("png"), WEBP("webp");
 
@@ -117,17 +117,18 @@ public final class ThumborUrlBuilder {
    *
    * @param width Desired width.
    * @param height Desired height.
-   * @throws UnableToBuildException if {@code width} or {@code height} is less than 0 or both are 0.
+   * @throws IllegalArgumentException if {@code width} or {@code height} is less than 0 or both are
+   * 0.
    */
   public ThumborUrlBuilder resize(int width, int height) {
     if (width < 0 && width != ORIGINAL_SIZE) {
-      throw new UnableToBuildException("Width must be a positive number.");
+      throw new IllegalArgumentException("Width must be a positive number.");
     }
     if (height < 0 && height != ORIGINAL_SIZE) {
-      throw new UnableToBuildException("Height must be a positive number.");
+      throw new IllegalArgumentException("Height must be a positive number.");
     }
     if (width == 0 && height == 0) {
-      throw new UnableToBuildException("Both width and height must not be zero.");
+      throw new IllegalArgumentException("Both width and height must not be zero.");
     }
     hasResize = true;
     resizeWidth = width;
@@ -138,11 +139,11 @@ public final class ThumborUrlBuilder {
   /**
    * Flip the image horizontally.
    *
-   * @throws UnableToBuildException if image has not been marked for resize.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder flipHorizontally() {
     if (!hasResize) {
-      throw new UnableToBuildException("Image must be resized first in order to flip.");
+      throw new IllegalStateException("Image must be resized first in order to flip.");
     }
     flipHorizontally = true;
     return this;
@@ -151,11 +152,11 @@ public final class ThumborUrlBuilder {
   /**
    * Flip the image vertically.
    *
-   * @throws UnableToBuildException if image has not been marked for resize.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder flipVertically() {
     if (!hasResize) {
-      throw new UnableToBuildException("Image must be resized first in order to flip.");
+      throw new IllegalStateException("Image must be resized first in order to flip.");
     }
     flipVertically = true;
     return this;
@@ -164,11 +165,11 @@ public final class ThumborUrlBuilder {
   /**
    * Contrain the image size inside the resized box, scaling as needed.
    *
-   * @throws UnableToBuildException if image has not been marked for resize.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder fitIn() {
     if (!hasResize) {
-      throw new UnableToBuildException("Image must be resized first in order to apply 'fit-in'.");
+      throw new IllegalStateException("Image must be resized first in order to apply 'fit-in'.");
     }
     fitIn = true;
     return this;
@@ -181,22 +182,22 @@ public final class ThumborUrlBuilder {
    * @param left Left bound.
    * @param bottom Bottom bound.
    * @param right Right bound.
-   * @throws UnableToBuildException if {@code top} or {@code left} are less than zero or {@code
+   * @throws IllegalArgumentException if {@code top} or {@code left} are less than zero or {@code
    * bottom} or {@code right} are less than one or less than {@code top} or {@code left},
    * respectively.
    */
   public ThumborUrlBuilder crop(int top, int left, int bottom, int right) {
     if (top < 0) {
-      throw new UnableToBuildException("Top must be greater or equal to zero.");
+      throw new IllegalArgumentException("Top must be greater or equal to zero.");
     }
     if (left < 0) {
-      throw new UnableToBuildException("Left must be greater or equal to zero.");
+      throw new IllegalArgumentException("Left must be greater or equal to zero.");
     }
     if (bottom < 1 || bottom <= top) {
-      throw new UnableToBuildException("Bottom must be greater than zero and top.");
+      throw new IllegalArgumentException("Bottom must be greater than zero and top.");
     }
     if (right < 1 || right <= left) {
-      throw new UnableToBuildException("Right must be greater than zero and left.");
+      throw new IllegalArgumentException("Right must be greater than zero and left.");
     }
     hasCrop = true;
     cropTop = top;
@@ -210,11 +211,11 @@ public final class ThumborUrlBuilder {
    * Set the horizontal alignment for the image when cropping.
    *
    * @param align Horizontal alignment.
-   * @throws UnableToBuildException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public ThumborUrlBuilder align(HorizontalAlign align) {
     if (!hasCrop) {
-      throw new UnableToBuildException("Image must be cropped first in order to align.");
+      throw new IllegalStateException("Image must be cropped first in order to align.");
     }
     cropHorizontalAlign = align;
     return this;
@@ -224,11 +225,11 @@ public final class ThumborUrlBuilder {
    * Set the vertical alignment for the image when cropping.
    *
    * @param align Vertical alignment.
-   * @throws UnableToBuildException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public ThumborUrlBuilder align(VerticalAlign align) {
     if (!hasCrop) {
-      throw new UnableToBuildException("Image must be cropped first in order to align.");
+      throw new IllegalStateException("Image must be cropped first in order to align.");
     }
     cropVerticalAlign = align;
     return this;
@@ -239,7 +240,7 @@ public final class ThumborUrlBuilder {
    *
    * @param valign Vertical alignment.
    * @param halign Horizontal alignment.
-   * @throws UnableToBuildException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public ThumborUrlBuilder align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
@@ -248,11 +249,11 @@ public final class ThumborUrlBuilder {
   /**
    * Use smart cropping for determining the important portion of an image.
    *
-   * @throws UnableToBuildException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for crop.
    */
   public ThumborUrlBuilder smart() {
     if (!hasCrop) {
-      throw new UnableToBuildException("Image must be cropped first in order to smart align.");
+      throw new IllegalStateException("Image must be cropped first in order to smart align.");
     }
     isSmart = true;
     return this;
@@ -267,7 +268,7 @@ public final class ThumborUrlBuilder {
 
   /**
    * Removing surrounding space in image. Get trim color from specified pixel.
-   * @param TrimPixelColor value can be top-left or bottom-right
+   * @param value orientation from where to get the pixel color.
    */
   public ThumborUrlBuilder trim(TrimPixelColor value) {
     return trim(value, 0);
@@ -275,17 +276,17 @@ public final class ThumborUrlBuilder {
 
   /**
    * Removing surrounding space in image. Get trim color from specified pixel.
-   * @param TrimPixelColor value can be top-left or bottom-right
-   * @param int colorTolerance 0 - 442. This is the euclidian distance
+   * @param value orientation from where to get the pixel color.
+   * @param colorTolerance 0 - 442. This is the euclidian distance
    * between the colors of the reference pixel and the surrounding pixels is used.
    * If the distance is within the tolerance they'll get trimmed.
    */
   public ThumborUrlBuilder trim(TrimPixelColor value, int colorTolerance) {
     if (colorTolerance < 0 || colorTolerance > 442) {
-      throw new UnableToBuildException("Color tolerance must be between 0 and 442.");
+      throw new IllegalArgumentException("Color tolerance must be between 0 and 442.");
     }
     if (colorTolerance > 0 && value == null) {
-      throw new UnableToBuildException("Trim pixel color value must not be null.");
+      throw new IllegalArgumentException("Trim pixel color value must not be null.");
     }
     isTrim = true;
     trimPixelColor = value;
@@ -306,7 +307,7 @@ public final class ThumborUrlBuilder {
    * <code>"my_filter(1,2,3)</code>").
    *
    * @param filters Filter strings.
-   * @throws UnableToBuildException if no arguments supplied or an argument is {@code null}.
+   * @throws IllegalArgumentException if no arguments supplied or an argument is {@code null}.
    * @see #brightness(int)
    * @see #contrast(int)
    * @see #fill(int)
@@ -327,14 +328,14 @@ public final class ThumborUrlBuilder {
    */
   public ThumborUrlBuilder filter(String... filters) {
     if (filters.length == 0) {
-      throw new UnableToBuildException("You must provide at least one filter.");
+      throw new IllegalArgumentException("You must provide at least one filter.");
     }
     if (this.filters == null) {
       this.filters = new ArrayList<String>(filters.length);
     }
     for (String filter : filters) {
       if (filter == null || filter.length() == 0) {
-        throw new UnableToBuildException("Filter must not be blank.");
+        throw new IllegalArgumentException("Filter must not be blank.");
       }
       this.filters.add(filter);
     }
@@ -344,8 +345,6 @@ public final class ThumborUrlBuilder {
   /**
    * Build the URL. This will either call {@link #toUrlSafe()} or {@link #toUrlUnsafe()} depending
    * on whether a key was set.
-   *
-   * @throws UnableToBuildException
    */
   public String toUrl() {
     return (key == null) ? toUrlUnsafe() : toUrlSafe();
@@ -358,33 +357,25 @@ public final class ThumborUrlBuilder {
 
   /**
    * Build a safe version of the URL. Requires a non-{@code null} key.
-   *
-   * @throws UnableToBuildException
    */
   public String toUrlSafe() {
     if (key == null) {
-      throw new UnableToBuildException("Cannot build safe URL without a key.");
+      throw new IllegalStateException("Cannot build safe URL without a key.");
     }
 
-    try {
-      boolean legacy = isLegacy;
+    boolean legacy = isLegacy;
 
-      StringBuilder config = assembleConfig(false);
-      byte[] encrypted = legacy ? aes128Encrypt(config, key) : hmacSha1(config, key);
-      String encoded = base64Encode(encrypted);
+    StringBuilder config = assembleConfig(false);
+    byte[] encrypted = legacy ? aes128Encrypt(config, key) : hmacSha1(config, key);
+    String encoded = base64Encode(encrypted);
 
-      CharSequence suffix = legacy ? image : config;
-      return host + encoded + "/" + suffix;
-    } catch (IllegalArgumentException e) {
-      throw new UnableToBuildException(e);
-    }
+    CharSequence suffix = legacy ? image : config;
+    return host + encoded + "/" + suffix;
   }
 
   /**
    * Build the metadata URL. This will either call {@link #toMetaSafe()} or {@link #toMetaUnsafe()}
    * depending on whether a key was set.
-   *
-   * @throws UnableToBuildException
    */
   public String toMeta() {
     return (key == null) ? toMetaUnsafe() : toMetaSafe();
@@ -397,19 +388,13 @@ public final class ThumborUrlBuilder {
 
   /**
    * Build a safe version of the metadata URL. Requires a non-{@code null} key.
-   *
-   * @throws UnableToBuildException
    */
   public String toMetaSafe() {
-    try {
-      StringBuilder config = assembleConfig(true);
-      byte[] encrypted = hmacSha1(config, key);
-      String encoded = base64Encode(encrypted);
+    StringBuilder config = assembleConfig(true);
+    byte[] encrypted = hmacSha1(config, key);
+    String encoded = base64Encode(encrypted);
 
-      return host + encoded + "/" + config;
-    } catch (Exception e) {
-      throw new UnableToBuildException(e);
-    }
+    return host + encoded + "/" + config;
   }
 
   @Override public String toString() {
@@ -494,11 +479,11 @@ public final class ThumborUrlBuilder {
    *
    * @param amount -100 to 100 - The amount (in %) to change the image brightness. Positive numbers
    * make the image brighter and negative numbers make the image darker.
-   * @throws UnableToBuildException if {@code amount} outside bounds.
+   * @throws IllegalArgumentException if {@code amount} outside bounds.
    */
   public static String brightness(int amount) {
     if (amount < -100 || amount > 100) {
-      throw new UnableToBuildException("Amount must be between -100 and 100, inclusive.");
+      throw new IllegalArgumentException("Amount must be between -100 and 100, inclusive.");
     }
     return FILTER_BRIGHTNESS + "(" + amount + ")";
   }
@@ -508,11 +493,11 @@ public final class ThumborUrlBuilder {
    *
    * @param amount -100 to 100 - The amount (in %) to change the image contrast. Positive numbers
    * increase contrast and negative numbers decrease contrast.
-   * @throws UnableToBuildException if {@code amount} outside bounds.
+   * @throws IllegalArgumentException if {@code amount} outside bounds.
    */
   public static String contrast(int amount) {
     if (amount < -100 || amount > 100) {
-      throw new UnableToBuildException("Amount must be between -100 and 100, inclusive.");
+      throw new IllegalArgumentException("Amount must be between -100 and 100, inclusive.");
     }
     return FILTER_CONTRAST + "(" + amount + ")";
   }
@@ -521,11 +506,11 @@ public final class ThumborUrlBuilder {
    * This filter adds noise to the image.
    *
    * @param amount 0 to 100 - The amount (in %) of noise to add to the image.
-   * @throws UnableToBuildException if {@code amount} outside bounds.
+   * @throws IllegalArgumentException if {@code amount} outside bounds.
    */
   public static String noise(int amount) {
     if (amount < 0 || amount > 100) {
-      throw new UnableToBuildException("Amount must be between 0 and 100, inclusive");
+      throw new IllegalArgumentException("Amount must be between 0 and 100, inclusive");
     }
     return FILTER_NOISE + "(" + amount + ")";
   }
@@ -534,11 +519,11 @@ public final class ThumborUrlBuilder {
    * This filter changes the overall quality of the JPEG image (does nothing for PNGs or GIFs).
    *
    * @param amount 0 to 100 - The quality level (in %) that the end image will feature.
-   * @throws UnableToBuildException if {@code amount} outside bounds.
+   * @throws IllegalArgumentException if {@code amount} outside bounds.
    */
   public static String quality(int amount) {
     if (amount < 0 || amount > 100) {
-      throw new UnableToBuildException("Amount must be between 0 and 100, inclusive.");
+      throw new IllegalArgumentException("Amount must be between 0 and 100, inclusive.");
     }
     return FILTER_QUALITY + "(" + amount + ")";
   }
@@ -549,17 +534,17 @@ public final class ThumborUrlBuilder {
    * @param r The amount of redness in the picture. Can range from -100 to 100 in percentage.
    * @param g The amount of greenness in the picture. Can range from -100 to 100 in percentage.
    * @param b The amount of blueness in the picture. Can range from -100 to 100 in percentage.
-   * @throws UnableToBuildException if {@code r}, {@code g}, or {@code b} are outside of bounds.
+   * @throws IllegalArgumentException if {@code r}, {@code g}, or {@code b} are outside of bounds.
    */
   public static String rgb(int r, int g, int b) {
     if (r < -100 || r > 100) {
-      throw new UnableToBuildException("Redness value must be between -100 and 100, inclusive.");
+      throw new IllegalArgumentException("Red value must be between -100 and 100, inclusive.");
     }
     if (g < -100 || g > 100) {
-      throw new UnableToBuildException("Greenness value must be between -100 and 100, inclusive.");
+      throw new IllegalArgumentException("Green value must be between -100 and 100, inclusive.");
     }
     if (b < -100 || b > 100) {
-      throw new UnableToBuildException("Blueness value must be between -100 and 100, inclusive.");
+      throw new IllegalArgumentException("Blue value must be between -100 and 100, inclusive.");
     }
     return FILTER_RGB + "(" + r + "," + g + "," + b + ")";
   }
@@ -593,10 +578,10 @@ public final class ThumborUrlBuilder {
    */
   public static String roundCorner(int radiusInner, int radiusOuter, int color) {
     if (radiusInner < 1) {
-      throw new UnableToBuildException("Radius must be greater than zero.");
+      throw new IllegalArgumentException("Radius must be greater than zero.");
     }
     if (radiusOuter < 0) {
-      throw new UnableToBuildException("Outer radius must be greater than or equal to zero.");
+      throw new IllegalArgumentException("Outer radius must be greater than or equal to zero.");
     }
     StringBuilder builder = new StringBuilder(FILTER_ROUND_CORNER).append("(").append(radiusInner);
     if (radiusOuter > 0) {
@@ -617,7 +602,7 @@ public final class ThumborUrlBuilder {
    *
    * @param imageUrl Watermark image URL. It is very important to understand that the same image
    * loader that Thumbor uses will be used here.
-   * @throws UnableToBuildException if {@code image} is blank.
+   * @throws IllegalArgumentException if {@code image} is blank.
    */
   public static String watermark(String imageUrl) {
     return watermark(imageUrl, 0, 0);
@@ -628,7 +613,7 @@ public final class ThumborUrlBuilder {
    *
    * @param image Watermark image URL. It is very important to understand that the same image
    * loader that Thumbor uses will be used here.
-   * @throws UnableToBuildException if {@code image} is null.
+   * @throws IllegalArgumentException if {@code image} is null.
    */
   public static String watermark(ThumborUrlBuilder image) {
     return watermark(image, 0, 0);
@@ -643,7 +628,7 @@ public final class ThumborUrlBuilder {
    * from the left and negative numbers indicate position from the right.
    * @param y Vertical position that the watermark will be in. Positive numbers indicate position
    * from the top and negative numbers indicate position from the bottom.
-   * @throws UnableToBuildException if {@code image} is blank.
+   * @throws IllegalArgumentException if {@code image} is blank.
    */
   public static String watermark(String imageUrl, int x, int y) {
     return watermark(imageUrl, x, y, 0);
@@ -658,11 +643,11 @@ public final class ThumborUrlBuilder {
    * from the left and negative numbers indicate position from the right.
    * @param y Vertical position that the watermark will be in. Positive numbers indicate position
    * from the top and negative numbers indicate position from the bottom.
-   * @throws UnableToBuildException if {@code image} is null.
+   * @throws IllegalArgumentException if {@code image} is null.
    */
   public static String watermark(ThumborUrlBuilder image, int x, int y) {
     if (image == null) {
-      throw new UnableToBuildException("Image must not be null.");
+      throw new IllegalArgumentException("Image must not be null.");
     }
     return watermark(image.toString(), x, y, 0);
   }
@@ -678,15 +663,15 @@ public final class ThumborUrlBuilder {
    * from the top and negative numbers indicate position from the bottom.
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    * and 100 (fully transparent).
-   * @throws UnableToBuildException if {@code image} is blank or {@code transparency} is outside
+   * @throws IllegalArgumentException if {@code image} is blank or {@code transparency} is outside
    * bounds.
    */
   public static String watermark(String imageUrl, int x, int y, int transparency) {
     if (imageUrl == null || imageUrl.length() == 0) {
-      throw new UnableToBuildException("Image URL must not be blank.");
+      throw new IllegalArgumentException("Image URL must not be blank.");
     }
     if (transparency < 0 || transparency > 100) {
-      throw new UnableToBuildException("Transparency must be between 0 and 100, inclusive.");
+      throw new IllegalArgumentException("Transparency must be between 0 and 100, inclusive.");
     }
     return FILTER_WATERMARK + "(" + imageUrl + "," + x + "," + y + "," + transparency + ")";
   }
@@ -702,11 +687,11 @@ public final class ThumborUrlBuilder {
    * from the top and negative numbers indicate position from the bottom.
    * @param transparency Watermark image transparency. Should be a number between 0 (fully opaque)
    * and 100 (fully transparent).
-   * @throws UnableToBuildException if {@code image} is null.
+   * @throws IllegalArgumentException if {@code image} is null.
    */
   public static String watermark(ThumborUrlBuilder image, int x, int y, int transparency) {
     if (image == null) {
-      throw new UnableToBuildException("Image must not be null.");
+      throw new IllegalArgumentException("Image must not be null.");
     }
     return watermark(image.toString(), x, y, transparency);
   }
@@ -742,7 +727,7 @@ public final class ThumborUrlBuilder {
    */
   public static String format(ImageFormat format) {
     if (format == null) {
-      throw new UnableToBuildException("You must specify an image format.");
+      throw new IllegalArgumentException("You must specify an image format.");
     }
     return FILTER_FORMAT + "(" + format.value + ")";
   }
@@ -755,7 +740,7 @@ public final class ThumborUrlBuilder {
    */
   public static String frame(String imageUrl) {
     if (imageUrl == null || imageUrl.length() == 0) {
-      throw new UnableToBuildException("Image URL must not be blank.");
+      throw new IllegalArgumentException("Image URL must not be blank.");
     }
     return FILTER_FRAME + "(" + imageUrl + ")";
   }

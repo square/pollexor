@@ -1,10 +1,10 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.pollexor;
 
+import java.security.MessageDigest;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.MessageDigest;
 
 /** Utility methods for {@link ThumborUrlBuilder}. */
 final class Utilities {
@@ -142,12 +142,12 @@ final class Utilities {
       byte[] messageDigest = algorithm.digest();
 
       StringBuilder hexString = new StringBuilder();
-      for (int i = 0; i < messageDigest.length; i++) {
-        hexString.append(Integer.toHexString((messageDigest[i] & 0xFF) | 0x100).substring(1, 3));
+      for (byte messageByte : messageDigest) {
+        hexString.append(Integer.toHexString((messageByte & 0xFF) | 0x100).substring(1, 3));
       }
       return hexString.toString();
     } catch (Exception e) {
-      throw new UnableToBuildException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -164,7 +164,7 @@ final class Utilities {
       mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA1"));
       return mac.doFinal(message.toString().getBytes());
     } catch (Exception e) {
-      throw new UnableToBuildException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -183,7 +183,7 @@ final class Utilities {
       cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(), "AES"));
       return cipher.doFinal(message.toString().getBytes());
     } catch (Exception e) {
-      throw new UnableToBuildException(e);
+      throw new RuntimeException(e);
     }
   }
 }
