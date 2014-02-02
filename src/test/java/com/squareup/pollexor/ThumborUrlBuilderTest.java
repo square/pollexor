@@ -101,10 +101,10 @@ public class ThumborUrlBuilderTest {
     assertThat(url.resizeWidth).isEqualTo(10);
     assertThat(url.resizeHeight).isEqualTo(5);
     assertThat(url.toUrl()).isEqualTo("/unsafe/10x5/a.com/b.png");
-    
+
     url = unsafe.buildImage("b.com/c.png");
     assertThat(url.hasResize).isFalse();
-    
+
     url.resize(ThumborUrlBuilder.ORIGINAL_SIZE, ThumborUrlBuilder.ORIGINAL_SIZE);
     assertThat(url.hasResize).isTrue();
     assertThat(url.resizeWidth).isEqualTo(Integer.MIN_VALUE);
@@ -166,7 +166,7 @@ public class ThumborUrlBuilderTest {
     try {
       image.flipHorizontally();
       fail("Allowed horizontal flip without resize.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
     assertThat(image.flipHorizontally).isFalse();
   }
@@ -178,7 +178,7 @@ public class ThumborUrlBuilderTest {
     try {
       image.flipVertically();
       fail("Allowed vertical flip without resize.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
     assertThat(image.flipVertically).isFalse();
   }
@@ -190,7 +190,7 @@ public class ThumborUrlBuilderTest {
     try {
       image.fitIn();
       fail("Allowed fit-in resize without resize.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
     assertThat(image.fitIn).isFalse();
   }
@@ -202,7 +202,7 @@ public class ThumborUrlBuilderTest {
     try {
       image.smart();
       fail("Allowed smart crop without crop.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
     assertThat(image.isSmart).isFalse();
   }
@@ -216,7 +216,7 @@ public class ThumborUrlBuilderTest {
     assertThat(image.cropHorizontalAlign).isEqualTo(CENTER);
     assertThat(image.cropVerticalAlign).isEqualTo(MIDDLE);
   }
-  
+
   @Test public void testTrim() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
     assertThat(image.isTrim).isFalse();
@@ -235,13 +235,13 @@ public class ThumborUrlBuilderTest {
     try {
       image.align(CENTER);
       fail("Allowed horizontal crop align without crop.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
 
     try {
       image.align(MIDDLE);
       fail("Allowed vertical crop align without crop.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
   }
 
@@ -251,37 +251,37 @@ public class ThumborUrlBuilderTest {
     try {
       image.crop(-1, 0, 1, 1);
       fail("Bad top value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.crop(0, -1, 1, 1);
       fail("Bad left value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.crop(0, 0, -1, 1);
       fail("Bad bottom value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.crop(0, 0, 1, -1);
       fail("Bad right value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.crop(0, 1, 1, 0);
       fail("Right value less than left value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.crop(1, 0, 0, 1);
       fail("Bottom value less than top value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -291,19 +291,19 @@ public class ThumborUrlBuilderTest {
     try {
       image.resize(-1, 5);
       fail("Bad width value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.resize(10, -400);
       fail("Bad height value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
 
     try {
       image.resize(0, 0);
       fail("Zero resize value allowed.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -311,7 +311,7 @@ public class ThumborUrlBuilderTest {
     try {
       unsafe.buildImage("foo").toUrlSafe();
       fail(".toUrlSafe() succeeds without key.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalStateException expected) {
     }
   }
 
@@ -319,12 +319,12 @@ public class ThumborUrlBuilderTest {
     try {
       brightness(-101);
       fail("Brightness allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       brightness(101);
       fail("Brightness allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -336,12 +336,12 @@ public class ThumborUrlBuilderTest {
     try {
       contrast(-101);
       fail("Contrast allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       contrast(101);
       fail("Contrast allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -353,12 +353,12 @@ public class ThumborUrlBuilderTest {
     try {
       noise(-1);
       fail("Noise allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       noise(101);
       fail("Noise allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -370,12 +370,12 @@ public class ThumborUrlBuilderTest {
     try {
       quality(-1);
       fail("Quality allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       quality(101);
       fail("Quality allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -387,32 +387,32 @@ public class ThumborUrlBuilderTest {
     try {
       rgb(-101, 0, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       rgb(101, 0, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       rgb(0, -101, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       rgb(0, 101, 0);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       rgb(0, 0, -101);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       rgb(0, 0, 101);
       fail("RGB allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -424,17 +424,17 @@ public class ThumborUrlBuilderTest {
     try {
       roundCorner(0);
       fail("Round corner allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       roundCorner(-50);
       fail("Round corner allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       roundCorner(1, -1, 0xFFFFFF);
       fail("Round corner allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -448,27 +448,27 @@ public class ThumborUrlBuilderTest {
     try {
       watermark((String) null);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       watermark((ThumborUrlBuilder) null);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       watermark("");
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       watermark("a.png", 0, 0, -1);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
     try {
       watermark("a.png", 0, 0, 101);
       fail("Watermark allowed invalid value.");
-    } catch (UnableToBuildException expected) {
+    } catch (IllegalArgumentException expected) {
     }
   }
 
