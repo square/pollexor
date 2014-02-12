@@ -4,7 +4,7 @@
 .fun { color: #dc322f; }
 .str, .atv { color: #285; }
 .kwd, .linenums, .tag { color: #1e347b; }
-.typ, .atn, .dec, .var { color: teal; }
+.typ, .atn, .dec, .var { color: #285; }
 .pln { color: #404c40; }
 
 .prettyprint {
