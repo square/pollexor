@@ -1,11 +1,17 @@
 Change Log
 ==========
 
-Version 2.0.0 *(In Development)*
---------------------------------
+Version 2.0.0 *(2014-02-11)*
+----------------------------
 
  * `Thumbor` object now encapsulates a thumbor host and optional encryption key
    and is the factory for building images.
+ * New: `grayscale()` and `equalize()` filters.
+ * New: `format()` method controls response image format.
+ * New: `trim()` method removes surrounding space from image.
+ * New: `resize()` now supports `ORIGINAL_SIZE` constant.
+ * Fix: Remove `UnableToBuildException` in favor of built-in `IllegalArgumentException` and
+   `IllegalStateException`.
 
 
 Version 1.2.0 *(2013-06-19)*

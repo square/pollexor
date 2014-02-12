@@ -17,7 +17,7 @@ Download [the latest JAR][2] or grab via Maven:
 <dependency>
   <groupId>com.squareup</groupId>
   <artifactId>pollexor<artifactId>
-  <version>(insert latest version)</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -27,47 +27,43 @@ Examples
 --------
 
 ```java
-image("http://example.com/image.png")
+// Without encryption:
+Thumbor thumbor = Thumbor.create("http://example.com/");
+
+// With encryption:
+Thumbor thumbor = Thumbor.create("http://example.com/", "key");
+```
+
+```java
+thumbor.buildImage("http://example.com/image.png")
     .resize(48, 48)
     .toUrl()
 // Produces: /unsafe/48x48/example.com/image.png
 
-image("http://example.com/image.png")
+thumbor.buildImage("http://example.com/image.png")
     .crop(10, 10, 90, 90)
     .resize(40, 40)
     .smart()
     .toUrl()
 // Produces: /unsafe/10x10:90x90/smart/40x40/example.com/image.png
 
-image("http://example.com/image.png")
+thumbor.buildImage("http://example.com/image.png")
     .crop(5, 5, 195, 195)
     .resize(95, 95)
     .align(BOTTOM, RIGHT)
     .toUrl()
 // Produces: /unsafe/5x5:195x195/right/bottom/95x95/example.com/image.png
 
-image("http://example.com/background.png")
+thumbor.buildImage("http://example.com/background.png")
     .resize(200, 100)
     .filter(
         roundCorner(10),
-        watermark(image("http://example.com/overlay1.png").resize(200, 100)),
-        watermark(image("http://example.com/overlay2.png").resize(50, 50), 75, 25),
+        watermark(thumbor.buildImage("http://example.com/overlay1.png").resize(200, 100)),
+        watermark(thumbor.buildImage("http://example.com/overlay2.png").resize(50, 50), 75, 25),
         quality(85)
     )
     .toUrl()
 // Produces: /unsafe/200x100/filters:round_corner(10,255,255,255):watermark(/unsafe/200x100/example.com/overlay1.png,0,0,0):watermark(/unsafe/50x50/example.com/overlay2.png,75,25,0):quality(85)/example.com/background.png
-
-image("http://example.com/image.png")
-    .resize(48, 48)
-    .key("super secret key")
-    .toUrl()
-// Produces: /hhxlPyQkIxjvGc_-u_JEVZI3jc8=/48x48/example.com/image.png
-
-image("http://example.com/image.png")
-    .resize(48, 48)
-    .host("http://me.com")
-    .toUrl()
-// Produces: http://me.com/unsafe/48x48/example.com/image.png
 ```
 
 *Note:* If you are using a version of Thumbor older than 3.0 you must call
