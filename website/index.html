@@ -10,6 +10,13 @@
     <link href="bootstrap-responsive.min.css" rel="stylesheet">
     <link href="prettify.css" rel="stylesheet">
     <link href="app.css" rel="stylesheet">
+    <style type="text/css">
+        pre {
+            overflow: auto;
+            word-wrap: normal;
+            white-space: pre;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -23,15 +30,25 @@
       </div>
     </div>
     <div class="row examples">
+        <div class="span6 offset3">
+            <h5>Create Thumbor Instance</h5>
+            <pre class="prettyprint">// Without encryption:
+Thumbor thumbor = Thumbor.create("http://example.com/");
+
+// With encryption:
+Thumbor thumbor = Thumbor.create("http://example.com/", "key");</pre>
+        </div>
+    </div>
+    <div class="row examples">
         <div class="span6">
             <h5>Simple Resize</h5>
-            <pre class="prettyprint">image("http://example.com/image.png")
+            <pre class="prettyprint">thumbor.buildImage("http://example.com/image.png")
     .resize(48, 48)
     .toUrl()</pre>
         </div>
         <div class="span6">
             <h5>Resize and Smart Crop</h5>
-            <pre class="prettyprint">image("http://example.com/image.png")
+            <pre class="prettyprint">thumbor.buildImage("http://example.com/image.png")
     .crop(10, 10, 90, 90)
     .resize(40, 40)
     .smart()
@@ -41,7 +58,7 @@
     <div class="row examples">
         <div class="span6">
             <h5>Resize and Crop with Gravity</h5>
-            <pre class="prettyprint">image("http://example.com/image.png")
+            <pre class="prettyprint">thumbor.buildImage("http://example.com/image.png")
     .crop(5, 5, 195, 195)
     .resize(95, 95)
     .align(BOTTOM, RIGHT)
@@ -49,12 +66,12 @@
         </div>
         <div class="span6">
             <h5>Resize and Four Filters</h5>
-            <pre class="prettyprint">image("http://example.com/background.png")
+            <pre class="prettyprint">thumbor.buildImage("http://example.com/background.png")
     .resize(200, 100)
     .filter(
         roundCorner(10),
-        watermark(image("http://example.com/overlay1.png")),
-        watermark(image("http://example.com/overlay2.png")),
+        watermark(thumbor.buildImage("http://example.com/overlay1.png")),
+        watermark(thumbor.buildImage("http://example.com/overlay2.png")),
         quality(85)
     )
     .toUrl()</pre>
@@ -62,17 +79,17 @@
     </div>
     <div class="row examples">
         <div class="span6">
-            <h5>Resize with Encryption</h5>
+            <h5>Image Format</h5>
             <pre class="prettyprint">image("http://example.com/image.png")
     .resize(48, 48)
-    .key("super secret key")
+    .format(WEBP)
     .toUrl()</pre>
         </div>
         <div class="span6">
-            <h5>Full URL Construction</h5>
-            <pre class="prettyprint">image("http://example.com/image.png")
+            <h5>Circular Image</h5>
+            <pre class="prettyprint">thumbor.buildImage("http://example.com/image.png")
     .resize(48, 48)
-    .host("http://me.com")
+    .roundCorner(24)
     .toUrl()</pre>
         </div>
     </div>
