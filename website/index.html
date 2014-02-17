@@ -84,7 +84,7 @@ Thumbor thumbor = Thumbor.create("http://example.com/", "key");</pre>
     <div class="row examples">
         <div class="span6">
             <h5>Image Format</h5>
-            <pre class="prettyprint">image("http://example.com/image.png")
+            <pre class="prettyprint">thumbor.buildImage("http://example.com/image.png")
     .resize(48, 48)
     .format(WEBP)
     .toUrl()</pre>
