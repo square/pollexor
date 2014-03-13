@@ -149,14 +149,14 @@ public class ThumborUrlBuilderTest {
     assertThat(image.toUrl()).isEqualTo("/unsafe/2x1:4x3/a.com/b.png");
   }
 
-  @Test public void testCropAndSmart() {
+  @Test public void testResizeAndSmart() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
-    image.crop(1, 2, 3, 4);
+    image.resize(10, 5);
 
     assertThat(image.isSmart).isFalse();
     image.smart();
     assertThat(image.isSmart).isTrue();
-    assertThat(image.toUrl()).isEqualTo("/unsafe/2x1:4x3/smart/http://a.com/b.png");
+    assertThat(image.toUrl()).isEqualTo("/unsafe/10x5/smart/http://a.com/b.png");
   }
 
   @Test public void testCannotFlipHorizontalWithoutResize() {
@@ -195,13 +195,13 @@ public class ThumborUrlBuilderTest {
     assertThat(image.fitIn).isFalse();
   }
 
-  @Test public void testCannotSmartWithoutCrop() {
+  @Test public void testCannotSmartWithoutResize() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
-    assertThat(image.hasCrop).isFalse();
+    assertThat(image.hasResize).isFalse();
     assertThat(image.isSmart).isFalse();
     try {
       image.smart();
-      fail("Allowed smart crop without crop.");
+      fail("Allowed smart crop without resize.");
     } catch (IllegalStateException expected) {
     }
     assertThat(image.isSmart).isFalse();
@@ -209,7 +209,7 @@ public class ThumborUrlBuilderTest {
 
   @Test public void testDoubleAlignmentMethodSetsBoth() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
-    image.crop(0, 0, 1, 1);
+    image.resize(10, 5);
     assertThat(image.cropHorizontalAlign).isNull();
     assertThat(image.cropVerticalAlign).isNull();
     image.align(MIDDLE, CENTER);
@@ -227,20 +227,21 @@ public class ThumborUrlBuilderTest {
     assertThat(image.toUrl()).isEqualTo("/unsafe/trim:top-left:100/http://a.com/b.png");
   }
 
-  @Test public void testCannotAlignWithoutCrop() {
+  @Test public void testCannotAlignWithoutResize() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
-    assertThat(image.hasCrop).isFalse();
+    assertThat(image.hasResize).isFalse();
     assertThat(image.cropHorizontalAlign).isNull();
+    assertThat(image.cropVerticalAlign).isNull();
 
     try {
       image.align(CENTER);
-      fail("Allowed horizontal crop align without crop.");
+      fail("Allowed horizontal align without resize.");
     } catch (IllegalStateException expected) {
     }
 
     try {
       image.align(MIDDLE);
-      fail("Allowed vertical crop align without crop.");
+      fail("Allowed vertical align without resize.");
     } catch (IllegalStateException expected) {
     }
   }
