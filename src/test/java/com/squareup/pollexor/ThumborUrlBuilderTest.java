@@ -183,9 +183,9 @@ public class ThumborUrlBuilderTest {
     assertThat(image.flipVertically).isFalse();
   }
 
-  @Test public void testCannotFitInWithoutCrop() {
+  @Test public void testCannotFitInWithoutResize() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
-    assertThat(image.hasCrop).isFalse();
+    assertThat(image.hasResize).isFalse();
     assertThat(image.fitIn).isFalse();
     try {
       image.fitIn();
