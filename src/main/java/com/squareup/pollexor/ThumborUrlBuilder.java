@@ -208,39 +208,39 @@ public final class ThumborUrlBuilder {
   }
 
   /**
-   * Set the horizontal alignment for the image when cropping.
+   * Set the horizontal alignment for the image when image gets cropped by resizing.
    *
    * @param align Horizontal alignment.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder align(HorizontalAlign align) {
-    if (!hasCrop) {
-      throw new IllegalStateException("Image must be cropped first in order to align.");
+    if (!hasResize) {
+      throw new IllegalStateException("Image must be resized first in order to align.");
     }
     cropHorizontalAlign = align;
     return this;
   }
 
   /**
-   * Set the vertical alignment for the image when cropping.
+   * Set the vertical alignment for the image when image gets cropped by resizing.
    *
    * @param align Vertical alignment.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder align(VerticalAlign align) {
-    if (!hasCrop) {
-      throw new IllegalStateException("Image must be cropped first in order to align.");
+    if (!hasResize) {
+      throw new IllegalStateException("Image must be resized first in order to align.");
     }
     cropVerticalAlign = align;
     return this;
   }
 
   /**
-   * Set the horizontal and vertical alignment for the image when cropping.
+   * Set the horizontal and vertical alignment for the image when image gets cropped by resizing.
    *
    * @param valign Vertical alignment.
    * @param halign Horizontal alignment.
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder align(VerticalAlign valign, HorizontalAlign halign) {
     return align(valign).align(halign);
@@ -249,11 +249,11 @@ public final class ThumborUrlBuilder {
   /**
    * Use smart cropping for determining the important portion of an image.
    *
-   * @throws IllegalStateException if image has not been marked for crop.
+   * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder smart() {
-    if (!hasCrop) {
-      throw new IllegalStateException("Image must be cropped first in order to smart align.");
+    if (!hasResize) {
+      throw new IllegalStateException("Image must be resized first in order to smart align.");
     }
     isSmart = true;
     return this;
@@ -424,16 +424,6 @@ public final class ThumborUrlBuilder {
       builder.append(cropLeft).append("x").append(cropTop) //
           .append(":").append(cropRight).append("x").append(cropBottom);
 
-      if (isSmart) {
-        builder.append("/").append(PART_SMART);
-      } else {
-        if (cropHorizontalAlign != null) {
-          builder.append("/").append(cropHorizontalAlign.value);
-        }
-        if (cropVerticalAlign != null) {
-          builder.append("/").append(cropVerticalAlign.value);
-        }
-      }
       builder.append("/");
     }
 
@@ -457,6 +447,16 @@ public final class ThumborUrlBuilder {
         builder.append("orig");
       } else {
         builder.append(resizeHeight);
+      }
+      if (isSmart) {
+        builder.append("/").append(PART_SMART);
+      } else {
+        if (cropHorizontalAlign != null) {
+          builder.append("/").append(cropHorizontalAlign.value);
+        }
+        if (cropVerticalAlign != null) {
+          builder.append("/").append(cropVerticalAlign.value);
+        }
       }
       builder.append("/");
     }
