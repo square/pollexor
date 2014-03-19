@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 2.0.1 *(2014-03-18)*
+----------------------------
+
+ * Fix: Crop align and smart crop now correctly depend on resize not manual crop.
+
+
 Version 2.0.0 *(2014-02-11)*
 ----------------------------
 

@@ -17,8 +17,12 @@ Download [the latest JAR][2] or grab via Maven:
 <dependency>
   <groupId>com.squareup</groupId>
   <artifactId>pollexor<artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 </dependency>
+```
+or Gradle:
+```groovy
+compile 'com.squareup:pollexor:2.0.1'
 ```
 
 
