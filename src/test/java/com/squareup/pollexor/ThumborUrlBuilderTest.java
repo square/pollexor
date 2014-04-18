@@ -17,6 +17,7 @@ import static com.squareup.pollexor.ThumborUrlBuilder.rgb;
 import static com.squareup.pollexor.ThumborUrlBuilder.roundCorner;
 import static com.squareup.pollexor.ThumborUrlBuilder.sharpen;
 import static com.squareup.pollexor.ThumborUrlBuilder.watermark;
+import static com.squareup.pollexor.ThumborUrlBuilder.blur;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
@@ -499,5 +500,11 @@ public class ThumborUrlBuilderTest {
 
   @Test public void testFilterFrameFormat() {
     assertThat(frame("a.png")).isEqualTo("frame(a.png)");
+  }
+
+  @Test public void testFilterBlur() {
+    assertThat(blur(1)).isEqualTo("blur(1,0)");
+    assertThat(blur(1,0)).isEqualTo("blur(1,0)");
+    assertThat(blur(1,1)).isEqualTo("blur(1,1)");
   }
 }

@@ -35,6 +35,7 @@ public final class ThumborUrlBuilder {
   private static final String FILTER_STRIP_ICC = "strip_icc";
   private static final String FILTER_GRAYSCALE = "grayscale";
   private static final String FILTER_EQUALIZE = "equalize";
+  private static final String FILTER_BLUR = "blur";
 
   /** Original size for image width or height. **/
   public static final int ORIGINAL_SIZE = Integer.MIN_VALUE;
@@ -759,4 +760,33 @@ public final class ThumborUrlBuilder {
   public static String equalize() {
     return FILTER_EQUALIZE + "()";
   }
+
+  /**
+   * This filter adds a blur effect to the image using the specified radius and a default
+   * sigma (equal to the radius).
+   * @param radius Radius used in the gaussian function to generate a matrix, maximum value is 150.
+   *               The bigger the radius more blurred will be the image.
+   */
+  public static String blur(int radius) {
+    return blur(radius, 0);
+  }
+
+  /**
+   * This filter adds a blur effect to the image using the specified radius and sigma.
+   * @param radius Radius used in the gaussian function to generate a matrix, maximum value is 150.
+   *               The bigger the radius more blurred will be the image.
+   * @param sigma Sigma used in the gaussian function.
+   */
+  public static String blur(int radius, int sigma) {
+    if (radius < 1) {
+      throw new IllegalArgumentException("Radius must be greater than zero.");
+    }
+    if (radius > 150) {
+      throw new IllegalArgumentException("Radius must be lower or equal than 150.");
+    }
+    if (sigma < 0) {
+      throw new IllegalArgumentException("Sigma must be greater than zero.");
+    }
+    return FILTER_BLUR + "(" + radius + "," + sigma + ")";
+ }
 }
