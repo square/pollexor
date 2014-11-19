@@ -94,4 +94,4 @@ License
 
 
  [1]: https://github.com/globocom/thumbor
- [2]: http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.squareup&a=pollexor&v=LATEST
+ [2]: https://search.maven.org/remote_content?g=com.squareup&a=pollexor&v=LATEST
