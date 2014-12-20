@@ -25,6 +25,8 @@ or Gradle:
 compile 'com.squareup:pollexor:2.0.2'
 ```
 
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
+
 
 
 Examples
@@ -95,3 +97,4 @@ License
 
  [1]: https://github.com/globocom/thumbor
  [2]: https://search.maven.org/remote_content?g=com.squareup&a=pollexor&v=LATEST
+ [snap]: https://oss.sonatype.org/content/repositories/snapshots/

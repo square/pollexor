@@ -1,4 +1,26 @@
 language: java
 
+jdk:
+  - oraclejdk7
+  - oraclejdk8
+
+after_success:
+  - .buildscript/deploy_snapshot.sh
+
+env:
+  global:
+    - secure: "faUGOXbthheIaGKUNFfonXaHAQAVbkcDiK+EIfyoekupCZmhGEw9tuG2OUw/6bvGr2h+6MujCjzRTFFrPnqcyTyqEZvWZ8ZY5h+iPNPs7QYblq0rL4QTHK41Tr9sGKh2P98EOdU0CG0dxFYrYKn606BKv1VmB1QlsLQxo0bh3gE="
+    - secure: "dPooT0HTZNUYHFJW+Pg9OVZDPzSbBgfU/cpp+GYoHonaFm95PtIl95T7n5iOpaTfDdjhmVAOv7ruzr8CGvk481tqtSQJNEh6SpVUqYJDrlyI1eTYEQpXsnKiSoZYznKCggIG0VpK0oa5nU3BXc8ITzN/sM2TuUrErDv44LWCNcg="
+
+branches:
+  except:
+    - gh-pages
+
 notifications:
   email: false
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2
