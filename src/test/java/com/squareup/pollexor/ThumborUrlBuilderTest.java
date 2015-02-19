@@ -507,4 +507,12 @@ public class ThumborUrlBuilderTest {
     assertThat(blur(1,0)).isEqualTo("blur(1,0)");
     assertThat(blur(1,1)).isEqualTo("blur(1,1)");
   }
+
+  @Test public void testFilterNoUpscale() {
+    assertThat(noUpscale()).isEqualTo("no_upscale()");
+  }
+
+  @Test public void testFilterRotate() {
+    assertThat(rotate(90)).isEqualTo("rotate(90)");
+  }
 }
