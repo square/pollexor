@@ -36,6 +36,8 @@ public final class ThumborUrlBuilder {
   private static final String FILTER_GRAYSCALE = "grayscale";
   private static final String FILTER_EQUALIZE = "equalize";
   private static final String FILTER_BLUR = "blur";
+  private static final String FILTER_NO_UPSCALE = "no_upscale";
+  private static final String FILTER_ROTATE = "rotate";
 
   /** Original size for image width or height. **/
   public static final int ORIGINAL_SIZE = Integer.MIN_VALUE;
@@ -788,5 +790,23 @@ public final class ThumborUrlBuilder {
       throw new IllegalArgumentException("Sigma must be greater than zero.");
     }
     return FILTER_BLUR + "(" + radius + "," + sigma + ")";
- }
+  }
+
+  /** This filter tells thumbor not to upscale your images. */
+  public static String noUpscale() {
+    return FILTER_NO_UPSCALE + "()";
+  }
+
+  /**
+   * This filter rotates the given image according to the angle passed.
+   * @param angle The angle of rotation. Values can be either 0°, 90°, 180° or 270° – multiples of
+   *              90°. Angles equal to or greater than 360° will be replaced by their coterminal
+   *              angle of rotation.
+   */
+  public static String rotate(int angle) {
+    if (angle % 90 != 0) {
+      throw new IllegalArgumentException("Angle must be multiple of 90°");
+    }
+    return FILTER_ROTATE + "(" + angle + ")";
+  }
 }
