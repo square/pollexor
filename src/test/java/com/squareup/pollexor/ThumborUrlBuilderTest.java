@@ -18,6 +18,8 @@ import static com.squareup.pollexor.ThumborUrlBuilder.roundCorner;
 import static com.squareup.pollexor.ThumborUrlBuilder.sharpen;
 import static com.squareup.pollexor.ThumborUrlBuilder.watermark;
 import static com.squareup.pollexor.ThumborUrlBuilder.blur;
+import static com.squareup.pollexor.ThumborUrlBuilder.noUpscale;
+import static com.squareup.pollexor.ThumborUrlBuilder.rotate;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
