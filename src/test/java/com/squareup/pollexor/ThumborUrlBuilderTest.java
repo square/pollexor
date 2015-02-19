@@ -18,6 +18,8 @@ import static com.squareup.pollexor.ThumborUrlBuilder.roundCorner;
 import static com.squareup.pollexor.ThumborUrlBuilder.sharpen;
 import static com.squareup.pollexor.ThumborUrlBuilder.watermark;
 import static com.squareup.pollexor.ThumborUrlBuilder.blur;
+import static com.squareup.pollexor.ThumborUrlBuilder.noUpscale;
+import static com.squareup.pollexor.ThumborUrlBuilder.rotate;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
@@ -506,5 +508,13 @@ public class ThumborUrlBuilderTest {
     assertThat(blur(1)).isEqualTo("blur(1,0)");
     assertThat(blur(1,0)).isEqualTo("blur(1,0)");
     assertThat(blur(1,1)).isEqualTo("blur(1,1)");
+  }
+
+  @Test public void testFilterNoUpscale() {
+    assertThat(noUpscale()).isEqualTo("no_upscale()");
+  }
+
+  @Test public void testFilterRotate() {
+    assertThat(rotate(90)).isEqualTo("rotate(90)");
   }
 }
