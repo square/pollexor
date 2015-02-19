@@ -804,7 +804,7 @@ public final class ThumborUrlBuilder {
    *              angle of rotation.
    */
   public static String rotate(int angle) {
-    if (angle % 90 > 0) {
+    if (angle % 90 != 0) {
       throw new IllegalArgumentException("Angle must be multiple of 90°");
     }
     return FILTER_ROTATE + "(" + angle + ")";
