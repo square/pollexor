@@ -36,6 +36,7 @@ public final class ThumborUrlBuilder {
   private static final String FILTER_GRAYSCALE = "grayscale";
   private static final String FILTER_EQUALIZE = "equalize";
   private static final String FILTER_BLUR = "blur";
+  private static final String FILTER_NO_UPSCALE = "no_upscale";
 
   /** Original size for image width or height. **/
   public static final int ORIGINAL_SIZE = Integer.MIN_VALUE;
@@ -788,5 +789,10 @@ public final class ThumborUrlBuilder {
       throw new IllegalArgumentException("Sigma must be greater than zero.");
     }
     return FILTER_BLUR + "(" + radius + "," + sigma + ")";
- }
+  }
+
+  /** This filter tells thumbor not to upscale your images. */
+  public static String noUpscale() {
+    return FILTER_NO_UPSCALE + "()";
+  }
 }
