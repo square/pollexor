@@ -16,7 +16,7 @@ Download [the latest JAR][2] or grab via Maven:
 ```xml
 <dependency>
   <groupId>com.squareup</groupId>
-  <artifactId>pollexor<artifactId>
+  <artifactId>pollexor</artifactId>
   <version>2.0.2</version>
 </dependency>
 ```
