@@ -11,7 +11,7 @@
 
   <groupId>com.squareup</groupId>
   <artifactId>pollexor</artifactId>
-  <version>2.0.4-SNAPSHOT</version>
+  <version>2.0.4</version>
 
   <name>Pollexor</name>
   <description>Java client for the Thumbor image service which allows you to build URIs in an expressive fashion using a fluent API.</description>
