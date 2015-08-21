@@ -17,12 +17,12 @@ Download [the latest JAR][2] or grab via Maven:
 <dependency>
   <groupId>com.squareup</groupId>
   <artifactId>pollexor</artifactId>
-  <version>2.0.3</version>
+  <version>2.0.4</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.squareup:pollexor:2.0.3'
+compile 'com.squareup:pollexor:2.0.4'
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
