@@ -19,7 +19,6 @@ public final class ThumborUrlBuilder {
   private static final String PREFIX_META = "meta/";
   private static final String PART_SMART = "smart";
   private static final String PART_TRIM = "trim";
-  private static final String PART_FIT_IN = "fit-in";
   private static final String PART_FILTERS = "filters";
   private static final String FILTER_BRIGHTNESS = "brightness";
   private static final String FILTER_CONTRAST = "contrast";
@@ -48,7 +47,7 @@ public final class ThumborUrlBuilder {
 
     final String value;
 
-    private HorizontalAlign(String value) {
+    HorizontalAlign(String value) {
       this.value = value;
     }
   }
@@ -59,7 +58,7 @@ public final class ThumborUrlBuilder {
 
     final String value;
 
-    private VerticalAlign(String value) {
+    VerticalAlign(String value) {
       this.value = value;
     }
   }
@@ -70,7 +69,7 @@ public final class ThumborUrlBuilder {
 
     final String value;
 
-    private TrimPixelColor(String value) {
+    TrimPixelColor(String value) {
       this.value = value;
     }
   }
@@ -81,7 +80,18 @@ public final class ThumborUrlBuilder {
 
     final String value;
 
-    private ImageFormat(String value) {
+    ImageFormat(String value) {
+      this.value = value;
+    }
+  }
+
+  /** Style of resizing for 'fit-in'. */
+  public enum FitInStyle {
+    NORMAL("fit-in"), FULL("full-fit-in"), ADAPTIVE("adaptive-fit-in");
+
+    final String value;
+
+    FitInStyle(String value) {
       this.value = value;
     }
   }
@@ -96,7 +106,7 @@ public final class ThumborUrlBuilder {
   boolean isLegacy;
   boolean flipHorizontally;
   boolean flipVertically;
-  boolean fitIn;
+  FitInStyle fitInStyle;
   int resizeWidth;
   int resizeHeight;
   int cropTop;
@@ -166,15 +176,24 @@ public final class ThumborUrlBuilder {
   }
 
   /**
-   * Contrain the image size inside the resized box, scaling as needed.
+   * Constrain the image size inside the resized box, scaling as needed.
    *
    * @throws IllegalStateException if image has not been marked for resize.
    */
   public ThumborUrlBuilder fitIn() {
+    return fitIn(FitInStyle.NORMAL);
+  }
+
+  /**
+   * Constrain the image size inside the resized box, scaling as needed.
+   *
+   * @throws IllegalStateException if image has not been marked for resize.
+   */
+  public ThumborUrlBuilder fitIn(FitInStyle fitInStyle) {
     if (!hasResize) {
       throw new IllegalStateException("Image must be resized first in order to apply 'fit-in'.");
     }
-    fitIn = true;
+    this.fitInStyle = fitInStyle;
     return this;
   }
 
@@ -431,8 +450,8 @@ public final class ThumborUrlBuilder {
     }
 
     if (hasResize) {
-      if (fitIn) {
-        builder.append(PART_FIT_IN).append("/");
+      if (fitInStyle != null) {
+        builder.append(fitInStyle.value).append("/");
       }
       if (flipHorizontally) {
         builder.append("-");

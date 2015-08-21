@@ -1,6 +1,7 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.pollexor;
 
+import com.squareup.pollexor.ThumborUrlBuilder.FitInStyle;
 import org.junit.Test;
 
 import com.squareup.pollexor.ThumborUrlBuilder.TrimPixelColor;
@@ -118,10 +119,28 @@ public class ThumborUrlBuilderTest {
   @Test public void testResizeAndFitIn() {
     ThumborUrlBuilder url = unsafe.buildImage("a.com/b.png");
     url.resize(10, 5);
-    assertThat(url.fitIn).isFalse();
+    assertThat(url.fitInStyle).isNull();
     url.fitIn();
-    assertThat(url.fitIn).isTrue();
+    assertThat(url.fitInStyle).isEqualTo(FitInStyle.NORMAL);
     assertThat(url.toUrl()).isEqualTo("/unsafe/fit-in/10x5/a.com/b.png");
+  }
+
+  @Test public void testResizeAndFitInFull() {
+    ThumborUrlBuilder url = unsafe.buildImage("a.com/b.png");
+    url.resize(10, 5);
+    assertThat(url.fitInStyle).isNull();
+    url.fitIn(FitInStyle.FULL);
+    assertThat(url.fitInStyle).isEqualTo(FitInStyle.FULL);
+    assertThat(url.toUrl()).isEqualTo("/unsafe/full-fit-in/10x5/a.com/b.png");
+  }
+
+  @Test public void testResizeAndFitInAdaptive() {
+    ThumborUrlBuilder url = unsafe.buildImage("a.com/b.png");
+    url.resize(10, 5);
+    assertThat(url.fitInStyle).isNull();
+    url.fitIn(FitInStyle.ADAPTIVE);
+    assertThat(url.fitInStyle).isEqualTo(FitInStyle.ADAPTIVE);
+    assertThat(url.toUrl()).isEqualTo("/unsafe/adaptive-fit-in/10x5/a.com/b.png");
   }
 
   @Test public void testResizeAndFlip() {
@@ -189,13 +208,13 @@ public class ThumborUrlBuilderTest {
   @Test public void testCannotFitInWithoutResize() {
     ThumborUrlBuilder image = unsafe.buildImage("http://a.com/b.png");
     assertThat(image.hasResize).isFalse();
-    assertThat(image.fitIn).isFalse();
+    assertThat(image.fitInStyle).isNull();
     try {
       image.fitIn();
       fail("Allowed fit-in resize without resize.");
     } catch (IllegalStateException expected) {
     }
-    assertThat(image.fitIn).isFalse();
+    assertThat(image.fitInStyle).isNull();
   }
 
   @Test public void testCannotSmartWithoutResize() {
