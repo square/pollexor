@@ -21,9 +21,21 @@ public class UpstreamTest {
     assertThat(actual).isEqualTo(expected);
   }
 
+  @Test public void matchingEncodedSignature() {
+    String expected = "/8ammJH8D-7tXy6kU3lTvoXlhu4o%3D/300x200/my.server.com/some/path/to/image.jpg";
+    String actual = url().resize(300, 200).toEncodedUrl();
+    assertThat(actual).isEqualTo(expected);
+  }
+
   @Test public void matchingSignatureWithMeta() {
     String expected = "/Ps3ORJDqxlSQ8y00T29GdNAh2CY=/meta/my.server.com/some/path/to/image.jpg";
     String actual = url().toMeta();
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test public void matchingEncodedSignatureWithMeta() {
+    String expected = "/Ps3ORJDqxlSQ8y00T29GdNAh2CY%3D/meta/my.server.com/some/path/to/image.jpg";
+    String actual = url().toMetaSafe(true);
     assertThat(actual).isEqualTo(expected);
   }
 
@@ -31,6 +43,13 @@ public class UpstreamTest {
     String expected =
         "/ZZtPCw-BLYN1g42Kh8xTcRs0Qls=/filters:brightness(10):contrast(20)/my.server.com/some/path/to/image.jpg";
     String actual = url().filter(brightness(10), contrast(20)).toUrl();
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test public void matchingEncodedSignatureWithFilters() {
+    String expected =
+            "/ZZtPCw-BLYN1g42Kh8xTcRs0Qls%3D/filters:brightness(10):contrast(20)/my.server.com/some/path/to/image.jpg";
+    String actual = url().filter(brightness(10), contrast(20)).toEncodedUrl();
     assertThat(actual).isEqualTo(expected);
   }
 }
