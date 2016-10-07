@@ -52,7 +52,7 @@ public final class Thumbor {
   /** Begin building a url for this host with the specified image. */
   public ThumborUrlBuilder buildImage(String image) {
     if (image == null || image.length() == 0) {
-      throw new IllegalArgumentException("Invalid image.");
+      throw new IllegalArgumentException("Image must not be blank.");
     }
     return new ThumborUrlBuilder(host, key, image);
   }
