@@ -175,6 +175,7 @@ final class Utilities {
    * @param key Encryption key.
    * @return Encrypted output.
    */
+  @SuppressWarnings("InsecureCryptoUsage") // Only used in known-weak crypto "legacy" mode.
   static byte[] aes128Encrypt(StringBuilder message, String key) {
     try {
       key = normalizeString(key, 16);
