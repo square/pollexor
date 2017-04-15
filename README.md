@@ -4,7 +4,7 @@ Pollexor - Java Thumbor client by Square
 Java client for the [Thumbor image service][1] which allows you to build URIs
 in an expressive fashion using a fluent API.
 
-This library is also fully compatible with the Android platform.
+This library is also fully compatible with the Android platform. :shipit:
 
 
 
