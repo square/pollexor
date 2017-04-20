@@ -369,7 +369,14 @@ public final class ThumborUrlBuilder {
    * on whether a key was set.
    */
   public String toUrl() {
-    return (key == null) ? toUrlUnsafe() : toUrlSafe();
+    return (key == null) ? toUrlUnsafe() : toUrlSafe(false);
+  }
+
+  /**
+   * Build the URL. Same as {@link #toUrl()}, but with '=' encoded as '%3D'.
+   */
+  public String toEncodedUrl() {
+    return (key == null) ? toUrlUnsafe() : toUrlSafe(true);
   }
 
   /** Build an unsafe version of the URL. */
@@ -381,6 +388,14 @@ public final class ThumborUrlBuilder {
    * Build a safe version of the URL. Requires a non-{@code null} key.
    */
   public String toUrlSafe() {
+    return toUrlSafe(false);
+  }
+
+  /**
+   * Build a safe version of the URL. Requires a non-{@code null} key.
+   * @param urlEncode Build url encoded version without illegal '=' character.
+   */
+  public String toUrlSafe(boolean urlEncode) {
     if (key == null) {
       throw new IllegalStateException("Cannot build safe URL without a key.");
     }
@@ -392,6 +407,11 @@ public final class ThumborUrlBuilder {
     String encoded = base64Encode(encrypted);
 
     CharSequence suffix = legacy ? image : config;
+
+    if (urlEncode) {
+      encoded = encoded.replace("=", "%3D");
+    }
+
     return host + encoded + "/" + suffix;
   }
 
@@ -412,9 +432,21 @@ public final class ThumborUrlBuilder {
    * Build a safe version of the metadata URL. Requires a non-{@code null} key.
    */
   public String toMetaSafe() {
+    return toMetaSafe(false);
+  }
+
+  /**
+   * Build a safe version of the metadata URL. Requires a non-{@code null} key.
+   * @param urlEncode Build url encoded version without illegal '=' character.
+   */
+  public String toMetaSafe(boolean urlEncode) {
     StringBuilder config = assembleConfig(true);
     byte[] encrypted = hmacSha1(config, key);
     String encoded = base64Encode(encrypted);
+
+    if (urlEncode) {
+      encoded = encoded.replace("=", "%3D");
+    }
 
     return host + encoded + "/" + config;
   }
