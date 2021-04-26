@@ -81,7 +81,7 @@ public class ThumborUrlBuilderTest {
   }
 
   @Test public void testBuildMeta() {
-    assertThat(unsafe.buildImage("a.com/b.png").toMeta()).startsWith("/meta/");
+    assertThat(unsafe.buildImage("a.com/b.png").toMeta()).startsWith("/unsafe/meta/");
   }
 
   @Test public void testSafeUrlCanStillBuildUnsafe() {
@@ -91,7 +91,7 @@ public class ThumborUrlBuilderTest {
   }
 
   @Test public void testSafeMetaUrlCanStillBuildUnsafe() {
-    String expected = "/meta/a.com/b.png";
+    String expected = "/unsafe/meta/a.com/b.png";
     String actual = safe.buildImage("a.com/b.png").toMetaUnsafe();
     assertThat(actual).isEqualTo(expected);
   }
