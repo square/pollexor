@@ -2,7 +2,6 @@
 package com.squareup.pollexor;
 
 import java.security.MessageDigest;
-import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -163,26 +162,6 @@ final class Utilities {
       Mac mac = Mac.getInstance("HmacSHA1");
       mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA1"));
       return mac.doFinal(message.toString().getBytes());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Encrypt a string with AES-128 using the specified key.
-   *
-   * @param message Input string.
-   * @param key Encryption key.
-   * @return Encrypted output.
-   */
-  @SuppressWarnings("InsecureCryptoUsage") // Only used in known-weak crypto "legacy" mode.
-  static byte[] aes128Encrypt(StringBuilder message, String key) {
-    try {
-      key = normalizeString(key, 16);
-      rightPadString(message, '{', 16);
-      Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
-      cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(), "AES"));
-      return cipher.doFinal(message.toString().getBytes());
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

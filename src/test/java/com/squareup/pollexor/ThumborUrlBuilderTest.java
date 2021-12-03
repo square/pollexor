@@ -58,19 +58,6 @@ public class ThumborUrlBuilderTest {
     assertThat(actual).isEqualTo(expected);
   }
 
-  @Test public void testComplexLegacySafeBuild() {
-    String expected = "/xrUrWUD_ZhogPh-rvPF5VhgWENCgh-mzknoAEZ7dcX_xa7sjqP1ff9hQQq_ORAKmuCr5pyyU3srXG7BUdWUzBqp3AIucz8KiGsmHw1eFe4SBWhp1wSQNG49jSbbuHaFF_4jy5oV4Nh821F4yqNZfe6CIvjbrr1Vw2aMPL4bE7VCHBYE9ukKjVjLRiW3nLfih/a.com/b.png";
-    String actual = safe.buildImage("a.com/b.png")
-        .crop(10, 10, 90, 90)
-        .resize(40, 40)
-        .filter(
-            watermark(unsafe.buildImage("b.com/c.jpg").resize(20, 20), 10, 10),
-            roundCorner(5))
-        .legacy()
-        .toUrl();
-    assertThat(actual).isEqualTo(expected);
-  }
-
   @Test public void testKeyChangesToStringToSafeBuild() {
     ThumborUrlBuilder url1 = unsafe.buildImage("a.com/b.png");
     assertThat(url1.key).isNull();
