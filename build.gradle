@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
+    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.18.0'
   }
 
   repositories {
@@ -28,6 +28,10 @@ java {
 
 javadoc {
   options.addBooleanOption('html5', false)
+}
+
+mavenPublish {
+  sonatypeHost = 'S01'
 }
 
 signing {
