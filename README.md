@@ -13,7 +13,7 @@ Download
 
 Download [the latest JAR][2] or grab via Gradle:
 ```groovy
-implementation 'com.squareup:pollexor:2.0.4'
+implementation 'com.squareup:pollexor:3.0.0'
 ```
 
 or Maven:
@@ -21,7 +21,7 @@ or Maven:
 <dependency>
   <groupId>com.squareup</groupId>
   <artifactId>pollexor</artifactId>
-  <version>2.0.4</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 

@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 3.0.0 *(2022-01-18)*
+----------------------------
+
+ * Remove legacy() from `ThumborUrlBuilder`. This encryption was long-deprecated and severely insecure.
+
+Otherwise source and binary compatible with the 2.x releases.
+
+
 Version 2.0.4 *(2015-08-21)*
 ----------------------------
 
