@@ -11,18 +11,18 @@ This library is also fully compatible with the Android platform.
 Download
 --------
 
-Download [the latest JAR][2] or grab via Maven:
+Download [the latest JAR][2] or grab via Gradle:
+```groovy
+implementation 'com.squareup:pollexor:2.0.4'
+```
 
+or Maven:
 ```xml
 <dependency>
   <groupId>com.squareup</groupId>
   <artifactId>pollexor</artifactId>
   <version>2.0.4</version>
 </dependency>
-```
-or Gradle:
-```groovy
-compile 'com.squareup:pollexor:2.0.4'
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
