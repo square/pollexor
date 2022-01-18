@@ -4,10 +4,8 @@ package com.squareup.pollexor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.squareup.pollexor.Utilities.aes128Encrypt;
 import static com.squareup.pollexor.Utilities.base64Encode;
 import static com.squareup.pollexor.Utilities.hmacSha1;
-import static com.squareup.pollexor.Utilities.md5;
 
 /**
  * Fluent interface to build a Thumbor URL.
@@ -103,7 +101,6 @@ public final class ThumborUrlBuilder {
   boolean hasResize;
   boolean isSmart;
   boolean isTrim;
-  boolean isLegacy;
   boolean flipHorizontally;
   boolean flipVertically;
   FitInStyle fitInStyle;
@@ -316,12 +313,6 @@ public final class ThumborUrlBuilder {
     return this;
   }
 
-  /** Use legacy encryption when constructing a safe URL. */
-  public ThumborUrlBuilder legacy() {
-    isLegacy = true;
-    return this;
-  }
-
   /**
    * Add one or more filters to the image.
    * <p>
@@ -385,14 +376,11 @@ public final class ThumborUrlBuilder {
       throw new IllegalStateException("Cannot build safe URL without a key.");
     }
 
-    boolean legacy = isLegacy;
-
     StringBuilder config = assembleConfig(false);
-    byte[] encrypted = legacy ? aes128Encrypt(config, key) : hmacSha1(config, key);
+    byte[] encrypted = hmacSha1(config, key);
     String encoded = base64Encode(encrypted);
 
-    CharSequence suffix = legacy ? image : config;
-    return host + encoded + "/" + suffix;
+    return host + encoded + "/" + config;
   }
 
   /**
@@ -491,7 +479,7 @@ public final class ThumborUrlBuilder {
       builder.append("/");
     }
 
-    builder.append(isLegacy ? md5(image) : image);
+    builder.append(image);
 
     return builder;
   }

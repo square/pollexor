@@ -72,9 +72,6 @@ thumbor.buildImage("http://example.com/background.png")
 // Produces: /unsafe/200x100/filters:round_corner(10,255,255,255):watermark(/unsafe/200x100/example.com/overlay1.png,0,0,0):watermark(/unsafe/50x50/example.com/overlay2.png,75,25,0):quality(85)/example.com/background.png
 ```
 
-*Note:* If you are using a version of Thumbor older than 3.0 you must call
-`legacy()` to ensure the encryption used will be supported by the server.
-
 
 
 License
