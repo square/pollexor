@@ -1,0 +1,48 @@
+body {
+    /* http://www.dinpattern.com/2011/06/13/invaders/ */
+    background: #eaf6ee url('invaders.png') repeat;
+    color: #333;
+}
+
+a, a:hover {
+    color: #163;
+}
+
+.lead {
+    text-align: center;
+    margin-top: 80px;
+    margin-bottom: 60px;
+}
+.lead h1 {
+    font-size: 90px;
+    line-height: 90px;
+    margin-bottom: 15px;
+}
+.lead h3 {
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+h5 {
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.examples .span6 {
+    margin-bottom: 40px;
+}
+
+.foot {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 30px;
+}
+
+#ribbon img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+}
