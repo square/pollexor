@@ -35,4 +35,4 @@
    This will trigger a GitHub Action workflow which will create a GitHub release and upload the
    release artifacts to Sonatype Nexus.
 
-9. Visit [Sonatype Nexus](https://oss.sonatype.org/) and promote the artifact.
+9. Visit [Sonatype Nexus](https://s01.oss.sonatype.org/) and promote the artifact.

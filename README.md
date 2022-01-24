@@ -94,4 +94,4 @@ License
 
  [1]: https://github.com/globocom/thumbor
  [2]: https://search.maven.org/remote_content?g=com.squareup&a=pollexor&v=LATEST
- [snap]: https://oss.sonatype.org/content/repositories/snapshots/
+ [snap]: https://s01.oss.sonatype.org/content/repositories/snapshots/
