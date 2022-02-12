@@ -63,6 +63,7 @@
 ##############################################################################
 
 # Attempt to set APP_HOME
+echo "Test. Will this be executed?"
 
 # Resolve links: $0 may be a link
 app_path=$0
