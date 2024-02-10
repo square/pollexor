@@ -47,6 +47,12 @@ thumbor.buildImage("http://example.com/image.png")
 // Produces: /unsafe/48x48/example.com/image.png
 
 thumbor.buildImage("http://example.com/image.png")
+    .crop(10, 20, 90, 100)
+    .toUrl()
+// Produces: /unsafe/20x10:100x90/example.com/image.png
+// Note that the parameters are accepted as y1, x1, y2, x2 — Do not try to use x1, y1, x2, y2
+
+thumbor.buildImage("http://example.com/image.png")
     .crop(10, 10, 90, 90)
     .resize(40, 40)
     .smart()
