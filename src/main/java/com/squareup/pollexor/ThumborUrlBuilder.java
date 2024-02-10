@@ -393,7 +393,7 @@ public final class ThumborUrlBuilder {
 
   /** Build an unsafe version of the metadata URL. */
   public String toMetaUnsafe() {
-    return host + assembleConfig(true);
+    return host + PREFIX_UNSAFE + assembleConfig(true);
   }
 
   /**
